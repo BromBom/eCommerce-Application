@@ -46,5 +46,9 @@
     "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
+  },
+  "dependencies": {
+    "@commercetools/sdk-client-v2": "^2.5.0",
+    "node-fetch": "^3.3.2"
   }
 }
