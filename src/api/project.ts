@@ -1,17 +1,33 @@
-import { apiRoot, projectKey } from './client';
+import ctpClient from './BuildClient';
+import { ApiRoot, createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 
-const getProjectDetails = async () => {
-  if (projectKey === undefined) {
-    throw new Error('Project key is undefined');
-  }
+const apiRoot = createApiBuilderFromCtpClient(ctpClient)
+  .withProjectKey({ projectKey: 'jsfe2023q4shop' });
 
-  try {
-    const response = await apiRoot.withProjectKey({ projectKey }).get().execute();
-    return response;
-  } catch (error) {
-    console.error('Error fetching project details:', error);
-    throw error;
-  }
+const getProject = () => {
+  return apiRoot
+    .get()
+    .execute();
 };
 
-export default getProjectDetails;
+getProject()
+  .then(console.log)
+  .catch(console.error);
+
+apiRoot
+  .shoppingLists()
+  .withId({ ID: 'a-shoppinglist-id' })
+  .get()
+  .execute()
+  .then(({ body }) => {
+    console.log(JSON.stringify(body));
+  })
+  .catch(console.error);
+
+const getEndPoint = () => {
+  return apiRoot
+    .shoppingLists()
+    .get();
+}
+
+export default getProject;

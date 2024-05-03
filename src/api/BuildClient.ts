@@ -6,11 +6,11 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
   host: 'https://auth.europe-west1.gcp.commercetools.com',
   projectKey: 'jsfe2023q4shop',
   credentials: {
-    clientId: 'FQcuZeXiU_ie88Defv3aTBsG',
-    clientSecret: 'Nv2RGFA94mE_mcurbgLMBRdoImwp0wTH',
+    clientId: 'QOVU7-WB1ds0e3pySCwjJzsX',
+    clientSecret: 'LZYnjQEACoIp0bf3ANZ2poRnYjoQiKjC',
   },
   scopes: [
-    'create_anonymous_token:jsfe2023q4shop manage_my_business_units:jsfe2023q4shop manage_my_quote_requests:jsfe2023q4shop manage_my_profile:jsfe2023q4shop manage_my_quotes:jsfe2023q4shop manage_my_orders:jsfe2023q4shop manage_my_shopping_lists:jsfe2023q4shop manage_my_payments:jsfe2023q4shop view_categories:jsfe2023q4shop view_published_products:jsfe2023q4shop',
+    'manage_my_shopping_lists:jsfe2023q4shop:the-good-store view_shopping_lists:jsfe2023q4shop:the-good-store view_orders:jsfe2023q4shop:the-good-store manage_shopping_lists:jsfe2023q4shop:the-good-store view_api_clients:jsfe2023q4shop manage_orders:jsfe2023q4shop:the-good-store manage_cart_discounts:jsfe2023q4shop:the-good-store manage_project:jsfe2023q4shop manage_my_orders:jsfe2023q4shop:the-good-store view_cart_discounts:jsfe2023q4shop:the-good-store view_customers:jsfe2023q4shop:the-good-store manage_my_profile:jsfe2023q4shop:the-good-store manage_customers:jsfe2023q4shop:the-good-store manage_api_clients:jsfe2023q4shop'
   ],
   fetch,
 };

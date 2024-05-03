@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>TypeScript SDK Examples</title>
+    <script src="https://unpkg.com/@commercetools/sdk-client-v2@0.2.0/dist/commercetools-sdk-client-v2.umd.js"></script>
+    <script src="https://unpkg.com/@commercetools/platform-sdk@1.20.0/dist/commercetools-platform-sdk.umd.js"></script>
+</head>
+
+<body>
+    <!-- Click this button to return the Project details -->
+    <p>
+        <button onclick="getProjectDetails()">Get Project Information</button>
+    </p>
+
+    <!-- This text is overwritten when getProjectDetails() finishes -->
+    <p id="details">
+        Click the above button to display the Project information.
+    </p>
+</body>
+
+<script>
+    // Enter your API client configuration
+    var oauthUri = 'https://auth.europe-west1.gcp.commercetools.com';
+    var baseUri = 'https://api.europe-west1.gcp.commercetools.com';
+    var credentials = {
+        clientId: 'QOVU7-WB1ds0e3pySCwjJzsX',
+        clientSecret: 'LZYnjQEACoIp0bf3ANZ2poRnYjoQiKjC',
+    };
+    var projectKey = 'jsfe2023q4shop';
+
+    // Builds the client
+    var { ClientBuilder } = window['@commercetools/sdk-client-v2'];
+    var client = new ClientBuilder()
+        .defaultClient(baseUri, credentials, oauthUri, projectKey)
+        .build();
+    var { createApiBuilderFromCtpClient } =
+        window['@commercetools/platform-sdk'];
+    var apiRoot = createApiBuilderFromCtpClient(client).withProjectKey({
+        projectKey,
+    });
+
+    // Returns the Project details
+    function getProjectDetails() {
+        apiRoot
+            .get()
+            .execute()
+            .then(function ({ body }) {
+                window.document.getElementById('details').innerHTML =
+                    JSON.stringify(body);
+            });
+    }
+</script>
+
+</html>
