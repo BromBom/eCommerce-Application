@@ -48,6 +48,8 @@
     "webpack-dev-server": "^5.0.4"
   },
   "dependencies": {
+    "@commercetools/importapi-sdk": "^5.4.0",
+    "@commercetools/platform-sdk": "^7.8.0",
     "@commercetools/sdk-client-v2": "^2.5.0",
     "node-fetch": "^3.3.2"
   }
