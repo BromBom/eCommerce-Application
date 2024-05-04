@@ -17,7 +17,7 @@ The application is developed in a static modular builder [`Wabpack`](https://web
  - [`Husky`](https://typicode.github.io/husky/) - automatically lint your commit messages, code, and run tests upon committing or pushing.
  - [`Jest`](https://jestjs.io/) - JavaScript testing framework designed to ensure correctness of any JavaScript codebase.
 
- ## Available scripts
+ ### Available scripts
 
  - `npm run start` - launch `Webpack` server in development mode.
  - `npm run build` - launch `Webpack` to collect production bundle.
@@ -26,4 +26,10 @@ The application is developed in a static modular builder [`Wabpack`](https://web
  - `npm run format` - start `Prettier` auto-formatting.
  - `npm run test` - start `Jest` testing.
 
+ ## Setup instructions
+
+ 1. Install `Node.js`.
+ 2. Clone this repository: `git clone https://github.com/BromBom/eCommerce-Application.git`.
+ 3. Go to folder `eCommerce-Application`.
+ 4. To install all dependencies use `npm install`.
  
