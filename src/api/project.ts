@@ -1,18 +1,13 @@
 import ctpClient from './BuildClient';
 import { ApiRoot, createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 
-const apiRoot = createApiBuilderFromCtpClient(ctpClient)
-  .withProjectKey({ projectKey: 'jsfe2023q4shop' });
+const apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({ projectKey: 'jsfe2023q4shop' });
 
 const getProject = () => {
-  return apiRoot
-    .get()
-    .execute();
+  return apiRoot.get().execute();
 };
 
-getProject()
-  .then(console.log)
-  .catch(console.error);
+getProject().then(console.log).catch(console.error);
 
 apiRoot
   .shoppingLists()
@@ -25,9 +20,7 @@ apiRoot
   .catch(console.error);
 
 const getEndPoint = () => {
-  return apiRoot
-    .shoppingLists()
-    .get();
-}
+  return apiRoot.shoppingLists().get();
+};
 
 export default getProject;
