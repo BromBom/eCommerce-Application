@@ -1,5 +1,3 @@
-# eCommerce-Application
-
 This project is an online portal for purchasing branded clothing and accessories, which provides users with ample opportunities, from searching for products to placing an order. The application provides interactivity, engagement and ease of use.
 
 Users can choose from a wide range of clothing presented, view their detailed descriptions, add the items they like to the cart and proceed to checkout.
@@ -32,4 +30,3 @@ The application is developed in a static modular builder [`Wabpack`](https://web
  2. Clone this repository: `git clone https://github.com/BromBom/eCommerce-Application.git`.
  3. Go to folder `eCommerce-Application`.
  4. To install all dependencies use `npm install`.
- 
