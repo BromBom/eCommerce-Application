@@ -1,4 +1,4 @@
-import Registration from '../pages/registration';
+import Registration from './pages/registration';
 
 export default class App {
   root: HTMLDivElement;
