@@ -1,27 +1,96 @@
-import Registration from './pages/registration/registration';
+// import Main from './pages/main/main';
+import Footer from './components/footer/footer';
+import Header from './components/header/header';
+import Main from './pages/main/main';
+import { Pages } from './router/pages';
+import Router from './router/router';
+import State from './state/state';
+
+// export default class App {
+//   root: HTMLDivElement;
+
+//   Main: Main;
+
+//   mainPage: HTMLDivElement;
+
+//   constructor() {
+//     this.root = this.init();
+//     this.Main = new Main();
+//     this.mainPage = this.Main.getElement();
+//   }
+
+//   private init() {
+//     this.root = document.createElement('div');
+//     this.root.classList.add('root');
+//     return this.root;
+//   }
+
+//   render() {
+//     document.body.append(this.root);
+//     this.root.append(this.mainPage);
+//   }
+// }
 
 export default class App {
-  root: HTMLDivElement;
-
-  Registration: Registration;
-
-  registrationPage: HTMLDivElement;
-
+  header?: null | Header;
+  main: null | Main;
+  router: Router;
   constructor() {
-    this.Registration = new Registration();
-    this.registrationPage = this.Registration.getElement();
-    this.root = this.init();
+    this.header = null;
+    this.main = null;
+
+    const state = new State();
+
+    const routes = this.createRoutes(state);
+    this.router = new Router(routes);
+
+    this.createView();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  private init() {
-    const element = document.createElement('div');
-    element.classList.add('root');
-    return element;
+  createView() {
+    this.header = new Header(this.router);
+    this.main = new Main();
+    const footer = new Footer();
+
+    document.body.append(this.header.getElement(), this.main.getElement(), footer.getElement());
   }
 
-  render() {
-    document.body.append(this.root);
-    this.root.append(this.registrationPage);
+  /**
+   * @param {State} state
+   * @return {Array<import('./router/router').Route>}
+   */
+  createRoutes(state) {
+    return [
+      {
+        path: ``,
+        callback: async () => {
+          const { default: IndexView } = await import('./pages/registration/registration');
+          this.setContent(Pages.INDEX, new IndexView(state));
+        },
+      },
+      {
+        path: `${Pages.INDEX}`,
+        callback: async () => {
+          const { default: IndexView } = await import('./pages/registration/registration');
+          this.setContent(Pages.INDEX, new IndexView(state));
+        },
+      },
+      {
+        path: `${Pages.PRODUCT}`,
+        callback: async () => {
+          const { default: ProductView } = await import('./pages/main/main');
+          this.setContent(Pages.PRODUCT, new ProductView(this.router));
+        },
+      },
+    ];
+  }
+
+  /**
+   * @param {string} page
+   * @param {import('./view/view').default} view
+   */
+  setContent(page, view) {
+    this.header.setSelectedItem(page);
+    this.main.setContent(view);
   }
 }
