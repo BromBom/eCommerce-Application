@@ -36,4 +36,17 @@
       width: 60%;
     }
   }
+
+  .massage-error {
+    height: 20px;
+    align-self: end;
+  }
+  
+  input:valid {
+    background-color: #7bff82;
+  }
+
+  input:invalid {
+    background-color: #ffcbcbce;
+  }
 }
