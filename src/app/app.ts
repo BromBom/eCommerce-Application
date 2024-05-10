@@ -1,4 +1,4 @@
-import Registration from '../pages/registration';
+import Registration from './pages/registration/registration';
 
 export default class App {
   root: HTMLDivElement;
@@ -13,6 +13,7 @@ export default class App {
     this.root = this.init();
   }
 
+  // eslint-disable-next-line class-methods-use-this
   private init() {
     const element = document.createElement('div');
     element.classList.add('root');

@@ -1,13 +1,13 @@
 import BaseComponent from '../../components/baseComponent';
-import RegNavigation from './nav/index';
+import RegNavigation from './nav/nav';
 
 export default class Registration {
   element: HTMLDivElement;
-  
+
   nav: RegNavigation;
-  
+
   title: BaseComponent<HTMLHeadingElement>;
-  
+
   form: BaseComponent<HTMLDivElement>;
 
   constructor() {
@@ -22,7 +22,7 @@ export default class Registration {
     const nav = this.nav.getElement();
     const title = this.title.getElement();
     const form = this.form.getElement();
-    
+
     registrationPage.classList.add('regisration__page');
     registrationPage.append(nav, title, form);
 
