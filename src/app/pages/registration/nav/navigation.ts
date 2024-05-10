@@ -1,4 +1,5 @@
 import BaseComponent from '../../../components/baseComponent';
+import Button from '../../../components/controls/button';
 
 export default class RegNavigation {
   element: HTMLDivElement;
@@ -8,8 +9,8 @@ export default class RegNavigation {
   buttonLogin: BaseComponent<HTMLButtonElement>;
 
   constructor() {
-    this.buttonShop = new BaseComponent<HTMLButtonElement>('button', ['regisration__btn-shop'], 'Shop');
-    this.buttonLogin = new BaseComponent<HTMLButtonElement>('button', ['regisration__btn-login'], 'Login');
+    this.buttonShop = Button(['registration__btn-shop'], 'Shop');
+    this.buttonLogin = Button(['registration__btn-login'], 'Login');
     this.element = this.init();
   }
 
@@ -18,7 +19,7 @@ export default class RegNavigation {
     const buttonShop = this.buttonShop.getElement();
     const buttonLogin = this.buttonLogin.getElement();
 
-    regNavigation.classList.add('regisration__nav');
+    regNavigation.classList.add('registration__nav');
     regNavigation.append(buttonShop, buttonLogin);
 
     return regNavigation;

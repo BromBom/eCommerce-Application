@@ -1,19 +1,22 @@
 import BaseComponent from '../../components/baseComponent';
-import RegNavigation from './nav/index';
+import RegNavigation from './nav/navigation';
+import RegForm from './form/form';
+
+import './registration.scss';
 
 export default class Registration {
   element: HTMLDivElement;
-  
+
   nav: RegNavigation;
-  
+
   title: BaseComponent<HTMLHeadingElement>;
-  
-  form: BaseComponent<HTMLDivElement>;
+
+  form: RegForm;
 
   constructor() {
     this.nav = new RegNavigation();
-    this.title = new BaseComponent<HTMLHeadingElement>('h2', ['regisration__title'], 'Create account');
-    this.form = new BaseComponent<HTMLDivElement>('div', ['regisration__window']);
+    this.title = new BaseComponent<HTMLHeadingElement>('h2', ['registration__title'], 'Create account');
+    this.form = new RegForm();
     this.element = this.init();
   }
 
@@ -22,8 +25,8 @@ export default class Registration {
     const nav = this.nav.getElement();
     const title = this.title.getElement();
     const form = this.form.getElement();
-    
-    registrationPage.classList.add('regisration__page');
+
+    registrationPage.classList.add('registration__page');
     registrationPage.append(nav, title, form);
 
     return registrationPage;

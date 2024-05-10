@@ -1,0 +1,39 @@
+.registration__form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+  width: 60%;
+  background-color: #bbbbbb;
+
+  .registration__profile {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px;
+    padding: 15px;
+    width: 90%;
+  }
+
+  .registration__address {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px;
+    padding: 15px;
+    width: 90%;
+  }
+
+  .label {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    input {
+      width: 60%;
+    }
+  }
+}

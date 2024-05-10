@@ -1,4 +1,4 @@
-import Registration from './pages/registration';
+import Registration from './pages/registration/registration';
 
 export default class App {
   root: HTMLDivElement;
@@ -10,10 +10,10 @@ export default class App {
   constructor() {
     this.Registration = new Registration();
     this.registrationPage = this.Registration.getElement();
-    this.root = this.init();
+    this.root = App.init();
   }
 
-  private init() {
+  private static init() {
     const element = document.createElement('div');
     element.classList.add('root');
     return element;
