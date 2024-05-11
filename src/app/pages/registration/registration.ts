@@ -1,4 +1,4 @@
-import BaseComponent from '../../components/baseComponent';
+import BaseComponent from '../../components/baseComponent/baseComponent';
 import RegNavigation from './nav/nav';
 
 export default class Registration {

@@ -1,4 +1,4 @@
-import BaseComponent from '../../../components/baseComponent';
+import BaseComponent from '../../../components/baseComponent/baseComponent';
 
 export default class RegNavigation {
   element: HTMLDivElement;

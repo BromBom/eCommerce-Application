@@ -1,69 +1,66 @@
-import Main from '../../pages/main/main';
-import Registration from '../../pages/registration/registration';
-import BaseComponent from '../baseComponent';
+import BaseComponent from '../baseComponent/baseComponent';
 import LinkView from '../controls/link/link';
+import { Pages } from '../../router/pages';
+import Router from '../../router/router';
+import Layout from '../../layout/layout';
 
-export default class Header {
-  headerLinkElements: any[];
-  mainPage: Main;
-  registrationPage: Registration;
-  headerElement: HTMLElement;
+const NamePages = {
+  INDEX: 'Главная',
+  PRODUCT: 'Карточки',
+};
 
-  constructor(mainComponent: any) {
-    this.configureView(mainComponent);
-    this.headerLinkElements = [];
-    this.mainPage = new Main();
-    this.registrationPage = new Registration();
-    this.headerElement = new BaseComponent('header', ['header']).getElement();
+export interface Page {
+  name: string;
+  callback: () => void;
+}
+
+export default class Header extends Layout {
+  headerLinkElements: any;
+
+  constructor(router: Router) {
+    const params = {
+      tag: 'header' as keyof HTMLElementTagNameMap,
+      classNames: ['header'],
+    };
+    super(params);
+    // сохраним линки в Map, чтобы линки знали о состоянии друг друга
+    this.headerLinkElements = new Map();
+    this.configureView(router);
   }
 
-  configureView(mainComponent: any) {
-    document.body.appendChild(this.headerElement);
+  configureView(router: Router) {
+    const navParams = {
+      tag: 'nav' as keyof HTMLElementTagNameMap,
+      classNames: ['nav'],
+      textContent: '',
+      callback: null,
+    };
 
-    const navElement = new BaseComponent('nav', ['nav']);
-    this.headerElement.appendChild(navElement.getElement());
+    // создаем объект навигаци
+    const creatorNav = new BaseComponent(navParams);
+    this.viewElementCreator.addInnerElement(creatorNav);
 
-    const pages = this.getPages(mainComponent);
+    Object.keys(NamePages).forEach((key) => {
+      const pageParams = {
+        name: NamePages[key],
+        callback: () => router.navigate(Pages[key]),
+      };
 
-    pages.forEach((page, index) => {
-      const linkElement = new BaseComponent('a', ['nav-link'], page.name);
-      navElement.getElement().appendChild(linkElement.getElement());
+      // создаем объект ссылки и добавляем в объект навигаци
+      const linkElement = new LinkView(pageParams, this.headerLinkElements);
 
-      linkElement.addListener('click', (event) => {
-        event.preventDefault();
-        page.callback();
-        if (index === 0) {
-          linkElement.getElement().classList.add('selected');
-        }
-      });
-
-      this.headerLinkElements.push(linkElement);
+      creatorNav.addInnerElement(linkElement.getHtmlElement());
+      this.headerLinkElements.set(Pages[key].toUpperCase(), linkElement);
     });
+
+    this.viewElementCreator.addInnerElement(creatorNav);
   }
 
-  getPages(mainComponent: any) {
-    const pages = [
-      {
-        name: 'Главная',
-        callback: () => mainComponent.setContent(this.registrationPage.getElement()),
-      },
-      {
-        name: 'Карточки',
-        callback: () => mainComponent.setContent(this.mainPage.getElement()),
-      },
-    ];
-
-    return pages;
-  }
-
-  setSelectedItem(namePage) {
+  // метод для выделения активной ссылки
+  setSelectedItem(namePage: string) {
     const linkItem = this.headerLinkElements.get(namePage.toUpperCase());
     if (linkItem instanceof LinkView) {
       linkItem.setSelectedStatus();
     }
-  }
-
-  getElement(): HTMLElement {
-    return this.headerElement;
   }
 }

@@ -1,17 +1,18 @@
-export default class Footer {
-  element: HTMLDivElement;
+import Layout from '../../layout/layout';
 
+const TEXT = 'test';
+
+export default class Footer extends Layout {
   constructor() {
-    this.element = this.init();
+    const params = {
+      tag: 'section' as keyof HTMLElementTagNameMap,
+      classNames: ['footer'],
+    };
+    super(params);
+    this.configureView();
   }
 
-  private init() {
-    this.element = document.createElement('div');
-    this.element.classList.add('footer');
-    return this.element;
-  }
-
-  getElement() {
-    return this.element;
+  configureView() {
+    this.viewElementCreator.setTextContent(TEXT);
   }
 }

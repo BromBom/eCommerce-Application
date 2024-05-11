@@ -2,14 +2,14 @@ import HashRouterHandler from './handler/hash/hash-router-handler';
 import HistoryRouterHandler from './handler/history-router-handler';
 import { Pages, ID_SELECTOR } from './pages';
 
-/**
- * @typedef {{path: string, callback: function}} Route
- */
+export interface RouterParams {
+  path: string;
+  callback: () => void;
+}
 export default class Router {
-  /**
-   * @param {Array<Route>} routes
-   */
-  constructor(routes) {
+  routes: RouterParams[];
+  handler: HistoryRouterHandler | HashRouterHandler;
+  constructor(routes: RouterParams[]) {
     this.routes = routes;
 
     this.handler = new HistoryRouterHandler(this.urlChangedHandler.bind(this));
