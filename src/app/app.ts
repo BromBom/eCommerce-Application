@@ -3,6 +3,7 @@ import Footer from './components/footer/footer';
 import Header from './components/header/header';
 import Layout from './layout/layout';
 import Main from './pages/main/main';
+import Registration from './pages/registration/registration';
 import { Pages } from './router/pages';
 import Router, { RouterParams } from './router/router';
 import State from './state/state';
@@ -61,40 +62,45 @@ export default class App {
       {
         path: ``,
         callback: async () => {
-          const { default: Index } = await import('./pages/registration/registration');
-          this.setContent(Pages.INDEX, new IndexView(state));
+          this.header?.setSelectedItem(Pages.INDEX);
+          if (this.main) {
+            this.main.setContent(new Main());
+          }
         },
       },
-      {
-        path: `${Pages.INDEX}`,
-        callback: async () => {
-          const { default: IndexView } = await import('./pages/registration/registration');
-          this.setContent(Pages.INDEX, new IndexView(state));
-        },
-      },
-      {
-        path: `${Pages.PRODUCT}`,
-        callback: async () => {
-          const { default: ProductView } = await import('./pages/main/main');
-          this.setContent(Pages.PRODUCT, new ProductView(this.router));
-        },
-      },
-      {
-        path: `${Pages.NOT_FOUND}`,
-        callback: async () => {
-          const { default: NotFoundView } = await import('./pages/not-found/not-found');
-          this.setContent(Pages.NOT_FOUND, new NotFoundView());
-        },
-      },
+      // {
+      //   path: ``,
+      //   callback: async () => {
+      //     const { default: Index } = await import('./pages/registration/registration');
+      //     this.setContent(Pages.INDEX, new IndexView(state));
+      //   },
+      // },
+      // {
+      //   path: `${Pages.INDEX}`,
+      //   callback: async () => {
+      //     const { default: IndexView } = await import('./pages/registration/registration');
+      //     this.setContent(Pages.INDEX, new IndexView(state));
+      //   },
+      // },
+      // {
+      //   path: `${Pages.PRODUCT}`,
+      //   callback: async () => {
+      //     const { default: ProductView } = await import('./pages/main/main');
+      //     this.setContent(Pages.PRODUCT, new ProductView(this.router));
+      //   },
+      // },
+      // {
+      //   path: `${Pages.NOT_FOUND}`,
+      //   callback: async () => {
+      //     const { default: NotFoundView } = await import('./pages/not-found/not-found');
+      //     this.setContent(Pages.NOT_FOUND, new NotFoundView());
+      //   },
+      // },
     ];
   }
 
-  /**
-   * @param {string} page
-   * @param {import('./view/view').default} view
-   */
   setContent(page: string, view: Layout) {
-    this.header.setSelectedItem(page);
-    this.main.setContent(view);
+    this.header?.setSelectedItem(page);
+    this.main?.setContent(view);
   }
 }

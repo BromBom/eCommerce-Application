@@ -1,5 +1,7 @@
 import Layout from '../../layout/layout';
 
+const TEXT_NOT_FOUND = 'Страница не найдена';
+
 export default class NotFound extends Layout {
   constructor() {
     const params = {
@@ -11,6 +13,6 @@ export default class NotFound extends Layout {
   }
 
   configureView() {
-    this.viewElementCreator.setTextContent('Страница не найдена');
+    this.viewElementCreator.setTextContent(TEXT_NOT_FOUND);
   }
 }

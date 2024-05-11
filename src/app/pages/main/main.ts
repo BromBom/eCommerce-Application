@@ -7,10 +7,13 @@ export default class Main extends Layout {
       classNames: ['main'],
     };
     super(params);
-    this.configureView();
   }
 
-  configureView() {
-    this.viewElementCreator.setTextContent('Главная страница');
+  setContent(content: Layout) {
+    const htmlElement = this.viewElementCreator.getElement();
+    while (htmlElement.firstElementChild) {
+      htmlElement.firstElementChild.remove();
+    }
+    this.viewElementCreator.addInnerElement(content.getHtmlElement());
   }
 }

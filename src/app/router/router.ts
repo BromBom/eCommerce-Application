@@ -19,10 +19,10 @@ export default class Router {
     });
   }
 
-  setHashHandler() {
-    this.handler.disable();
-    this.handler = new HashRouterHandler(this.urlChangedHandler.bind(this));
-  }
+  // setHashHandler() {
+  //   this.handler.disable();
+  //   this.handler = new HashRouterHandler(this.urlChangedHandler.bind(this));
+  // }
 
   /**
    * @param {string} url
@@ -31,25 +31,25 @@ export default class Router {
     this.handler.navigate(url);
   }
 
-  /**
-   * @param {import('./handler/history-router-handler.js').RequestParams} requestParams
-   */
-  urlChangedHandler(requestParams) {
-    const pathForFind = requestParams.resource === '' ? requestParams.path : `${requestParams.path}/${ID_SELECTOR}`;
-    const route = this.routes.find((item) => item.path === pathForFind);
+  // /**
+  //  * @param {import('./handler/history-router-handler.js').RequestParams} requestParams
+  //  */
+  // urlChangedHandler(requestParams) {
+  //   const pathForFind = requestParams.resource === '' ? requestParams.path : `${requestParams.path}/${ID_SELECTOR}`;
+  //   const route = this.routes.find((item) => item.path === pathForFind);
 
-    if (!route) {
-      this.redirectToNotFoundPage();
-      return;
-    }
+  //   if (!route) {
+  //     this.redirectToNotFoundPage();
+  //     return;
+  //   }
 
-    route.callback(requestParams.resource);
-  }
+  //   route.callback(requestParams.resource);
+  // }
 
-  redirectToNotFoundPage() {
-    const notFoundPage = this.routes.find((item) => item.path === Pages.NOT_FOUND);
-    if (notFoundPage) {
-      this.navigate(notFoundPage.path);
-    }
-  }
+  // redirectToNotFoundPage() {
+  //   const notFoundPage = this.routes.find((item) => item.path === Pages.NOT_FOUND);
+  //   if (notFoundPage) {
+  //     this.navigate(notFoundPage.path);
+  //   }
+  // }
 }
