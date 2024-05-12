@@ -1,12 +1,12 @@
-import Layout from '../../layout/layout';
+import Layout from '../../../layout/layout';
 
-const TEXT = 'Footer';
+const TEXT = 'INDEX PAGE';
 
-export default class Footer extends Layout {
+export default class Index extends Layout {
   constructor() {
     const params = {
       tag: 'section' as keyof HTMLElementTagNameMap,
-      classNames: ['footer'],
+      classNames: ['index'],
     };
     super(params);
     this.configureView();

@@ -1,14 +1,15 @@
-import { Params } from '../components/baseComponent/baseComponent';
-import BaseComponent from '../components/baseComponent/baseComponent';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import BaseComponent, { Params } from '../components/baseComponent/baseComponent';
 
-interface ViewParams {
+interface LayoutParams {
   tag: keyof HTMLElementTagNameMap;
   classNames: Array<string>;
 }
 
-export default abstract class Layout {
+export default class Layout {
   viewElementCreator: BaseComponent<HTMLElement>;
-  constructor(params: ViewParams = { tag: 'section', classNames: [] }) {
+
+  constructor(params: LayoutParams = { tag: 'section', classNames: [] }) {
     this.viewElementCreator = this.createView(params);
   }
 
@@ -16,7 +17,7 @@ export default abstract class Layout {
     return this.viewElementCreator.getElement();
   }
 
-  createView(params: ViewParams): BaseComponent<HTMLElement> {
+  createView(params: LayoutParams): BaseComponent<any> {
     const elementParams: Params = {
       tag: params.tag,
       classNames: params.classNames,

@@ -1,15 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Layout from '../../../layout/layout';
-import { Page } from '../../header/header';
 import './link.scss';
 
-interface LinkParams {
-  pageParam: Page;
-  linkElements: Map<string, Link>;
+export interface LinkParams {
+  pageParam: any;
+  linkElements: Map<string, string>;
 }
 
 export default class Link extends Layout {
   linkElements: any;
-  constructor(pageParam: Page, linkElements: LinkParams) {
+
+  constructor(
+    pageParam: { name: string; callback: () => void } = { name: '', callback: () => {} },
+    linkElements: Map<string, string> = new Map()
+  ) {
     const params = {
       tag: 'a' as keyof HTMLElementTagNameMap,
       classNames: ['nav-item'],
@@ -21,7 +25,7 @@ export default class Link extends Layout {
   }
 
   setSelectedStatus() {
-    this.linkElements.forEach((linkElement) => linkElement.setNotSelectedStatus());
+    this.linkElements.forEach((linkElement: any) => linkElement.setNotSelectedStatus());
 
     const element = this.viewElementCreator.getElement();
     element.classList.add('nav-item__selected');
@@ -34,9 +38,9 @@ export default class Link extends Layout {
     element.classList.remove('nav-item__selected');
   }
 
-  configureView(pageParam: Page) {
+  configureView(pageParam: { name: string; callback: () => void }) {
     this.viewElementCreator.setTextContent(pageParam.name);
-    this.viewElementCreator.addListener('click', (event: Event) => pageParam.callback());
+    this.viewElementCreator.setCallback(pageParam.callback);
 
     const element = this.viewElementCreator.getElement();
     element.addEventListener('click', this.setSelectedStatus.bind(this));

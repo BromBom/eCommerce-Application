@@ -13,7 +13,7 @@ $background-color: #ffffff;
 body {
   height: 100%;
   font-family: 'Courier New', Courier, monospace;
-  color: #ffffff;
+  color: $default-color;
   scroll-behavior: smooth;
   background-color: $background-color;
 

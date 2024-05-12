@@ -1,52 +1,35 @@
-// import Main from './pages/main/main';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Footer from './components/footer/footer';
 import Header from './components/header/header';
 import Layout from './layout/layout';
+import Index from './pages/main/index';
 import Main from './pages/main/main';
+import Products from './pages/main/products/products';
+import NotFound from './pages/not-found/not-found';
 import Registration from './pages/registration/registration';
 import { Pages } from './router/pages';
 import Router, { RouterParams } from './router/router';
 import State from './state/state';
 
-// export default class App {
-//   root: HTMLDivElement;
-
-//   Main: Main;
-
-//   mainPage: HTMLDivElement;
-
-//   constructor() {
-//     this.root = this.init();
-//     this.Main = new Main();
-//     this.mainPage = this.Main.getElement();
-//   }
-
-//   private init() {
-//     this.root = document.createElement('div');
-//     this.root.classList.add('root');
-//     return this.root;
-//   }
-
-//   render() {
-//     document.body.append(this.root);
-//     this.root.append(this.mainPage);
-//   }
-// }
-
 export default class App {
   header?: null | Header;
+
   main: null | Main;
+
   router: Router;
+
   constructor() {
     this.header = null;
+
     this.main = null;
 
     const state = new State();
 
     const routes = this.createRoutes(state);
+
     this.router = new Router(routes);
 
-    this.createView();
+    // this.createView();
   }
 
   createView() {
@@ -60,42 +43,33 @@ export default class App {
   createRoutes(state: State): RouterParams[] {
     return [
       {
-        path: ``,
+        path: '',
         callback: async () => {
-          this.header?.setSelectedItem(Pages.INDEX);
-          if (this.main) {
-            this.main.setContent(new Main());
-          }
+          // const { default: Index } = await import('./pages/main/index');
+          this.setContent(Pages.INDEX, new Index());
         },
       },
-      // {
-      //   path: ``,
-      //   callback: async () => {
-      //     const { default: Index } = await import('./pages/registration/registration');
-      //     this.setContent(Pages.INDEX, new IndexView(state));
-      //   },
-      // },
-      // {
-      //   path: `${Pages.INDEX}`,
-      //   callback: async () => {
-      //     const { default: IndexView } = await import('./pages/registration/registration');
-      //     this.setContent(Pages.INDEX, new IndexView(state));
-      //   },
-      // },
-      // {
-      //   path: `${Pages.PRODUCT}`,
-      //   callback: async () => {
-      //     const { default: ProductView } = await import('./pages/main/main');
-      //     this.setContent(Pages.PRODUCT, new ProductView(this.router));
-      //   },
-      // },
-      // {
-      //   path: `${Pages.NOT_FOUND}`,
-      //   callback: async () => {
-      //     const { default: NotFoundView } = await import('./pages/not-found/not-found');
-      //     this.setContent(Pages.NOT_FOUND, new NotFoundView());
-      //   },
-      // },
+      {
+        path: `${Pages.INDEX}`,
+        callback: async () => {
+          // const { default: Registration } = await import('./pages/registration/registration');
+          this.setContent(Pages.INDEX, new Registration(state));
+        },
+      },
+      {
+        path: `${Pages.PRODUCT}`,
+        callback: async () => {
+          // const { default: Products } = await import('./pages/main/products/products');
+          this.setContent(Pages.PRODUCT, new Products());
+        },
+      },
+      {
+        path: `${Pages.NOT_FOUND}`,
+        callback: async () => {
+          // const { default: NotFoundView } = await import('./pages/not-found/not-found');
+          this.setContent(Pages.NOT_FOUND, new NotFound());
+        },
+      },
     ];
   }
 

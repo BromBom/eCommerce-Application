@@ -4,4 +4,4 @@ import './style.scss';
 
 const app = new App();
 
-app.render();
+app.createView();

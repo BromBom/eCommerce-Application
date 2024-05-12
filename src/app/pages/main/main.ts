@@ -11,9 +11,13 @@ export default class Main extends Layout {
 
   setContent(content: Layout) {
     const htmlElement = this.viewElementCreator.getElement();
+
+    console.log({ htmlElement });
     while (htmlElement.firstElementChild) {
       htmlElement.firstElementChild.remove();
     }
+
+    console.log({ content });
     this.viewElementCreator.addInnerElement(content.getHtmlElement());
   }
 }

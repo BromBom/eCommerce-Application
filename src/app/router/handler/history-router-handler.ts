@@ -4,12 +4,17 @@ interface RequestParams {
 }
 
 export default class HistoryRouterHandler {
+  private history: string[] = [];
+
   params: {
     nameEvent: string;
     locationField: string;
   };
+
   callback: (params: RequestParams) => void;
+
   handler: (event: Event) => void;
+
   constructor(callback: (params: RequestParams) => void) {
     this.params = {
       nameEvent: 'popstate',
@@ -24,7 +29,7 @@ export default class HistoryRouterHandler {
     );
   }
 
-  navigate(event: Event) {
+  navigate(event: Event | null) {
     if (event instanceof PopStateEvent) {
       const url = event.state as string;
       this.setHistory(url);
@@ -44,6 +49,11 @@ export default class HistoryRouterHandler {
   }
 
   setHistory(url: string) {
+    this.history.push(url);
     window.history.pushState(null, '', `/${url}`);
+  }
+
+  getHistory() {
+    return this.history;
   }
 }

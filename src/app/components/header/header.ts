@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import './header.scss';
 import BaseComponent from '../baseComponent/baseComponent';
 import LinkView from '../controls/link/link';
 import { Pages } from '../../router/pages';
@@ -11,7 +13,7 @@ const NamePages = {
 
 export interface Page {
   name: string;
-  callback: () => void;
+  callback: (() => void) | null;
 }
 
 export default class Header extends Layout {
@@ -32,15 +34,15 @@ export default class Header extends Layout {
     const navParams = {
       tag: 'nav' as keyof HTMLElementTagNameMap,
       classNames: ['nav'],
-      textContent: '',
-      callback: null,
+      text: '',
+      callback: () => {},
     };
 
     // создаем объект навигаци
     const creatorNav = new BaseComponent(navParams);
     this.viewElementCreator.addInnerElement(creatorNav);
 
-    Object.keys(NamePages).forEach((key) => {
+    Object.keys(NamePages).forEach((key: any) => {
       const pageParams = {
         name: NamePages[key],
         callback: () => router.navigate(Pages[key]),

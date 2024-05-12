@@ -1,50 +1,53 @@
-import { OptionsListener } from '../../types/types';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export interface Params {
   tag: keyof HTMLElementTagNameMap;
   classNames: string[];
   text?: string | undefined;
-  callback: Function | null;
+  callback: (event: any) => void | null;
 }
 
 export default class BaseComponent<T extends HTMLElement> {
-  readonly element: T;
+  element: T | null;
 
-  constructor(
-    // public tag: keyof HTMLElementTagNameMap = 'div',
-    // public className: string[] = [],
-    // public text = ''
-    params: Params
-  ) {
-    this.element = this.init(params) as T;
+  constructor(params: Params) {
+    this.element = null;
+    this.createElement(params);
   }
 
-  init(params: Params) {
-    const element = document.createElement(params.tag);
-    element.classList.add(...params.classNames);
-    element.innerHTML = params.text || '';
-    return element;
-  }
-
+  /**
+   * @returns {HTMLElement}
+   */
   getElement() {
     return this.element;
   }
 
-  addListener(eventType: string, callback: (event: Event) => void, options?: OptionsListener) {
-    if (typeof callback === 'function') {
-      this.element.addEventListener(eventType, callback, options);
+  addInnerElement(element) {
+    if (element instanceof BaseComponent) {
+      this.element.append(element.getElement());
+    } else {
+      this.element.append(element);
     }
+  }
+
+  createElement(params) {
+    this.element = document.createElement(params.tag);
+    this.setCssClasses(params.classNames);
+    this.setTextContent(params.textContent);
+    this.setCallback(params.callback);
+  }
+
+  setCssClasses(cssClasses = []) {
+    cssClasses.map((cssClass) => this.element.classList.add(cssClass));
   }
 
   setTextContent(text = '') {
     this.element.textContent = text;
   }
 
-  addInnerElement(element: HTMLElement | BaseComponent<T>) {
-    if (element instanceof BaseComponent) {
-      this.element.append(element.getElement());
-    } else {
-      this.element.append(element);
+  setCallback(callback) {
+    if (typeof callback === 'function') {
+      this.element.addEventListener('click', (event) => callback(event));
     }
   }
 }
