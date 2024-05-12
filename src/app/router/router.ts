@@ -28,6 +28,7 @@ export default class Router {
   }
 
   navigate(url: any) {
+    console.log('clicked');
     this.handler.navigate(url);
   }
 

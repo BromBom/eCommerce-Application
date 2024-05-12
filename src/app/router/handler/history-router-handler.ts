@@ -29,17 +29,22 @@ export default class HistoryRouterHandler {
     );
   }
 
-  navigate(event: Event | null) {
-    if (event instanceof PopStateEvent) {
-      const url = event.state as string;
+  navigate(url) {
+    console.log(url);
+    if (typeof url === 'string') {
       this.setHistory(url);
     }
 
-    const urlString = String(window.location[this.params.locationField as keyof Location]).slice(1);
+    const urlString = window.location[this.params.locationField].slice(1);
 
-    const result: RequestParams = { path: '', resource: '' };
+    const result: RequestParams = {
+      path: '',
+      resource: '',
+    };
     const path = urlString.split('/');
     [result.path = '', result.resource = ''] = path;
+
+    console.log({ result });
 
     this.callback(result);
   }

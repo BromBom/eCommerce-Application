@@ -35,7 +35,9 @@ export default class Input extends BaseComponent<HTMLDivElement> {
   }
 
   setTextContent(text: string = '') {
-    this.labelElement.textContent = text;
+    if (this.labelElement) {
+      this.labelElement.textContent = text;
+    }
   }
 
   setCallback(callback: ((event: Event) => void) | null = null) {

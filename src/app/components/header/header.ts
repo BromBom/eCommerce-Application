@@ -35,7 +35,7 @@ export default class Header extends Layout {
       tag: 'nav' as keyof HTMLElementTagNameMap,
       classNames: ['nav'],
       text: '',
-      callback: () => {},
+      callback: null,
     };
 
     // создаем объект навигаци
@@ -50,8 +50,8 @@ export default class Header extends Layout {
 
       // создаем объект ссылки и добавляем в объект навигаци
       const linkElement = new LinkView(pageParams, this.headerLinkElements);
-
       creatorNav.addInnerElement(linkElement.getHtmlElement());
+
       this.headerLinkElements.set(Pages[key].toUpperCase(), linkElement);
     });
 
