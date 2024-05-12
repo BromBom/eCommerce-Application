@@ -30,7 +30,6 @@ export default class HistoryRouterHandler {
   }
 
   navigate(url) {
-    console.log(url);
     if (typeof url === 'string') {
       this.setHistory(url);
     }
@@ -56,9 +55,5 @@ export default class HistoryRouterHandler {
   setHistory(url: string) {
     this.history.push(url);
     window.history.pushState(null, '', `/${url}`);
-  }
-
-  getHistory() {
-    return this.history;
   }
 }

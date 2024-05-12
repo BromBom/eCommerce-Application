@@ -1,5 +1,13 @@
+// const Pages = {
+//   INDEX: 'index',
+//   PRODUCT: 'product',
+//   NOT_FOUND: 'not-found',
+// };
+
 const Pages = {
   INDEX: 'index',
+  REGISTRATION: 'registration',
+  LOGIN: 'login',
   PRODUCT: 'product',
   NOT_FOUND: 'not-found',
 };

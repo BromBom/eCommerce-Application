@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import HashRouterHandler from './handler/hash/hash-router-handler';
+
 import HistoryRouterHandler from './handler/history-router-handler';
 import { Pages, ID_SELECTOR } from './pages';
 
@@ -15,7 +15,7 @@ export interface RouterParams {
 export default class Router {
   routes: RouterParams[];
 
-  handler: HistoryRouterHandler | HashRouterHandler;
+  handler: HistoryRouterHandler;
 
   constructor(routes: RouterParams[]) {
     this.routes = routes;
@@ -28,7 +28,6 @@ export default class Router {
   }
 
   navigate(url: any) {
-    console.log('clicked');
     this.handler.navigate(url);
   }
 

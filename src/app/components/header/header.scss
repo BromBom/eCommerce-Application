@@ -7,6 +7,10 @@
   -moz-box-shadow: 0 4px 6px -6px #222;
   box-shadow: 0 4px 6px -6px #222;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
 }
 
 .nav {
@@ -41,4 +45,26 @@
 
 .nav-item__selected {
   border-bottom: 1px solid;
+}
+
+img {
+  border: 0;
+  border: none;
+  border-width: 0;
+  border-style: none;
+  border-color: transparent;
+}
+
+.logo {
+  height: 50px;
+  width: 50px;
+  margin-right: 20px;
+  background-image: url('../../../assets/img/store-icon.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  border: none;
+  border-width: 0;
+  border-style: none;
+  border-color: transparent;
 }

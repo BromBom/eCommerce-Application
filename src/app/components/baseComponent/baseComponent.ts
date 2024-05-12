@@ -24,9 +24,9 @@ export default class BaseComponent<T extends HTMLElement> {
 
   addInnerElement(element) {
     if (element instanceof BaseComponent) {
-      this.element.append(element.getElement());
+      this.element?.append(element.getElement());
     } else {
-      this.element.append(element);
+      this.element?.append(element);
     }
   }
 
@@ -38,15 +38,17 @@ export default class BaseComponent<T extends HTMLElement> {
   }
 
   setCssClasses(cssClasses = []) {
-    cssClasses.map((cssClass) => this.element.classList.add(cssClass));
+    cssClasses.map((cssClass) => this.element?.classList.add(cssClass));
   }
 
   setTextContent(text = '') {
-    this.element.textContent = text;
+    if (this.element) {
+      this.element.textContent = text;
+    }
   }
 
   setCallback(callback) {
-    if (typeof callback === 'function') {
+    if (typeof callback === 'function' && this.element) {
       this.element.addEventListener('click', (event) => callback(event));
     }
   }

@@ -7,8 +7,9 @@ import Router from '../../router/router';
 import Layout from '../../layout/layout';
 
 const NamePages = {
-  INDEX: 'Главная',
-  PRODUCT: 'Карточки',
+  INDEX: 'Регистрация',
+  LOGIN: 'Авторизация',
+  PRODUCT: 'Товары',
 };
 
 export interface Page {
@@ -31,6 +32,16 @@ export default class Header extends Layout {
   }
 
   configureView(router: Router) {
+    const logoParams = {
+      tag: 'img' as keyof HTMLElementTagNameMap,
+      classNames: ['logo'],
+      text: '',
+      callback: () => router.navigate(Pages.INDEX),
+    };
+
+    const logoCreator = new BaseComponent(logoParams);
+    this.viewElementCreator.addInnerElement(logoCreator);
+
     const navParams = {
       tag: 'nav' as keyof HTMLElementTagNameMap,
       classNames: ['nav'],

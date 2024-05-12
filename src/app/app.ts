@@ -55,6 +55,13 @@ export default class App {
         },
       },
       {
+        path: `${Pages.LOGIN}`,
+        callback: async () => {
+          // const { default: Registration } = await import('./pages/registration/registration');
+          this.setContent(Pages.LOGIN, new Registration(state));
+        },
+      },
+      {
         path: `${Pages.PRODUCT}`,
         callback: async () => {
           // const { default: Products } = await import('./pages/main/products/products');

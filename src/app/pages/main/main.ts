@@ -12,7 +12,7 @@ export default class Main extends Layout {
   setContent(content: Layout) {
     const htmlElement = this.viewElementCreator.getElement();
 
-    while (htmlElement.firstElementChild) {
+    while (htmlElement?.firstElementChild) {
       htmlElement.firstElementChild.remove();
     }
 
