@@ -47,6 +47,15 @@ export default class RegProfile {
     const regProfile = document.createElement('fieldset');
     const legend = this.legend.getElement();
 
+    this.inputEmail.addListener('input', () =>
+      checkInputValue(
+        this.inputEmail.getElement(),
+        this.massageErrorEmail.getElement(),
+        1,
+        '[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\\.[a-z]{2,}$',
+        'example@email.com'
+      )
+    );
     const labelEmail = creatInputWithLabel(this.inputEmail.getElement(), 'Email:', 'example@email.com', 'email');
     const msgErrEmail = this.massageErrorEmail.getElement();
 
@@ -55,7 +64,7 @@ export default class RegProfile {
         this.inputPassword.getElement(),
         this.massageErrorPassword.getElement(),
         1,
-        '[a-z+A-Z+0-9+]{8,}',
+        '(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}',
         'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number'
       )
     );
@@ -105,6 +114,11 @@ export default class RegProfile {
       labelDate,
       msgErrDate
     );
+
+    const arrInputElements = [...regProfile.elements];
+    arrInputElements.forEach((element) => {
+      element.setAttribute('required', 'required');
+    });
 
     return regProfile;
   }

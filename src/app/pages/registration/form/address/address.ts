@@ -12,6 +12,10 @@ export default class RegAddress {
 
   massageErrorStreet: BaseComponent<HTMLParagraphElement>;
 
+  inputStreetNumber: BaseComponent<HTMLInputElement>;
+
+  massageErrorStreetNumber: BaseComponent<HTMLParagraphElement>;
+
   inputCity: BaseComponent<HTMLInputElement>;
 
   massageErrorCity: BaseComponent<HTMLParagraphElement>;
@@ -28,6 +32,8 @@ export default class RegAddress {
     this.legend = new BaseComponent<HTMLLegendElement>('legend', ['massage-error'], 'Address');
     this.inputStreet = Input(['registration__input-street']);
     this.massageErrorStreet = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.inputStreetNumber = Input(['registration__input-street-number']);
+    this.massageErrorStreetNumber = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputCity = Input(['registration__input-password']);
     this.massageErrorCity = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputPostalCode = Input(['registration__input-name']);
@@ -50,16 +56,33 @@ export default class RegAddress {
         'Must contain at least one character'
       )
     );
-    const labelStreet = creatInputWithLabel(this.inputStreet.getElement(), 'Street:', '4 Washington Pl,', 'text');
+    const labelStreet = creatInputWithLabel(this.inputStreet.getElement(), 'Street:', 'Washington Pl,', 'text');
     const msgErrStreet = this.massageErrorStreet.getElement();
+
+    this.inputStreetNumber.addListener('input', () =>
+      checkInputValue(
+        this.inputStreet.getElement(),
+        this.massageErrorStreet.getElement(),
+        1,
+        '[a-zA-Z0-9\\s\\-]{2,}',
+        'Must contain at least one character'
+      )
+    );
+    const labelStreetNumber = creatInputWithLabel(
+      this.inputStreetNumber.getElement(),
+      'Street number:',
+      '25/2a',
+      'text'
+    );
+    const msgErrStreetNumber = this.massageErrorStreetNumber.getElement();
 
     this.inputCity.addListener('input', () =>
       checkInputValue(
         this.inputCity.getElement(),
         this.massageErrorCity.getElement(),
         1,
-        '[a-zA-Z]{2,}',
-        'Must contain at least one character and no special characters or numbers'
+        '.{1,}',
+        'Must contain at least one character'
       )
     );
     const labelCity = creatInputWithLabel(this.inputCity.getElement(), 'City:', 'New York', 'text');
@@ -99,6 +122,8 @@ export default class RegAddress {
       legend,
       labelStreet,
       msgErrStreet,
+      labelStreetNumber,
+      msgErrStreetNumber,
       labelCity,
       msgErrCity,
       labelPostalCode,
@@ -106,6 +131,11 @@ export default class RegAddress {
       labelCountry,
       msgErrCountry
     );
+
+    const arrInputElements = [...regAddress.elements];
+    arrInputElements.forEach((element) => {
+      element.setAttribute('required', 'required');
+    });
 
     return regAddress;
   }
