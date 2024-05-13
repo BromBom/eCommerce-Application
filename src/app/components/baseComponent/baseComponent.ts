@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export interface Params {
   tag: keyof HTMLElementTagNameMap;
   classNames: string[];
-  text?: string | undefined;
-  callback: (event: any) => void | null;
+  text?: string;
+  callback: (event: MouseEvent | KeyboardEvent) => void | null;
 }
 
 export default class BaseComponent<T extends HTMLElement> {
@@ -15,29 +13,25 @@ export default class BaseComponent<T extends HTMLElement> {
     this.createElement(params);
   }
 
-  /**
-   * @returns {HTMLElement}
-   */
-  getElement() {
+  getElement(): T | null {
     return this.element;
   }
 
-  addInnerElement(element) {
-    if (element instanceof BaseComponent) {
-      this.element?.append(element.getElement());
-    } else {
-      this.element?.append(element);
+  addInnerElement(element: BaseComponent<T> | HTMLElement) {
+    const elementToAppend = element instanceof BaseComponent ? element.getElement() : element;
+    if (elementToAppend !== null) {
+      this.element?.append(elementToAppend);
     }
   }
 
-  createElement(params) {
-    this.element = document.createElement(params.tag);
+  createElement(params: Params) {
+    this.element = document.createElement(params.tag) as T;
     this.setCssClasses(params.classNames);
-    this.setTextContent(params.textContent);
+    this.setTextContent(params.text);
     this.setCallback(params.callback);
   }
 
-  setCssClasses(cssClasses = []) {
+  setCssClasses(cssClasses: string[] = []) {
     cssClasses.map((cssClass) => this.element?.classList.add(cssClass));
   }
 
@@ -47,7 +41,7 @@ export default class BaseComponent<T extends HTMLElement> {
     }
   }
 
-  setCallback(callback) {
+  setCallback(callback: (event: MouseEvent) => void) {
     if (typeof callback === 'function' && this.element) {
       this.element.addEventListener('click', (event) => callback(event));
     }

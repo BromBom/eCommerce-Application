@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 import Layout from '../../../layout/layout';
 import './link.scss';
 
 export interface LinkParams {
-  pageParam: any;
+  pageParam: { name: string; callback: () => void };
   linkElements: Map<string, string>;
 }
 
 export default class Link extends Layout {
-  linkElements: any;
+  linkElements: Map<string, string>;
 
   constructor(
     pageParam: { name: string; callback: () => void } = { name: '', callback: () => {} },
@@ -32,9 +32,7 @@ export default class Link extends Layout {
   }
 
   setNotSelectedStatus() {
-    // получим элемент
     const element = this.viewElementCreator.getElement();
-    // добавим стили
     element?.classList.remove('nav-item__selected');
   }
 

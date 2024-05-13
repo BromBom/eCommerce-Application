@@ -21,7 +21,7 @@ export default class Input extends BaseComponent<HTMLDivElement> {
     params.classNames.forEach((name) => {
       this.element?.classList.add(name);
     });
-    this.setCallback(params.callback);
+    this.setCallback(params.callback );
 
     this.inputElement = document.createElement('input');
 
