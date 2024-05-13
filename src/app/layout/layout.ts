@@ -14,7 +14,11 @@ export default class Layout {
   }
 
   getHtmlElement(): HTMLElement {
-    return this.viewElementCreator.getElement();
+    const element = this.viewElementCreator.getElement();
+    if (element === null) {
+      return document.createElement('div');
+    }
+    return element;
   }
 
   createView(params: LayoutParams): BaseComponent<any> {
@@ -22,7 +26,7 @@ export default class Layout {
       tag: params.tag,
       classNames: params.classNames,
       text: '',
-      callback: null,
+      callback: () => null,
     };
     this.viewElementCreator = new BaseComponent(elementParams);
 

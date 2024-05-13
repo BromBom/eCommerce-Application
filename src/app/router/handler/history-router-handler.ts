@@ -43,8 +43,6 @@ export default class HistoryRouterHandler {
     const path = urlString.split('/');
     [result.path = '', result.resource = ''] = path;
 
-    console.log({ result });
-
     this.callback(result);
   }
 

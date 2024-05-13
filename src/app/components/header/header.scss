@@ -6,6 +6,7 @@
   -webkit-box-shadow: 0 4px 6px -6px #222;
   -moz-box-shadow: 0 4px 6px -6px #222;
   box-shadow: 0 4px 6px -6px #222;
+  background-color: rgb(248, 247, 247);
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -48,17 +49,13 @@
 }
 
 img {
-  border: 0;
-  border: none;
-  border-width: 0;
-  border-style: none;
-  border-color: transparent;
+  border-style: none !important;
+  outline: none;
 }
 
 .logo {
   height: 50px;
   width: 50px;
-  margin-right: 20px;
   background-image: url('../../../assets/img/store-icon.png');
   background-size: contain;
   background-repeat: no-repeat;

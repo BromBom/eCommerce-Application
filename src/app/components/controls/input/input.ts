@@ -19,7 +19,7 @@ export default class Input extends BaseComponent<HTMLDivElement> {
     this.element.classList.add('field__container');
 
     params.classNames.forEach((name) => {
-      this.element.classList.add(name);
+      this.element?.classList.add(name);
     });
     this.setCallback(params.callback);
 
@@ -41,6 +41,6 @@ export default class Input extends BaseComponent<HTMLDivElement> {
   }
 
   setCallback(callback: ((event: Event) => void) | null = null) {
-    this.element.addEventListener('keyup', (event) => callback?.(event));
+    this.element?.addEventListener('keyup', (event) => callback?.(event));
   }
 }

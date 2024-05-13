@@ -28,14 +28,14 @@ export default class Link extends Layout {
     this.linkElements.forEach((linkElement: any) => linkElement.setNotSelectedStatus());
 
     const element = this.viewElementCreator.getElement();
-    element.classList.add('nav-item__selected');
+    element?.classList.add('nav-item__selected');
   }
 
   setNotSelectedStatus() {
     // получим элемент
     const element = this.viewElementCreator.getElement();
     // добавим стили
-    element.classList.remove('nav-item__selected');
+    element?.classList.remove('nav-item__selected');
   }
 
   configureView(pageParam: { name: string; callback: () => void }) {
@@ -43,6 +43,6 @@ export default class Link extends Layout {
     this.viewElementCreator.setCallback(pageParam.callback);
 
     const element = this.viewElementCreator.getElement();
-    element.addEventListener('click', this.setSelectedStatus.bind(this));
+    element?.addEventListener('click', this.setSelectedStatus.bind(this));
   }
 }

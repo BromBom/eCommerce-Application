@@ -7,9 +7,10 @@ import Router from '../../router/router';
 import Layout from '../../layout/layout';
 
 const NamePages = {
-  INDEX: 'Регистрация',
+  // INDEX: 'Товары',
   LOGIN: 'Авторизация',
-  PRODUCT: 'Товары',
+  REGISTRATION: 'Регистрация',
+  // PRODUCT: 'Товары',
 };
 
 export interface Page {
@@ -36,7 +37,10 @@ export default class Header extends Layout {
       tag: 'img' as keyof HTMLElementTagNameMap,
       classNames: ['logo'],
       text: '',
-      callback: () => router.navigate(Pages.INDEX),
+      callback: () => {
+        router.navigate(Pages.INDEX);
+        this.clearSelectedItems();
+      },
     };
 
     const logoCreator = new BaseComponent(logoParams);
@@ -46,7 +50,7 @@ export default class Header extends Layout {
       tag: 'nav' as keyof HTMLElementTagNameMap,
       classNames: ['nav'],
       text: '',
-      callback: null,
+      callback: () => null,
     };
 
     // создаем объект навигаци
@@ -75,5 +79,11 @@ export default class Header extends Layout {
     if (linkItem instanceof LinkView) {
       linkItem.setSelectedStatus();
     }
+  }
+
+  clearSelectedItems() {
+    this.headerLinkElements.forEach((linkElement: LinkView) => {
+      linkElement.setNotSelectedStatus();
+    });
   }
 }

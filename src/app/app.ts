@@ -2,7 +2,7 @@
 import Footer from './components/footer/footer';
 import Header from './components/header/header';
 import Layout from './layout/layout';
-import Index from './pages/main/index';
+// import Index from './pages/main/index';
 import Main from './pages/main/main';
 import Products from './pages/main/products/products';
 import NotFound from './pages/not-found/not-found';
@@ -44,14 +44,14 @@ export default class App {
         path: '',
         callback: async () => {
           // const { default: Index } = await import('./pages/main/index');
-          this.setContent(Pages.INDEX, new Index());
+          this.setContent(Pages.INDEX, new Products());
         },
       },
       {
         path: `${Pages.INDEX}`,
         callback: async () => {
           // const { default: Registration } = await import('./pages/registration/registration');
-          this.setContent(Pages.INDEX, new Registration(state));
+          this.setContent(Pages.INDEX, new Products());
         },
       },
       {
@@ -62,10 +62,10 @@ export default class App {
         },
       },
       {
-        path: `${Pages.PRODUCT}`,
+        path: `${Pages.REGISTRATION}`,
         callback: async () => {
           // const { default: Products } = await import('./pages/main/products/products');
-          this.setContent(Pages.PRODUCT, new Products());
+          this.setContent(Pages.PRODUCT, new Registration(state));
         },
       },
       {
