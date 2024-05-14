@@ -29,12 +29,16 @@ export default class HistoryRouterHandler {
     );
   }
 
-  navigate(url) {
+  navigate(url: Event | null) {
+    if (url === null) {
+      return;
+    }
+
     if (typeof url === 'string') {
       this.setHistory(url);
     }
 
-    const urlString = window.location[this.params.locationField].slice(1);
+    const urlString = ((window.location as Location)[this.params.locationField as keyof Location] as string).slice(1);
 
     const result: RequestParams = {
       path: '',

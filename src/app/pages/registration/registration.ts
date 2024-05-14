@@ -43,7 +43,7 @@ export default class Registration extends Layout {
     this.viewElementCreator.addInnerElement(creatorInput);
   }
 
-  keyupHandler(event: KeyboardEvent, fieldName: string) {
+  keyupHandler(event: MouseEvent, fieldName: string) {
     if (event.target instanceof HTMLInputElement) {
       this.state.setField(fieldName, event.target.value);
     }

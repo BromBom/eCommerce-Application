@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import './header.scss';
 import BaseComponent from '../baseComponent/baseComponent';
 import LinkView from '../controls/link/link';
@@ -6,11 +5,9 @@ import { Pages } from '../../router/pages';
 import Router from '../../router/router';
 import Layout from '../../layout/layout';
 
-const NamePages = {
-  // INDEX: 'Товары',
+const NamePages: { [key: string]: string } = {
   LOGIN: 'Авторизация',
   REGISTRATION: 'Регистрация',
-  // PRODUCT: 'Товары',
 };
 
 export interface Page {
@@ -19,7 +16,7 @@ export interface Page {
 }
 
 export default class Header extends Layout {
-  headerLinkElements: any;
+  headerLinkElements;
 
   constructor(router: Router) {
     const params = {
@@ -27,7 +24,7 @@ export default class Header extends Layout {
       classNames: ['header'],
     };
     super(params);
-    // сохраним линки в Map, чтобы линки знали о состоянии друг друга
+
     this.headerLinkElements = new Map();
     this.configureView(router);
   }
@@ -39,7 +36,7 @@ export default class Header extends Layout {
       text: '',
       callback: () => {
         router.navigate(Pages.INDEX);
-        this.clearSelectedItems();
+        // this.clearSelectedItems();
       },
     };
 
@@ -53,17 +50,15 @@ export default class Header extends Layout {
       callback: () => null,
     };
 
-    // создаем объект навигаци
     const creatorNav = new BaseComponent(navParams);
     this.viewElementCreator.addInnerElement(creatorNav);
 
-    Object.keys(NamePages).forEach((key: any) => {
+    Object.keys(NamePages).forEach((key: string) => {
       const pageParams = {
         name: NamePages[key],
         callback: () => router.navigate(Pages[key]),
       };
 
-      // создаем объект ссылки и добавляем в объект навигаци
       const linkElement = new LinkView(pageParams, this.headerLinkElements);
       creatorNav.addInnerElement(linkElement.getHtmlElement());
 
@@ -73,16 +68,15 @@ export default class Header extends Layout {
     this.viewElementCreator.addInnerElement(creatorNav);
   }
 
-  // метод для выделения активной ссылки
   setSelectedItem(namePage: string) {
-    const linkItem = this.headerLinkElements.get(namePage.toUpperCase());
+    const linkItem: unknown = this.headerLinkElements.get(namePage.toUpperCase());
     if (linkItem instanceof LinkView) {
       linkItem.setSelectedStatus();
     }
   }
 
   clearSelectedItems() {
-    this.headerLinkElements.forEach((linkElement: LinkView) => {
+    this.headerLinkElements.forEach((linkElement) => {
       linkElement.setNotSelectedStatus();
     });
   }

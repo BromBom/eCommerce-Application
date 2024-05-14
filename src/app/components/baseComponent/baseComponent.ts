@@ -2,7 +2,7 @@ export interface Params {
   tag: keyof HTMLElementTagNameMap;
   classNames: string[];
   text?: string;
-  callback: (event: MouseEvent | KeyboardEvent) => void | null;
+  callback: (event: MouseEvent) => void | null;
 }
 
 export default class BaseComponent<T extends HTMLElement> {

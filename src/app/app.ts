@@ -43,35 +43,30 @@ export default class App {
       {
         path: '',
         callback: async () => {
-          // const { default: Index } = await import('./pages/main/index');
           this.setContent(Pages.INDEX, new Products());
         },
       },
       {
         path: `${Pages.INDEX}`,
         callback: async () => {
-          // const { default: Registration } = await import('./pages/registration/registration');
           this.setContent(Pages.INDEX, new Products());
         },
       },
       {
         path: `${Pages.LOGIN}`,
         callback: async () => {
-          // const { default: Registration } = await import('./pages/registration/registration');
           this.setContent(Pages.LOGIN, new Registration(state));
         },
       },
       {
         path: `${Pages.REGISTRATION}`,
         callback: async () => {
-          // const { default: Products } = await import('./pages/main/products/products');
           this.setContent(Pages.PRODUCT, new Registration(state));
         },
       },
       {
         path: `${Pages.NOT_FOUND}`,
         callback: async () => {
-          // const { default: NotFoundView } = await import('./pages/not-found/not-found');
           this.setContent(Pages.NOT_FOUND, new NotFound());
         },
       },
@@ -79,6 +74,7 @@ export default class App {
   }
 
   setContent(page: string, view: Layout) {
+    console.log(page, view);
     this.header?.setSelectedItem(page);
     this.main?.setContent(view);
   }

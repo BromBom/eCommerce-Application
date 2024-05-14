@@ -21,7 +21,7 @@ export default class Input extends BaseComponent<HTMLDivElement> {
     params.classNames.forEach((name) => {
       this.element?.classList.add(name);
     });
-    this.setCallback(params.callback );
+    this.setCallback(params.callback);
 
     this.inputElement = document.createElement('input');
 
@@ -40,7 +40,7 @@ export default class Input extends BaseComponent<HTMLDivElement> {
     }
   }
 
-  setCallback(callback: ((event: Event) => void) | null = null) {
-    this.element?.addEventListener('keyup', (event) => callback?.(event));
+  setCallback(callback: (event: MouseEvent) => void) {
+    this.element?.addEventListener('click', (event) => callback?.(event));
   }
 }
