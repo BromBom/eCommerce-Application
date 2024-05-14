@@ -1,5 +1,6 @@
 import BaseComponent from '../../../../components/baseComponent';
 import Input from '../../../../components/controls/input';
+// import Button from '../../../../components/controls/button';
 import creatInputWithLabel from '../../../../utils/creatInputWithLabel';
 import checkInputValue from '../../../../utils/checkInputValue';
 
@@ -29,7 +30,7 @@ export default class RegAddress {
   massageErrorCountry: BaseComponent<HTMLParagraphElement>;
 
   constructor() {
-    this.legend = new BaseComponent<HTMLLegendElement>('legend', ['massage-error'], 'Address');
+    this.legend = new BaseComponent<HTMLLegendElement>('legend', ['registration__legend'], 'Billing address');
     this.inputStreet = Input(['registration__input-street']);
     this.massageErrorStreet = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputStreetNumber = Input(['registration__input-street-number']);
@@ -52,11 +53,11 @@ export default class RegAddress {
         this.inputStreet.getElement(),
         this.massageErrorStreet.getElement(),
         1,
-        '[a-zA-Z0-9\\s\\-]{2,}',
+        '[a-zA-Z0-9\\s\\-\\,]{2,}',
         'Must contain at least one character'
       )
     );
-    const labelStreet = creatInputWithLabel(this.inputStreet.getElement(), 'Street:', 'Washington Pl,', 'text');
+    const labelStreet = creatInputWithLabel(this.inputStreet.getElement(), 'Street:', 'Washington Pl, 36', 'text');
     const msgErrStreet = this.massageErrorStreet.getElement();
 
     this.inputStreetNumber.addListener('input', () =>
@@ -64,13 +65,13 @@ export default class RegAddress {
         this.inputStreet.getElement(),
         this.massageErrorStreet.getElement(),
         1,
-        '[a-zA-Z0-9\\s\\-]{2,}',
+        '.{2,}',
         'Must contain at least one character'
       )
     );
     const labelStreetNumber = creatInputWithLabel(
       this.inputStreetNumber.getElement(),
-      'Street number:',
+      'Apartment/Suite:',
       '25/2a',
       'text'
     );
@@ -81,7 +82,7 @@ export default class RegAddress {
         this.inputCity.getElement(),
         this.massageErrorCity.getElement(),
         1,
-        '.{1,}',
+        '[a-zA-Z0-9\\s\\-]{2,}',
         'Must contain at least one character'
       )
     );

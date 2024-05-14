@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scrollbar-width: 0px; // для Firefox
 }
 
 body {
@@ -10,4 +11,8 @@ body {
   color: #ffffff;
   background-color: #535461;
   scroll-behavior: smooth;
+}
+
+*::-webkit-scrollbar { //для Chrome, Edge и Safari
+  width: 0px;
 }
