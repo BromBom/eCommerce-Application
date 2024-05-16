@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import BaseComponent, { Params } from '../components/baseComponent/baseComponent';
 
 interface LayoutParams {
@@ -21,7 +20,7 @@ export default class Layout {
     return element;
   }
 
-  createView(params: LayoutParams): BaseComponent<any> {
+  createView(params: LayoutParams): BaseComponent<HTMLElement> {
     const elementParams: Params = {
       tag: params.tag,
       classNames: params.classNames,

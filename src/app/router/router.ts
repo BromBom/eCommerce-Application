@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import HistoryRouterHandler from './handler/history-router-handler';
 import { Pages, ID_SELECTOR } from './pages';
 

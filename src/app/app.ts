@@ -1,10 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Footer from './components/footer/footer';
 import Header from './components/header/header';
 import Layout from './layout/layout';
-// import Index from './pages/main/index';
 import Main from './pages/main/main';
-// import Products from './pages/main/products/products';
 import NotFound from './pages/not-found/not-found';
 import Registration from './pages/registration/registration';
 import { Pages } from './router/pages';
