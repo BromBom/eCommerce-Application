@@ -1,5 +1,4 @@
 import BaseComponent from '../../components/baseComponent';
-import RegNavigation from './nav/navigation';
 import RegForm from './form/form';
 
 import './registration.scss';
@@ -7,14 +6,11 @@ import './registration.scss';
 export default class Registration {
   element: HTMLDivElement;
 
-  nav: RegNavigation;
-
   title: BaseComponent<HTMLHeadingElement>;
 
   form: RegForm;
 
   constructor() {
-    this.nav = new RegNavigation();
     this.title = new BaseComponent<HTMLHeadingElement>('h2', ['registration__title'], 'Create account');
     this.form = new RegForm();
     this.element = this.init();
@@ -22,12 +18,11 @@ export default class Registration {
 
   private init() {
     const registrationPage = document.createElement('div');
-    const nav = this.nav.getElement();
     const title = this.title.getElement();
     const form = this.form.getElement();
 
     registrationPage.classList.add('registration__page');
-    registrationPage.append(nav, title, form);
+    registrationPage.append(title, form);
 
     return registrationPage;
   }

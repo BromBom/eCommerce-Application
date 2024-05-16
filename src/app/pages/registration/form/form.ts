@@ -2,6 +2,7 @@ import BaseComponent from '../../../components/baseComponent';
 import RegProfile from './profile/profile';
 import RegAddress from './address/address';
 import Button from '../../../components/controls/button';
+import creatCustomer from '../../../../api/creatCustomer';
 
 import './form.scss';
 
@@ -35,9 +36,11 @@ export default class RegForm {
     const profile = this.profile.getElement();
     const address = this.address.getElement();
     const buttonAddNewAddress = this.buttonAddNewAddress.getElement();
+    buttonAddNewAddress.setAttribute('type', 'button');
     const addAddress = this.addAddress.getElement();
     this.addAddress.legend.getElement().textContent = 'Shipping address';
     const buttonCancelNewAddress = this.buttonCancelNewAddress.getElement();
+    buttonCancelNewAddress.setAttribute('type', 'button');
     const buttonSubmit = this.buttonSubmit.getElement();
     buttonSubmit.disabled = true;
     regForm.classList.add('registration__form');
@@ -46,14 +49,16 @@ export default class RegForm {
     const checkButtonSubmit = (arrayInputs: Element[]) => {
       buttonSubmit.disabled = arrayInputs.some((el) => !(el as HTMLInputElement).checkValidity());
     };
+
     const arrFormInputElements = [...profile.elements, ...address.elements];
+    const arrFormInputElementsWithAddAddress = [...arrFormInputElements, ...addAddress.elements];
+
     arrFormInputElements.forEach((input) => {
       input.addEventListener('input', () => checkButtonSubmit(arrFormInputElements));
     });
 
     buttonAddNewAddress.addEventListener('click', () => {
       buttonAddNewAddress.replaceWith(buttonCancelNewAddress, addAddress);
-      const arrFormInputElementsWithAddAddress = [...arrFormInputElements, ...addAddress.elements];
       arrFormInputElementsWithAddAddress.forEach((input) => {
         input.addEventListener('input', () => checkButtonSubmit(arrFormInputElementsWithAddAddress));
       });
@@ -67,6 +72,13 @@ export default class RegForm {
       buttonCancelNewAddress.replaceWith(buttonAddNewAddress);
       addAddress.remove();
       checkButtonSubmit(arrFormInputElements);
+    });
+    /** ************************************************************************************************* */
+    regForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      creatCustomer(this.profile);
+      if (regForm.elements.length > 14) console.log('установить 2 адреса');
+      else console.log('установить 2 адреса');
     });
 
     return regForm;

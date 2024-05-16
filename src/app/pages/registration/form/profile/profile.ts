@@ -52,7 +52,7 @@ export default class RegProfile {
         this.inputEmail.getElement(),
         this.massageErrorEmail.getElement(),
         1,
-        '[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\\.[a-z]{2,}$',
+        '[a-zA-Z0-9._%+\\-]+@[a-z0-9.\\-]+\\.[a-z]{2,}$',
         'example@email.com'
       )
     );
