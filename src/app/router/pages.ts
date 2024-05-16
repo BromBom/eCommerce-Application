@@ -1,5 +1,4 @@
 interface PagesProps {
-  INDEX: string;
   REGISTRATION: string;
   LOGIN: string;
   PRODUCT: string;
@@ -8,7 +7,6 @@ interface PagesProps {
 }
 
 const Pages: PagesProps = {
-  INDEX: 'index',
   REGISTRATION: 'registration',
   LOGIN: 'login',
   PRODUCT: 'product',

@@ -4,7 +4,7 @@ import Header from './components/header/header';
 import Layout from './layout/layout';
 // import Index from './pages/main/index';
 import Main from './pages/main/main';
-import Products from './pages/main/products/products';
+// import Products from './pages/main/products/products';
 import NotFound from './pages/not-found/not-found';
 import Registration from './pages/registration/registration';
 import { Pages } from './router/pages';
@@ -43,13 +43,15 @@ export default class App {
       {
         path: '',
         callback: async () => {
-          this.setContent(Pages.INDEX, new Products());
+          const { default: Products } = await import('./pages/main/products/products');
+          this.setContent(Pages.Product, new Products());
         },
       },
       {
-        path: `${Pages.INDEX}`,
+        path: `${Pages.PRODUCT}`,
         callback: async () => {
-          this.setContent(Pages.INDEX, new Products());
+          const { default: Products } = await import('./pages/main/products/products');
+          this.setContent(Pages.Product, new Products());
         },
       },
       {
@@ -74,7 +76,6 @@ export default class App {
   }
 
   setContent(page: string, view: Layout) {
-    console.log(page, view);
     this.header?.setSelectedItem(page);
     this.main?.setContent(view);
   }

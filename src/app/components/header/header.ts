@@ -35,8 +35,8 @@ export default class Header extends Layout {
       classNames: ['logo'],
       text: '',
       callback: () => {
-        router.navigate(Pages.INDEX);
-        // this.clearSelectedItems();
+        router.navigate(Pages.PRODUCT);
+        this.clearSelectedItems();
       },
     };
 
@@ -69,9 +69,11 @@ export default class Header extends Layout {
   }
 
   setSelectedItem(namePage: string) {
-    const linkItem: unknown = this.headerLinkElements.get(namePage.toUpperCase());
-    if (linkItem instanceof LinkView) {
-      linkItem.setSelectedStatus();
+    if (namePage) {
+      const linkItem = this.headerLinkElements.get(namePage.toUpperCase());
+      if (linkItem instanceof LinkView) {
+        linkItem.setSelectedStatus();
+      }
     }
   }
 

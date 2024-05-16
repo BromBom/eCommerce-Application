@@ -13,7 +13,7 @@ export default class HistoryRouterHandler {
 
   callback: (params: RequestParams) => void;
 
-  handler: (event: Event) => void;
+  handler: (event: PopStateEvent | null) => void;
 
   constructor(callback: (params: RequestParams) => void) {
     this.params = {
@@ -29,11 +29,7 @@ export default class HistoryRouterHandler {
     );
   }
 
-  navigate(url: Event | null) {
-    if (url === null) {
-      return;
-    }
-
+  navigate(url: PopStateEvent | string | null) {
     if (typeof url === 'string') {
       this.setHistory(url);
     }
@@ -51,7 +47,10 @@ export default class HistoryRouterHandler {
   }
 
   disable() {
-    window.removeEventListener(this.params.nameEvent, this.handler);
+    window.removeEventListener(
+      this.params.nameEvent as keyof WindowEventMap,
+      this.handler as EventListenerOrEventListenerObject
+    );
   }
 
   setHistory(url: string) {

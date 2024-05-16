@@ -27,7 +27,7 @@ export default class Router {
     });
   }
 
-  navigate(url: any) {
+  navigate(url: string | PopStateEvent) {
     this.handler.navigate(url);
   }
 
