@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const KEY_FOR_SAVE_TO_LOCALSTORAGE = 'exampleSpaApp';
 
 export default class State {
-  fields: Map<string, any>;
+  fields: Map<string, string>;
 
   constructor() {
     this.fields = this.loadState();
@@ -25,12 +24,13 @@ export default class State {
     localStorage.setItem(KEY_FOR_SAVE_TO_LOCALSTORAGE, JSON.stringify(fiedlsObject));
   }
 
-  // eslint-disable-next-line class-methods-use-this
   loadState() {
     const storageItem = localStorage.getItem(KEY_FOR_SAVE_TO_LOCALSTORAGE);
     if (storageItem) {
       const fieldObject = JSON.parse(storageItem);
-      return new Map(Object.entries(fieldObject));
+
+      this.fields = new Map(Object.entries(fieldObject));
+      return this.fields;
     }
     return new Map();
   }

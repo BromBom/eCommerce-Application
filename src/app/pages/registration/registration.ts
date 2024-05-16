@@ -28,7 +28,8 @@ export default class Registration extends Layout {
     };
     let creatorInput = new Input(inputParams);
     creatorInput.createElement(inputParams);
-    creatorInput.setValue(state.getField(FIELD_USERNAME));
+    const userName = state.getField(FIELD_USERNAME) || 'default value';
+    creatorInput.setValue(userName);
     this.viewElementCreator.addInnerElement(creatorInput);
 
     inputParams = {
@@ -39,7 +40,8 @@ export default class Registration extends Layout {
     };
     creatorInput = new Input(inputParams);
     creatorInput.createElement(inputParams);
-    creatorInput.setValue(state.getField(FIELD_USERSURNAME));
+    const userSurname = state.getField(FIELD_USERNAME) || 'default value';
+    creatorInput.setValue(userSurname);
     this.viewElementCreator.addInnerElement(creatorInput);
   }
 
