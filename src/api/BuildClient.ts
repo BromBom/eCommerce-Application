@@ -1,23 +1,27 @@
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 import { ClientBuilder, type AuthMiddlewareOptions, type HttpMiddlewareOptions } from '@commercetools/sdk-client-v2';
+
+import dotenv from 'dotenv';
+import * as path from 'path';
+
+const dotenvPath = path.resolve(__dirname, '.env');
+dotenv.config({ path: dotenvPath });
 
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
-  host: 'https://auth.europe-west1.gcp.commercetools.com',
-  projectKey: 'jsfe2023q4shop',
+  host: process.env.CTP_AUTH_URL || '',
+  projectKey: process.env.CTP_PROJECT_KEY || '',
   credentials: {
-    clientId: 'QOVU7-WB1ds0e3pySCwjJzsX',
-    clientSecret: 'LZYnjQEACoIp0bf3ANZ2poRnYjoQiKjC',
+    clientId: process.env.CTP_CLIENT_ID || '',
+    clientSecret: process.env.CTP_CLIENT_SECRET || '',
   },
-  scopes: [
-    'manage_my_shopping_lists:jsfe2023q4shop:the-good-store view_shopping_lists:jsfe2023q4shop:the-good-store view_orders:jsfe2023q4shop:the-good-store manage_shopping_lists:jsfe2023q4shop:the-good-store view_api_clients:jsfe2023q4shop manage_orders:jsfe2023q4shop:the-good-store manage_cart_discounts:jsfe2023q4shop:the-good-store manage_project:jsfe2023q4shop manage_my_orders:jsfe2023q4shop:the-good-store view_cart_discounts:jsfe2023q4shop:the-good-store view_customers:jsfe2023q4shop:the-good-store manage_my_profile:jsfe2023q4shop:the-good-store manage_customers:jsfe2023q4shop:the-good-store manage_api_clients:jsfe2023q4shop',
-  ],
+  scopes: [process.env.CTP_SCOPES || ''],
   fetch,
 };
 
 // Configure httpMiddlewareOptions
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
-  host: 'https://api.europe-west1.gcp.commercetools.com',
+  host: process.env.CTP_API_URL || '',
   fetch,
 };
 
