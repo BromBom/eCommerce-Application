@@ -78,7 +78,9 @@ export default class RegForm {
       event.preventDefault();
       creatCustomer(this.profile);
       if (regForm.elements.length > 14) console.log('установить 2 адреса');
-      else console.log('установить 2 адреса');
+      else console.log('установить 1 адреса');
+      console.log('авторизироваться');
+      console.log('перейти на главную');
     });
 
     return regForm;
