@@ -1,6 +1,5 @@
 import BaseComponent from '../../../../components/baseComponent';
 import Input from '../../../../components/controls/input';
-// import Button from '../../../../components/controls/button';
 import creatInputWithLabel from '../../../../utils/creatInputWithLabel';
 import checkInputValue from '../../../../utils/checkInputValue';
 

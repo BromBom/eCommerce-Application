@@ -16,7 +16,6 @@ export default class App {
   router: Router;
 
   constructor() {
-
     this.header = null;
 
     this.main = null;
