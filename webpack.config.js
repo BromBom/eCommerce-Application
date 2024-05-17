@@ -1,10 +1,11 @@
 const path = require('path');
+const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const EslintPlugin = require('eslint-webpack-plugin');
 
-module.exports = {
+const baseConfig = {
   entry: {
     main: path.resolve(__dirname, './src/index.ts'),
   },
@@ -37,8 +38,8 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, 'src/assets/img'), //путь к папке, где лежат картинки
-          to: path.resolve(__dirname, 'dist/img'), //куда будут копированы
+          from: path.resolve(__dirname, 'src/assets/img'),
+          to: path.resolve(__dirname, 'dist/img'),
         },
       ],
     }),
@@ -54,4 +55,11 @@ module.exports = {
     open: true,
     host: 'localhost',
   },
+};
+
+module.exports = ({}, { mode }) => {
+  const isProductionMode = mode === 'production';
+  const envConfig = isProductionMode ? require('./webpack.prod.config') : require('./webpack.dev.config');
+
+  return merge(baseConfig, envConfig);
 };

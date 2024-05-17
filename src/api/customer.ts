@@ -1,4 +1,4 @@
-import { apiRoot, projectKey } from '../api/client';
+import { apiRoot, projectKey } from './client';
 
 export const getCustomerById = (ID: string) => {};
 
