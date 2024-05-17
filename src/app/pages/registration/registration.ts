@@ -1,4 +1,4 @@
-import BaseComponent from '../../components/baseComponent';
+import BaseComponent from '../../components/baseComponent/baseComponent';
 import RegForm from './form/form';
 
 import './registration.scss';
