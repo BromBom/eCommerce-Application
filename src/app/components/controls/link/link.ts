@@ -8,11 +8,11 @@ export interface LinkParams {
 }
 
 export default class Link extends Layout {
-  linkElements: Map<string, string>;
+  linkElements: Map<string, Layout>;
 
   constructor(
     pageParam: { name: string; callback: () => void } = { name: '', callback: () => {} },
-    linkElements: Map<string, string> = new Map()
+    linkElements: Map<string, Layout> = new Map()
   ) {
     const params = {
       tag: 'a' as keyof HTMLElementTagNameMap,
@@ -25,7 +25,7 @@ export default class Link extends Layout {
   }
 
   setSelectedStatus() {
-    this.linkElements.forEach((linkElement: any) => linkElement.setNotSelectedStatus());
+    this.linkElements.forEach((linkElement) => linkElement.setNotSelectedStatus());
 
     const element = this.viewElementCreator.getElement();
     element?.classList.add('nav-item__selected');

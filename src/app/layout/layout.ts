@@ -31,4 +31,9 @@ export default class Layout {
 
     return this.viewElementCreator;
   }
+
+  setNotSelectedStatus() {
+    const element = this.viewElementCreator.getElement();
+    element?.classList.remove('nav-item__selected');
+  }
 }

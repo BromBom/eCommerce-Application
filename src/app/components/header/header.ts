@@ -16,7 +16,7 @@ export interface Page {
 }
 
 export default class Header extends Layout {
-  headerLinkElements;
+  headerLinkElements: Map<string, LinkView>;
 
   constructor(router: Router) {
     const params = {
@@ -78,7 +78,7 @@ export default class Header extends Layout {
   }
 
   clearSelectedItems() {
-    this.headerLinkElements.forEach((linkElement) => {
+    this.headerLinkElements.forEach((linkElement: LinkView) => {
       linkElement.setNotSelectedStatus();
     });
   }

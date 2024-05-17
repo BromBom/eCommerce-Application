@@ -32,6 +32,8 @@ export default class App {
     this.main = new Main();
     const footer = new Footer();
 
+    console.log(this.header.headerLinkElements);
+
     document.body.append(this.header.getHtmlElement(), this.main.getHtmlElement(), footer.getHtmlElement());
   }
 
