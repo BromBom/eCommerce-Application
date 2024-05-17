@@ -31,5 +31,6 @@ export default class App {
     document.body.append(this.root);
     this.root.append(this.Registration.getElement());
     this.root.append(this.LoginPage);
+    loginPage.after_render();
   }
 }

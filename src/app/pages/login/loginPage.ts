@@ -12,11 +12,12 @@ const loginPage = {
   after_render: (): void => {
     console.log('after_render function is called');
     document.getElementById('signin-form')?.addEventListener('submit', async (e) => {
-      console.log('Submit button is clicked');
       e.preventDefault();
+      console.log('Submit button is clicked');
       showLoading();
       const emailInput = document.getElementById('email') as HTMLInputElement | null;
       const passwordInput = document.getElementById('password') as HTMLInputElement | null;
+      console.log(emailInput, passwordInput);
       if (emailInput && passwordInput) {
         const email = emailInput.value;
         const password = passwordInput.value;
