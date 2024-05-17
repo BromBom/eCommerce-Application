@@ -1,10 +1,5 @@
 import { createClient, createHttpClient, createAuthForClientCredentialsFlow } from '@commercetools/sdk-client-v2';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import dotenv from 'dotenv';
-import * as path from 'path';
-
-const dotenvPath = path.resolve(__dirname, '.env');
-dotenv.config({ path: dotenvPath });
 
 const getClient = () => {
   const authMiddleware = createAuthForClientCredentialsFlow({

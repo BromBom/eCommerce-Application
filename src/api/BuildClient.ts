@@ -1,11 +1,9 @@
-// import fetch from 'node-fetch';
+import fetch from 'node-fetch';
 import { ClientBuilder, type AuthMiddlewareOptions, type HttpMiddlewareOptions } from '@commercetools/sdk-client-v2';
 
 import dotenv from 'dotenv';
-import * as path from 'path';
 
-const dotenvPath = path.resolve(__dirname, '.env');
-dotenv.config({ path: dotenvPath });
+dotenv.config();
 
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
@@ -18,6 +16,10 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
   scopes: [process.env.CTP_SCOPES || ''],
   fetch,
 };
+
+console.log('Project Key:', process.env.CTP_PROJECT_KEY);
+console.log('Auth URL:', process.env.CTP_AUTH_URL);
+console.log('API URL:', process.env.CTP_API_URL);
 
 // Configure httpMiddlewareOptions
 const httpMiddlewareOptions: HttpMiddlewareOptions = {

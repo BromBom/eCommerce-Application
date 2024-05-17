@@ -1,13 +1,8 @@
-import LoginView from './pages/login/loginPage';
+import App from './app/app';
 
-const renderScreen = (screen: { render: () => string; after_render?: () => void }): void => {
-  const app = document.getElementById('app');
-  if (app) {
-    app.innerHTML = screen.render();
-    if (screen.after_render) {
-      screen.after_render();
-    }
-  }
-};
+import './style.scss';
 
-renderScreen(LoginView);
+document.addEventListener('DOMContentLoaded', () => {
+  const app = new App();
+  app.render();
+});
