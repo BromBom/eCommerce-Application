@@ -31,14 +31,4 @@ export const apiRoot = createApiBuilderFromCtpClient(ctpClient);
 
 export const projectKey: string | undefined = process.env.CTP_PROJECT_KEY;
 
-// Функция для создания клиента кастомеров
-export const createCustomerClient = () => {
-  return ctpClient;
-};
-
-// Функция для создания API кастомеров
-export const createCustomerApi = () => {
-  return createApiBuilderFromCtpClient(ctpClient);
-};
-
 export default ctpClient;
