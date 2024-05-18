@@ -36,6 +36,7 @@ export default class App {
   }
 
   createRoutes(state: State): RouterParams[] {
+    console.log(state);
     return [
       {
         path: '',
