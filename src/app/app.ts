@@ -1,39 +1,3 @@
-<<<<<<< HEAD
-import Registration from './pages/registration/index';
-import loginPage from './pages/login/loginPage';
-
-export default class App {
-  root: HTMLDivElement;
-
-  Registration: Registration;
-
-  LoginPage: HTMLElement;
-
-  constructor() {
-    this.Registration = new Registration();
-    this.root = App.init();
-    this.LoginPage = this.createLoginPage();
-  }
-
-  private static init(): HTMLDivElement {
-    const element = document.createElement('div');
-    element.classList.add('root');
-    return element;
-  }
-
-  private createLoginPage(): HTMLElement {
-    const loginContainer = document.createElement('div');
-    loginContainer.innerHTML = loginPage.render();
-    this.root.append(loginContainer.firstElementChild as HTMLElement);
-    return loginContainer.firstElementChild as HTMLElement;
-  }
-
-  render(): void {
-    document.body.append(this.root);
-    this.root.append(this.Registration.getElement());
-    this.root.append(this.LoginPage);
-    loginPage.after_render();
-=======
 import Footer from './components/footer/footer';
 import Header from './components/header/header';
 import Layout from './layout/layout';
@@ -43,6 +7,7 @@ import Registration from './pages/registration/registration';
 import { Pages } from './router/pages';
 import Router, { RouterParams } from './router/router';
 import State from './state/state';
+import LoginPageLayout from './layout/loginLayout';
 
 export default class App {
   header?: null | Header;
@@ -90,7 +55,7 @@ export default class App {
       {
         path: `${Pages.LOGIN}`,
         callback: async () => {
-          this.setContent(Pages.LOGIN, new Registration(state));
+          this.setContent(Pages.LOGIN, new LoginPageLayout());
         },
       },
       {
@@ -110,7 +75,10 @@ export default class App {
 
   setContent(page: string, view: Layout) {
     this.header?.setSelectedItem(page);
-    this.main?.setContent(view);
->>>>>>> release/login-registration-main
+    if (this.main) {
+      this.main.setContent(view);
+    } else {
+      console.error('Main element is null');
+    }
   }
 }

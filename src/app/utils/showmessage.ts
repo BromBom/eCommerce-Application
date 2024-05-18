@@ -1,3 +1,5 @@
+import './showmessage.scss';
+
 export const showLoading = (): void => {
   const loadingOverlay = document.getElementById('loading-overlay');
   if (loadingOverlay) {
@@ -33,6 +35,11 @@ export const showMessage = (message: string, callback?: () => void): void => {
     }
   }
 };
+
+export function handleError(error: Error, message: string): void {
+  console.error(error);
+  showMessage(message);
+}
 
 // export const redirectUser = (): void => {
 //   if (getCartItems().length !== 0) {
