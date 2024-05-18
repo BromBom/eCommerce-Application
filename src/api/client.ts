@@ -1,9 +1,6 @@
 import { createClient, createHttpClient, createAuthForClientCredentialsFlow } from '@commercetools/sdk-client-v2';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import dotenv from 'dotenv';
 import fetch from 'node-fetch';
-
-dotenv.config();
 
 const projectKey: string | undefined = process.env.CTP_PROJECT_KEY;
 

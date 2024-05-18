@@ -1,5 +1,5 @@
-import BaseComponent from '../baseComponent';
+import SimpleComponent from '../simpleComponent';
 
-const Input = (classes: string[]) => new BaseComponent<HTMLInputElement>('input', classes);
+const Input = (classes: string[]) => new SimpleComponent<HTMLInputElement>('input', classes);
 
 export default Input;

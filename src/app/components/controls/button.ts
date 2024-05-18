@@ -1,5 +1,5 @@
-import BaseComponent from '../baseComponent';
+import SimpleComponent from '../simpleComponent';
 
-const Button = (classes: string[], text: string) => new BaseComponent<HTMLButtonElement>('button', classes, text);
+const Button = (classes: string[], text: string) => new SimpleComponent<HTMLButtonElement>('button', classes, text);
 
 export default Button;

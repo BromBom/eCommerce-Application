@@ -1,4 +1,4 @@
-import BaseComponent from '../../components/baseComponent/baseComponent';
+import SimpleComponent from '../../components/simpleComponent';
 import RegForm from './form/form';
 
 import './registration.scss';
@@ -6,12 +6,12 @@ import './registration.scss';
 export default class Registration {
   element: HTMLDivElement;
 
-  title: BaseComponent<HTMLHeadingElement>;
+  title: SimpleComponent<HTMLHeadingElement>;
 
   form: RegForm;
 
   constructor() {
-    this.title = new BaseComponent<HTMLHeadingElement>('h2', ['registration__title'], 'Create account');
+    this.title = new SimpleComponent<HTMLHeadingElement>('h2', ['registration__title'], 'Create account');
     this.form = new RegForm();
     this.element = this.init();
   }

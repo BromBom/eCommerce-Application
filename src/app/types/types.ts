@@ -3,7 +3,6 @@ export interface OptionsListener {
   once?: boolean;
   passive?: boolean;
 }
-<<<<<<< HEAD
 
 export type InputType =
   | 'text'
@@ -19,5 +18,3 @@ export type InputType =
   | 'search'
   | 'submit'
   | 'time';
-=======
->>>>>>> release/login-registration-main

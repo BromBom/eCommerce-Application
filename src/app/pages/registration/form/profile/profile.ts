@@ -1,4 +1,4 @@
-import BaseComponent from '../../../../components/baseComponent';
+import SimpleComponent from '../../../../components/simpleComponent';
 import Input from '../../../../components/controls/input';
 import creatInputWithLabel from '../../../../utils/creatInputWithLabel';
 import checkInputValue from '../../../../utils/checkInputValue';
@@ -6,40 +6,40 @@ import checkInputValue from '../../../../utils/checkInputValue';
 export default class RegProfile {
   element: HTMLFieldSetElement;
 
-  legend: BaseComponent<HTMLLegendElement>;
+  legend: SimpleComponent<HTMLLegendElement>;
 
-  inputEmail: BaseComponent<HTMLInputElement>;
+  inputEmail: SimpleComponent<HTMLInputElement>;
 
-  massageErrorEmail: BaseComponent<HTMLParagraphElement>;
+  massageErrorEmail: SimpleComponent<HTMLParagraphElement>;
 
-  inputPassword: BaseComponent<HTMLInputElement>;
+  inputPassword: SimpleComponent<HTMLInputElement>;
 
-  massageErrorPassword: BaseComponent<HTMLParagraphElement>;
+  massageErrorPassword: SimpleComponent<HTMLParagraphElement>;
 
-  inputName: BaseComponent<HTMLInputElement>;
+  inputName: SimpleComponent<HTMLInputElement>;
 
-  massageErrorName: BaseComponent<HTMLParagraphElement>;
+  massageErrorName: SimpleComponent<HTMLParagraphElement>;
 
-  inputLastName: BaseComponent<HTMLInputElement>;
+  inputLastName: SimpleComponent<HTMLInputElement>;
 
-  massageErrorLastName: BaseComponent<HTMLParagraphElement>;
+  massageErrorLastName: SimpleComponent<HTMLParagraphElement>;
 
-  inputDate: BaseComponent<HTMLInputElement>;
+  inputDate: SimpleComponent<HTMLInputElement>;
 
-  massageErrorDate: BaseComponent<HTMLParagraphElement>;
+  massageErrorDate: SimpleComponent<HTMLParagraphElement>;
 
   constructor() {
-    this.legend = new BaseComponent<HTMLLegendElement>('legend', [], 'Profile');
+    this.legend = new SimpleComponent<HTMLLegendElement>('legend', [], 'Profile');
     this.inputEmail = Input(['registration__input-email']);
-    this.massageErrorEmail = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorEmail = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputPassword = Input(['registration__input-password']);
-    this.massageErrorPassword = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorPassword = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputName = Input(['registration__input-name']);
-    this.massageErrorName = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorName = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputLastName = Input(['registration__input-lastname']);
-    this.massageErrorLastName = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorLastName = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputDate = Input(['registration__input-date']);
-    this.massageErrorDate = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorDate = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.element = this.init();
   }
 

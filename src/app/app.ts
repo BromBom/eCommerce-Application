@@ -54,13 +54,18 @@ export default class App {
       {
         path: `${Pages.LOGIN}`,
         callback: async () => {
-          this.setContent(Pages.LOGIN, new Registration());
+          this.setContent(Pages.LOGIN, new NotFound());
         },
       },
       {
         path: `${Pages.REGISTRATION}`,
         callback: async () => {
-          this.setContent(Pages.PRODUCT, new Registration());
+          this.header!.setSelectedItem(Pages.REGISTRATION);
+          const mainContainer = this.main!.getHtmlElement();
+          const reristrationPage = new Registration().getElement();
+          mainContainer.innerHTML = '';
+          console.log(state);
+          mainContainer.append(reristrationPage);
         },
       },
       {

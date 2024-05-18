@@ -1,4 +1,4 @@
-import BaseComponent from '../../../components/baseComponent';
+import SimpleComponent from '../../../components/simpleComponent';
 import RegProfile from './profile/profile';
 import RegAddress from './address/address';
 import Button from '../../../components/controls/button';
@@ -13,13 +13,13 @@ export default class RegForm {
 
   address: RegAddress;
 
-  buttonAddNewAddress: BaseComponent<HTMLButtonElement>;
+  buttonAddNewAddress: SimpleComponent<HTMLButtonElement>;
 
-  buttonCancelNewAddress: BaseComponent<HTMLButtonElement>;
+  buttonCancelNewAddress: SimpleComponent<HTMLButtonElement>;
 
   addAddress: RegAddress;
 
-  buttonSubmit: BaseComponent<HTMLButtonElement>;
+  buttonSubmit: SimpleComponent<HTMLButtonElement>;
 
   constructor() {
     this.profile = new RegProfile();

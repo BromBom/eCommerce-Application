@@ -1,4 +1,4 @@
-import BaseComponent from '../../../../components/baseComponent';
+import SimpleComponent from '../../../../components/simpleComponent';
 import Input from '../../../../components/controls/input';
 import creatInputWithLabel from '../../../../utils/creatInputWithLabel';
 import checkInputValue from '../../../../utils/checkInputValue';
@@ -6,40 +6,40 @@ import checkInputValue from '../../../../utils/checkInputValue';
 export default class RegAddress {
   element: HTMLFieldSetElement;
 
-  legend: BaseComponent<HTMLLegendElement>;
+  legend: SimpleComponent<HTMLLegendElement>;
 
-  inputStreet: BaseComponent<HTMLInputElement>;
+  inputStreet: SimpleComponent<HTMLInputElement>;
 
-  massageErrorStreet: BaseComponent<HTMLParagraphElement>;
+  massageErrorStreet: SimpleComponent<HTMLParagraphElement>;
 
-  inputStreetNumber: BaseComponent<HTMLInputElement>;
+  inputStreetNumber: SimpleComponent<HTMLInputElement>;
 
-  massageErrorStreetNumber: BaseComponent<HTMLParagraphElement>;
+  massageErrorStreetNumber: SimpleComponent<HTMLParagraphElement>;
 
-  inputCity: BaseComponent<HTMLInputElement>;
+  inputCity: SimpleComponent<HTMLInputElement>;
 
-  massageErrorCity: BaseComponent<HTMLParagraphElement>;
+  massageErrorCity: SimpleComponent<HTMLParagraphElement>;
 
-  inputPostalCode: BaseComponent<HTMLInputElement>;
+  inputPostalCode: SimpleComponent<HTMLInputElement>;
 
-  massageErrorPostalCode: BaseComponent<HTMLParagraphElement>;
+  massageErrorPostalCode: SimpleComponent<HTMLParagraphElement>;
 
-  inputCountry: BaseComponent<HTMLInputElement>;
+  inputCountry: SimpleComponent<HTMLInputElement>;
 
-  massageErrorCountry: BaseComponent<HTMLParagraphElement>;
+  massageErrorCountry: SimpleComponent<HTMLParagraphElement>;
 
   constructor() {
-    this.legend = new BaseComponent<HTMLLegendElement>('legend', ['registration__legend'], 'Billing address');
+    this.legend = new SimpleComponent<HTMLLegendElement>('legend', ['registration__legend'], 'Billing address');
     this.inputStreet = Input(['registration__input-street']);
-    this.massageErrorStreet = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorStreet = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputStreetNumber = Input(['registration__input-street-number']);
-    this.massageErrorStreetNumber = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorStreetNumber = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputCity = Input(['registration__input-password']);
-    this.massageErrorCity = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorCity = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputPostalCode = Input(['registration__input-name']);
-    this.massageErrorPostalCode = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorPostalCode = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputCountry = Input(['registration__input-lastname']);
-    this.massageErrorCountry = new BaseComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorCountry = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.element = this.init();
   }
 
