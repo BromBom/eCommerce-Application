@@ -73,7 +73,7 @@ export default class RegForm {
       addAddress.remove();
       checkButtonSubmit(arrFormInputElements);
     });
-    /** ************************************************************************************************* */
+
     regForm.addEventListener('submit', (event) => {
       event.preventDefault();
       creatCustomer(this.profile);

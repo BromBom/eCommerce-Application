@@ -64,7 +64,6 @@ export default class App {
           const mainContainer = this.main!.getHtmlElement();
           const reristrationPage = new Registration().getElement();
           mainContainer.innerHTML = '';
-          console.log(state);
           mainContainer.append(reristrationPage);
         },
       },
