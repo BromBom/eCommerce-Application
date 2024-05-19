@@ -7,6 +7,7 @@ import Registration from './pages/registration/registration';
 import { Pages } from './router/pages';
 import Router, { RouterParams } from './router/router';
 import State from './state/state';
+import LoginPageLayout from './layout/loginLayout';
 
 export default class App {
   header?: null | Header;
@@ -55,7 +56,7 @@ export default class App {
       {
         path: `${Pages.LOGIN}`,
         callback: async () => {
-          this.setContent(Pages.LOGIN, new NotFound());
+          this.setContent(Pages.LOGIN, new LoginPageLayout());
         },
       },
       {
@@ -63,9 +64,9 @@ export default class App {
         callback: async () => {
           this.header!.setSelectedItem(Pages.REGISTRATION);
           const mainContainer = this.main!.getHtmlElement();
-          const reristrationPage = new Registration().getElement();
+          const registrationPage = new Registration().getElement();
           mainContainer.innerHTML = '';
-          mainContainer.append(reristrationPage);
+          mainContainer.append(registrationPage);
         },
       },
       {
@@ -79,6 +80,10 @@ export default class App {
 
   setContent(page: string, view: Layout) {
     this.header?.setSelectedItem(page);
-    this.main?.setContent(view);
+    if (this.main) {
+      this.main.setContent(view);
+    } else {
+      console.error('Main element is null');
+    }
   }
 }
