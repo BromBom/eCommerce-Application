@@ -1,4 +1,4 @@
-import { apiRoot } from '../../../api/client';
+import { apiRoot } from '../../../api/BuildClient';
 import { getUserInfo, setUserInfo } from '../../utils/localstorage';
 import { hideLoading, showLoading, showMessage } from '../../utils/showmessage';
 import './loginPage.scss';

@@ -5,7 +5,7 @@ import {
   CustomerDraft,
   // CustomerUpdate,
 } from '@commercetools/platform-sdk';
-import { apiRoot } from './client';
+import { apiRoot } from './BuildClient';
 
 interface Customer {
   id: string;
