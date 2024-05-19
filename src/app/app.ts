@@ -64,9 +64,9 @@ export default class App {
         callback: async () => {
           this.header!.setSelectedItem(Pages.REGISTRATION);
           const mainContainer = this.main!.getHtmlElement();
-          const reristrationPage = new Registration().getElement();
+          const registrationPage = new Registration().getElement();
           mainContainer.innerHTML = '';
-          mainContainer.append(reristrationPage);
+          mainContainer.append(registrationPage);
         },
       },
       {
