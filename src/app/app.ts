@@ -80,7 +80,13 @@ export default class App {
   }
 
   setContent(page: string, view: Layout) {
+    const isLoggedIn = this.state.loadState().size > 0;
+
     this.header?.setSelectedItem(page);
     this.main?.setContent(view);
+
+    if (isLoggedIn) {
+      this.header?.configureView();
+    }
   }
 }
