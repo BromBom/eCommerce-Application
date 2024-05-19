@@ -1,53 +1,33 @@
-import Layout from '../../layout/layout';
-import State from '../../state/state';
-import Input from '../../components/controls/input/input';
-import { Params } from '../../components/baseComponent/baseComponent';
+import SimpleComponent from '../../components/simpleComponent';
+import RegForm from './form/form';
 
-const FIELD_USERNAME = 'Поле для ввода имени';
-const FIELD_USERSURNAME = 'Поле для ввода фамилии';
+import './registration.scss';
 
-export default class Registration extends Layout {
-  state: State;
+export default class Registration {
+  element: HTMLDivElement;
 
-  constructor(state: State) {
-    const params = {
-      tag: 'section' as keyof HTMLElementTagNameMap,
-      classNames: ['registration'],
-    };
-    super(params);
-    this.state = state;
-    this.configureView(state);
+  title: SimpleComponent<HTMLHeadingElement>;
+
+  form: RegForm;
+
+  constructor() {
+    this.title = new SimpleComponent<HTMLHeadingElement>('h2', ['registration__title'], 'Create account');
+    this.form = new RegForm();
+    this.element = this.init();
   }
 
-  configureView(state: State) {
-    let inputParams: Params = {
-      tag: 'input',
-      classNames: [],
-      text: FIELD_USERNAME,
-      callback: (event) => this.keyupHandler(event, FIELD_USERNAME),
-    };
-    let creatorInput = new Input(inputParams);
-    creatorInput.createElement(inputParams);
-    const userName = state.getField(FIELD_USERNAME) || 'default value';
-    creatorInput.setValue(userName);
-    this.viewElementCreator.addInnerElement(creatorInput);
+  private init() {
+    const registrationPage = document.createElement('div');
+    const title = this.title.getElement();
+    const form = this.form.getElement();
 
-    inputParams = {
-      tag: 'input',
-      classNames: [],
-      text: FIELD_USERSURNAME,
-      callback: (event) => this.keyupHandler(event, FIELD_USERSURNAME),
-    };
-    creatorInput = new Input(inputParams);
-    creatorInput.createElement(inputParams);
-    const userSurname = state.getField(FIELD_USERNAME) || 'default value';
-    creatorInput.setValue(userSurname);
-    this.viewElementCreator.addInnerElement(creatorInput);
+    registrationPage.classList.add('registration__page');
+    registrationPage.append(title, form);
+
+    return registrationPage;
   }
 
-  keyupHandler(event: MouseEvent, fieldName: string) {
-    if (event.target instanceof HTMLInputElement) {
-      this.state.setField(fieldName, event.target.value);
-    }
+  getElement() {
+    return this.element;
   }
 }

@@ -37,6 +37,7 @@ export default class App {
   }
 
   createRoutes(state: State): RouterParams[] {
+    console.log(state);
     return [
       {
         path: '',
@@ -61,7 +62,11 @@ export default class App {
       {
         path: `${Pages.REGISTRATION}`,
         callback: async () => {
-          this.setContent(Pages.PRODUCT, new Registration(state));
+          this.header!.setSelectedItem(Pages.REGISTRATION);
+          const mainContainer = this.main!.getHtmlElement();
+          const reristrationPage = new Registration().getElement();
+          mainContainer.innerHTML = '';
+          mainContainer.append(reristrationPage);
         },
       },
       {

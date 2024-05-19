@@ -1,5 +1,7 @@
 import Layout from '../../layout/layout';
 
+import './main.scss';
+
 export default class Main extends Layout {
   constructor() {
     const params = {

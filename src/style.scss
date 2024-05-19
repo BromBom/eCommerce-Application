@@ -8,10 +8,14 @@ $background-color: #ffffff;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scrollbar-width: 0px;
+}
+
+*::-webkit-scrollbar {
+  width: 0px;
 }
 
 body {
-  height: 100%;
   font-family: 'Courier New', Courier, monospace;
   color: $default-color;
   scroll-behavior: smooth;
