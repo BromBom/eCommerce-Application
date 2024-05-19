@@ -46,4 +46,12 @@ export default class BaseComponent<T extends HTMLElement> {
       this.element.addEventListener('click', (event) => callback(event));
     }
   }
+
+    removeElement(): void {
+    if (this.element) {
+      this.element.remove();
+      this.element = null; 
+    }
+  }
+
 }

@@ -91,7 +91,8 @@ export default class RegForm {
       console.log('перейти на главную');
 
       const userData = {
-        id: '123qwerty',
+        // id: '123qwerty',
+        id: '',
       };
 
       this.state.setField(KEY_USER_ID, userData.id);

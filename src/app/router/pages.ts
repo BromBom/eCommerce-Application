@@ -11,6 +11,8 @@ const Pages: PagesProps = {
   LOGIN: 'login',
   PRODUCT: 'product',
   NOT_FOUND: 'not-found',
+  AUTHENTICATED: 'AUTHENTICATED',
+  LOGOUT: 'Logout',
 };
 
 const ID_SELECTOR = '{id}';
