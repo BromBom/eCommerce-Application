@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const EslintPlugin = require('eslint-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const baseConfig = {
   entry: {
@@ -29,6 +30,7 @@ const baseConfig = {
     ],
   },
   plugins: [
+    new Dotenv(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.html'),
       filename: 'index.html',
@@ -46,6 +48,19 @@ const baseConfig = {
     new EslintPlugin({ extensions: ['ts'] }),
   ],
   resolve: {
+    fallback: {
+      fs: false,
+      os: false,
+      path: false,
+      crypto: false,
+      tls: false,
+      net: false,
+      zlib: false,
+      http: false,
+      https: false,
+      stream: false,
+      assert: false,
+    },
     alias: {
       img: path.join(__dirname, 'src', 'assets', 'img'),
     },

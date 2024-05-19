@@ -7,6 +7,7 @@ import Registration from './pages/registration/registration';
 import { Pages } from './router/pages';
 import Router, { RouterParams } from './router/router';
 import State from './state/state';
+import LoginPageLayout from './layout/loginLayout';
 
 export default class App {
   header?: null | Header;
@@ -57,7 +58,7 @@ export default class App {
       {
         path: `${Pages.LOGIN}`,
         callback: async () => {
-          this.setContent(Pages.LOGIN, new NotFound());
+          this.setContent(Pages.LOGIN, new LoginPageLayout());
         },
       },
       {
@@ -67,6 +68,7 @@ export default class App {
           const mainContainer = this.main!.getHtmlElement();
           const registrationPage = new Registration(this.router, this.state).getElement();
           mainContainer.innerHTML = '';
+          mainContainer.append(registrationPage);
           mainContainer.append(registrationPage);
         },
       },
