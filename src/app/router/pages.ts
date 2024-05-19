@@ -11,7 +11,7 @@ const Pages: PagesProps = {
   LOGIN: 'login',
   PRODUCT: 'product',
   NOT_FOUND: 'not-found',
-  AUTHENTICATED: 'AUTHENTICATED',
+  PROFILE: 'Profile',
   LOGOUT: 'Logout',
 };
 

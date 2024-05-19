@@ -47,11 +47,10 @@ export default class BaseComponent<T extends HTMLElement> {
     }
   }
 
-    removeElement(): void {
+  removeElement(): void {
     if (this.element) {
       this.element.remove();
-      this.element = null; 
+      this.element = null;
     }
   }
-
 }

@@ -34,4 +34,10 @@ export default class State {
     }
     return new Map();
   }
+
+  clearState() {
+    this.fields.clear();
+
+    localStorage.clear();
+  }
 }
