@@ -4,10 +4,16 @@ import LinkView from '../controls/link/link';
 import { Pages } from '../../router/pages';
 import Router from '../../router/router';
 import Layout from '../../layout/layout';
+import State, { KEY_USER_ID } from '../../state/state';
 
 const NamePages: { [key: string]: string } = {
-  LOGIN: 'Авторизация',
-  REGISTRATION: 'Регистрация',
+  LOGIN: 'Login',
+  REGISTRATION: 'Registration',
+};
+
+export const NamePagesAuthUser: { [key: string]: string } = {
+  PROFILE: 'Profile',
+  LOGOUT: 'Logout',
 };
 
 export interface Page {
@@ -18,18 +24,23 @@ export interface Page {
 export default class Header extends Layout {
   headerLinkElements: Map<string, LinkView>;
 
-  constructor(router: Router) {
+  state: State;
+
+  router: Router;
+
+  navElement: BaseComponent<HTMLElement>;
+
+  constructor(router: Router, state: State) {
     const params = {
       tag: 'header' as keyof HTMLElementTagNameMap,
       classNames: ['header'],
     };
     super(params);
 
+    this.router = router;
     this.headerLinkElements = new Map();
-    this.configureView(router);
-  }
+    this.state = state;
 
-  configureView(router: Router) {
     const logoParams = {
       tag: 'img' as keyof HTMLElementTagNameMap,
       classNames: ['logo'],
@@ -40,7 +51,7 @@ export default class Header extends Layout {
       },
     };
 
-    const logoCreator = new BaseComponent(logoParams);
+    const logoCreator = new BaseComponent<HTMLElement>(logoParams);
     this.viewElementCreator.addInnerElement(logoCreator);
 
     const navParams = {
@@ -49,23 +60,67 @@ export default class Header extends Layout {
       text: '',
       callback: () => null,
     };
+    this.navElement = new BaseComponent<HTMLElement>(navParams);
+    this.viewElementCreator.addInnerElement(this.navElement);
 
-    const creatorNav = new BaseComponent(navParams);
-    this.viewElementCreator.addInnerElement(creatorNav);
+    this.configureView();
+    this.listenForStorageChanges();
+  }
 
-    Object.keys(NamePages).forEach((key: string) => {
-      const pageParams = {
-        name: NamePages[key],
-        callback: () => router.navigate(Pages[key]),
-      };
+  configureView() {
+    this.updateLinksBasedOnState();
+  }
 
-      const linkElement = new LinkView(pageParams, this.headerLinkElements);
-      creatorNav.addInnerElement(linkElement.getHtmlElement());
+  updateLinksBasedOnState() {
+    const user = this.state.loadState();
+    const currentPages = user.size > 0 ? NamePagesAuthUser : NamePages;
+    this.updateLinks(currentPages);
+  }
 
-      this.headerLinkElements.set(Pages[key].toUpperCase(), linkElement);
-    });
+  updateLinks(pages: { [key: string]: string }) {
+    const navElement = this.navElement.getElement();
 
-    this.viewElementCreator.addInnerElement(creatorNav);
+    console.log(navElement, 'current element');
+
+    if (navElement) {
+      navElement.innerHTML = '';
+      this.headerLinkElements.clear();
+
+      Object.keys(pages).forEach((key) => {
+        const pageParams = {
+          name: pages[key],
+          callback: () => {
+            if (pages[key] === 'Logout') {
+              this.state.clearState();
+              this.router.navigate(Pages.LOGIN);
+              this.configureView();
+            } else {
+              this.router.navigate(Pages[key]);
+            }
+          },
+        };
+
+        const linkElement = new LinkView(pageParams, this.headerLinkElements);
+        this.navElement.addInnerElement(linkElement.getHtmlElement());
+
+        this.headerLinkElements.set(Pages[key].toUpperCase(), linkElement);
+      });
+    }
+  }
+
+  handleStorageChange(event: StorageEvent) {
+    console.log(event.key);
+    if (event.key === KEY_USER_ID) {
+      this.updateLinksBasedOnState();
+    }
+  }
+
+  listenForStorageChanges() {
+    window.addEventListener('storage', this.handleStorageChange.bind(this));
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('storage', this.handleStorageChange);
   }
 
   setSelectedItem(namePage: string) {

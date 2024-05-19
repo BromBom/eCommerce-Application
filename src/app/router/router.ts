@@ -15,6 +15,8 @@ export default class Router {
 
   handler: HistoryRouterHandler;
 
+  listeners: ((path: string) => void)[] = [];
+
   constructor(routes: RouterParams[]) {
     this.routes = routes;
 
@@ -25,8 +27,14 @@ export default class Router {
     });
   }
 
+  onNavigate(callback: (path: string) => void) {
+    this.listeners.push(callback);
+  }
+
   navigate(url: string | PopStateEvent) {
     this.handler.navigate(url);
+
+    this.listeners.forEach((listener) => listener(url as string));
   }
 
   urlChangedHandler(requestParams: RequestParams) {

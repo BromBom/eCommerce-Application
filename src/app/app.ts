@@ -16,20 +16,22 @@ export default class App {
 
   router: Router;
 
+  state: State;
+
   constructor() {
     this.header = null;
 
     this.main = null;
 
-    const state = new State();
+    this.state = new State();
 
-    const routes = this.createRoutes(state);
+    const routes = this.createRoutes(this.state);
 
     this.router = new Router(routes);
   }
 
   createView() {
-    this.header = new Header(this.router);
+    this.header = new Header(this.router, this.state);
     this.main = new Main();
     const footer = new Footer();
 
@@ -64,8 +66,9 @@ export default class App {
         callback: async () => {
           this.header!.setSelectedItem(Pages.REGISTRATION);
           const mainContainer = this.main!.getHtmlElement();
-          const registrationPage = new Registration().getElement();
+          const registrationPage = new Registration(this.router, this.state).getElement();
           mainContainer.innerHTML = '';
+          mainContainer.append(registrationPage);
           mainContainer.append(registrationPage);
         },
       },
@@ -79,11 +82,13 @@ export default class App {
   }
 
   setContent(page: string, view: Layout) {
+    const isLoggedIn = this.state.loadState().size > 0;
+
     this.header?.setSelectedItem(page);
-    if (this.main) {
-      this.main.setContent(view);
-    } else {
-      console.error('Main element is null');
+    this.main?.setContent(view);
+
+    if (isLoggedIn) {
+      this.header?.configureView();
     }
   }
 }

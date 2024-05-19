@@ -1,4 +1,6 @@
 import SimpleComponent from '../../components/simpleComponent';
+import Router from '../../router/router';
+import State from '../../state/state';
 import RegForm from './form/form';
 
 import './registration.scss';
@@ -10,9 +12,9 @@ export default class Registration {
 
   form: RegForm;
 
-  constructor() {
+  constructor(router: Router, state: State) {
     this.title = new SimpleComponent<HTMLHeadingElement>('h2', ['registration__title'], 'Create account');
-    this.form = new RegForm();
+    this.form = new RegForm(router, state);
     this.element = this.init();
   }
 
