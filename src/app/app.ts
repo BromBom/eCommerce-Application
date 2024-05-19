@@ -27,31 +27,13 @@ export default class App {
     const routes = this.createRoutes(this.state);
 
     this.router = new Router(routes);
-
-    this.router.onNavigate((path) => {
-      if (path === Pages.PRODUCT) {
-        const isLoggedIn = this.checkIfUserIsLoggedIn();
-
-        this.updateHeaderLinksBasedOnLoginStatus(isLoggedIn);
-      }
-    });
   }
-
-  // function handleLogin() {
-  // // Perform login actions...
-
-  // // After successful login, update the header links
-  // const header = document.querySelector('.header'); // Adjust selector as needed
-  // if (header instanceof Header) {
-  //   header.updateLinks(NamePagesAuthUser);
-  // }
-}
 
   createView() {
     this.header = new Header(this.router, this.state);
     this.main = new Main();
     const footer = new Footer();
-    console.log(this.header, 'header');
+
     document.body.append(this.header.getHtmlElement(), this.main.getHtmlElement(), footer.getHtmlElement());
   }
 

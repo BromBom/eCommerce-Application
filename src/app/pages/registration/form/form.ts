@@ -2,6 +2,7 @@ import SimpleComponent from '../../../components/simpleComponent';
 import RegProfile from './profile/profile';
 import RegAddress from './address/address';
 import Button from '../../../components/controls/button';
+// import Header from '../../../components/header/header';
 
 import './form.scss';
 import { Pages } from '../../../router/pages';
@@ -91,8 +92,7 @@ export default class RegForm {
       console.log('перейти на главную');
 
       const userData = {
-        // id: '123qwerty',
-        id: '',
+        id: '123qwerty',
       };
 
       this.state.setField(KEY_USER_ID, userData.id);

@@ -11,10 +11,10 @@ const NamePages: { [key: string]: string } = {
   REGISTRATION: 'Registration',
 };
 
-const NamePagesAuthUser: { [key: string]: string } = {
-  AUTHENTICATED: 'AUTHENTICATED',
-  LOGOUT: 'Logout',
-};
+// const NamePagesAuthUser: { [key: string]: string } = {
+//   AUTHENTICATED: 'AUTHENTICATED',
+//   LOGOUT: 'Logout',
+// };
 
 export interface Page {
   name: string;
