@@ -4,6 +4,9 @@ import RegAddress from './address/address';
 import Button from '../../../components/controls/button';
 
 import './form.scss';
+import { Pages } from '../../../router/pages';
+import Router from '../../../router/router';
+import State, { KEY_USER_ID } from '../../../state/state';
 
 export default class RegForm {
   element: HTMLFormElement;
@@ -20,7 +23,11 @@ export default class RegForm {
 
   buttonSubmit: SimpleComponent<HTMLButtonElement>;
 
-  constructor() {
+  router: Router;
+
+  state: State;
+
+  constructor(router: Router, state: State) {
     this.profile = new RegProfile();
     this.address = new RegAddress();
     this.buttonAddNewAddress = Button(['registration__btn-add'], 'Add Shipping address');
@@ -28,6 +35,8 @@ export default class RegForm {
     this.buttonSubmit = Button(['registration__btn-submit'], 'Submit');
     this.addAddress = new RegAddress();
     this.element = this.init();
+    this.router = router;
+    this.state = state;
   }
 
   private init() {
@@ -80,6 +89,14 @@ export default class RegForm {
       else console.log('установить 1 адреса');
       console.log('авторизироваться');
       console.log('перейти на главную');
+
+      const userData = {
+        id: '123qwerty',
+      };
+
+      this.state.setField(KEY_USER_ID, userData.id);
+      this.state.saveState();
+      this.router.navigate(Pages.PRODUCT);
     });
 
     return regForm;

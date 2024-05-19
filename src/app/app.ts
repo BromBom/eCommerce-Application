@@ -15,14 +15,16 @@ export default class App {
 
   router: Router;
 
+  state: State;
+
   constructor() {
     this.header = null;
 
     this.main = null;
 
-    const state = new State();
+    this.state = new State();
 
-    const routes = this.createRoutes(state);
+    const routes = this.createRoutes(this.state);
 
     this.router = new Router(routes);
   }
@@ -63,9 +65,9 @@ export default class App {
         callback: async () => {
           this.header!.setSelectedItem(Pages.REGISTRATION);
           const mainContainer = this.main!.getHtmlElement();
-          const reristrationPage = new Registration().getElement();
+          const registrationPage = new Registration(this.router, this.state).getElement();
           mainContainer.innerHTML = '';
-          mainContainer.append(reristrationPage);
+          mainContainer.append(registrationPage);
         },
       },
       {

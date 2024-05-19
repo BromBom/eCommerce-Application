@@ -1,4 +1,4 @@
-const KEY_FOR_SAVE_TO_LOCALSTORAGE = 'exampleSpaApp';
+export const KEY_USER_ID = 'userID';
 
 export default class State {
   fields: Map<string, string>;
@@ -21,11 +21,11 @@ export default class State {
 
   saveState() {
     const fiedlsObject = Object.fromEntries(this.fields.entries());
-    localStorage.setItem(KEY_FOR_SAVE_TO_LOCALSTORAGE, JSON.stringify(fiedlsObject));
+    localStorage.setItem(KEY_USER_ID, JSON.stringify(fiedlsObject));
   }
 
   loadState() {
-    const storageItem = localStorage.getItem(KEY_FOR_SAVE_TO_LOCALSTORAGE);
+    const storageItem = localStorage.getItem(KEY_USER_ID);
     if (storageItem) {
       const fieldObject = JSON.parse(storageItem);
 
