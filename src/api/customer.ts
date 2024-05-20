@@ -3,59 +3,24 @@ import {
   // CustomerUpdateAction,
   CustomerPagedQueryResponse,
   CustomerDraft,
+  Customer,
   // CustomerUpdate,
 } from '@commercetools/platform-sdk';
 import { apiRoot } from './BuildClient';
 
-interface Customer {
-  id: string;
-  email?: string | undefined;
-  firstName?: string | undefined;
-  lastName?: string | undefined;
-}
-
-export interface CustomerData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  key: string;
-  countryCode: string;
-}
-
-// interface Address {
-//   country: string;
-// }
-
-const createCustomerDraft = async (customerData: CustomerData): Promise<CustomerDraft> => {
-  const { firstName, lastName, email, password, key, countryCode } = customerData;
-  return {
-    firstName,
-    lastName,
-    email,
-    password,
-    key,
-    addresses: [
-      {
-        country: countryCode,
-      },
-    ],
-  };
-};
-
-export const createCustomer = async (customerData: CustomerData): Promise<Customer> => {
+export const createCustomer = async (customerData: CustomerDraft): Promise<Customer> => {
   try {
-    const customerDraft = await createCustomerDraft(customerData);
     const response = await apiRoot
       .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
       .customers()
       .post({
-        body: customerDraft,
+        body: customerData,
       })
       .execute();
 
     const signInResult: CustomerSignInResult = response.body;
     console.log('Customer created:', signInResult.customer);
+    localStorage.setItem('newCustomer', JSON.stringify(signInResult.customer));
     return signInResult.customer;
   } catch (error) {
     console.error(`Failed to create customer: ${error}`);
@@ -88,33 +53,3 @@ export async function getCustomerByEmail(email: string): Promise<Customer | null
     throw error;
   }
 }
-
-// async function updateCustomerName(customerID: string, firstName: string, lastName: string): Promise<Customer> {
-//   const setFirstNameAction: { setFirstName: { firstName: string } } = {
-//     setFirstName: { firstName },
-//   };
-
-//   const setLastNameAction: { setLastName: { lastName: string } } = {
-//     setLastName: { lastName },
-//   };
-
-//   const customerUpdate: CustomerUpdate = {
-//     version: 1,
-//     actions: [setFirstNameAction, setLastNameAction],
-//   };
-
-//   try {
-//     const response = await apiRoot
-//       .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
-//       .customers()
-//       .withId({ ID: customerID })
-//       .post({ body: customerUpdate })
-//       .execute();
-//     const updatedCustomer: Customer = response.body;
-//     console.log(`Updated Customer Name: ${updatedCustomer.firstName} ${updatedCustomer.lastName}`);
-//     return updatedCustomer;
-//   } catch (error) {
-//     console.error(`Failed to update customer name: ${error}`);
-//     throw error;
-//   }
-// }

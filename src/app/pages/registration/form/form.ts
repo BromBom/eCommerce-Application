@@ -1,13 +1,13 @@
+import { CustomerDraft, BaseAddress } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../../components/simpleComponent';
 import RegProfile from './profile/profile';
 import RegAddress from './address/address';
 import Button from '../../../components/controls/button';
-// import Header from '../../../components/header/header';
-
 import './form.scss';
 import { Pages } from '../../../router/pages';
 import Router from '../../../router/router';
-import State, { KEY_USER_ID } from '../../../state/state';
+import State from '../../../state/state';
+import { createCustomer } from '../../../../api/customer';
 
 export default class RegForm {
   element: HTMLFormElement;
@@ -85,18 +85,42 @@ export default class RegForm {
 
     regForm.addEventListener('submit', (event) => {
       event.preventDefault();
-      console.log('создать пользователя');
-      if (regForm.elements.length > 14) console.log('установить 2 адреса');
-      else console.log('установить 1 адреса');
-      console.log('авторизироваться');
-      console.log('перейти на главную');
 
-      const userData = {
-        id: 'qwerty123',
+      const customerDraft: CustomerDraft = {
+        email: this.profile.inputEmail.getElement().value,
+        password: this.profile.inputPassword.getElement().value,
+        firstName: this.profile.inputName.getElement().value,
+        lastName: this.profile.inputLastName.getElement().value,
+        dateOfBirth: this.profile.inputDate.getElement().value,
+        addresses: [],
+        defaultBillingAddress: 0,
+        defaultShippingAddress: 0,
       };
 
-      this.state.setField(KEY_USER_ID, userData.id);
-      this.state.saveState();
+      const billingAddress: BaseAddress = {
+        streetName: this.address.inputStreet.getElement().value,
+        apartment: this.address.inputStreetNumber.getElement().value,
+        city: this.address.inputCity.getElement().value,
+        postalCode: this.address.inputPostalCode.getElement().value,
+        country: this.address.inputCountry.getElement().value,
+      };
+
+      const shippingAddress: BaseAddress = {
+        streetName: this.address.inputStreet.getElement().value,
+        apartment: this.address.inputStreetNumber.getElement().value,
+        city: this.address.inputCity.getElement().value,
+        postalCode: this.address.inputPostalCode.getElement().value,
+        country: this.address.inputCountry.getElement().value,
+      };
+
+      if (regForm.elements.length > 14) {
+        customerDraft.addresses!.push(billingAddress, shippingAddress);
+        createCustomer(customerDraft);
+      } else {
+        customerDraft.addresses!.push(billingAddress);
+        createCustomer(customerDraft);
+      }
+
       this.router.navigate(Pages.PRODUCT);
     });
 

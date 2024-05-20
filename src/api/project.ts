@@ -19,8 +19,4 @@ apiRoot
   })
   .catch(console.error);
 
-// const getEndPoint = () => {
-//   return apiRoot.shoppingLists().get();
-// };
-
 export default getProject;

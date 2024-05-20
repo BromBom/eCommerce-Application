@@ -80,8 +80,6 @@ export default class Header extends Layout {
   updateLinks(pages: { [key: string]: string }) {
     const navElement = this.navElement.getElement();
 
-    console.log(navElement, 'current element');
-
     if (navElement) {
       navElement.innerHTML = '';
       this.headerLinkElements.clear();
@@ -109,7 +107,6 @@ export default class Header extends Layout {
   }
 
   handleStorageChange(event: StorageEvent) {
-    console.log(event.key);
     if (event.key === KEY_USER_ID) {
       this.updateLinksBasedOnState();
     }
