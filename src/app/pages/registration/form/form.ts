@@ -7,7 +7,12 @@ import './form.scss';
 import { Pages } from '../../../router/pages';
 import Router from '../../../router/router';
 import State from '../../../state/state';
-import { createCustomer } from '../../../../api/customer';
+import {
+  createCustomer,
+  SetDefaultBillingAddress,
+  SetDefaultShippingAddress,
+  getCustomerByID,
+} from '../../../../api/customer';
 
 export default class RegForm {
   element: HTMLFormElement;
@@ -83,8 +88,9 @@ export default class RegForm {
       checkButtonSubmit(arrFormInputElements);
     });
 
-    regForm.addEventListener('submit', (event) => {
+    regForm.addEventListener('submit', async (event) => {
       event.preventDefault();
+      let customerID: string = '';
 
       const customerDraft: CustomerDraft = {
         email: this.profile.inputEmail.getElement().value,
@@ -93,8 +99,6 @@ export default class RegForm {
         lastName: this.profile.inputLastName.getElement().value,
         dateOfBirth: this.profile.inputDate.getElement().value,
         addresses: [],
-        defaultBillingAddress: 0,
-        defaultShippingAddress: 0,
       };
 
       const billingAddress: BaseAddress = {
@@ -115,11 +119,27 @@ export default class RegForm {
 
       if (regForm.elements.length > 14) {
         customerDraft.addresses!.push(billingAddress, shippingAddress);
-        createCustomer(customerDraft);
+        const newCustomer = await createCustomer(customerDraft);
+        const newCustomerWithBilling = await SetDefaultBillingAddress(
+          newCustomer.id,
+          newCustomer.version,
+          newCustomer.addresses[0].id
+        );
+        await SetDefaultShippingAddress(
+          newCustomer.id,
+          newCustomerWithBilling.body.version,
+          newCustomer.addresses[1].id
+        );
+        customerID = newCustomer.id;
       } else {
         customerDraft.addresses!.push(billingAddress);
-        createCustomer(customerDraft);
+        const newCustomer = await createCustomer(customerDraft);
+        await SetDefaultBillingAddress(newCustomer.id, newCustomer.version, newCustomer.addresses[0].id);
+        customerID = newCustomer.id;
       }
+
+      const newCustomer = await getCustomerByID(customerID);
+      localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
 
       this.router.navigate(Pages.PRODUCT);
     });

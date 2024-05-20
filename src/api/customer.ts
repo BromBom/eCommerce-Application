@@ -1,11 +1,4 @@
-import {
-  CustomerSignInResult,
-  // CustomerUpdateAction,
-  CustomerPagedQueryResponse,
-  CustomerDraft,
-  Customer,
-  // CustomerUpdate,
-} from '@commercetools/platform-sdk';
+import { CustomerSignInResult, CustomerDraft, Customer } from '@commercetools/platform-sdk';
 import { apiRoot } from './BuildClient';
 
 export const createCustomer = async (customerData: CustomerDraft): Promise<Customer> => {
@@ -19,8 +12,6 @@ export const createCustomer = async (customerData: CustomerDraft): Promise<Custo
       .execute();
 
     const signInResult: CustomerSignInResult = response.body;
-    console.log('Customer created:', signInResult.customer);
-    localStorage.setItem('newCustomer', JSON.stringify(signInResult.customer));
     return signInResult.customer;
   } catch (error) {
     console.error(`Failed to create customer: ${error}`);
@@ -28,28 +19,78 @@ export const createCustomer = async (customerData: CustomerDraft): Promise<Custo
   }
 };
 
-export async function getCustomerByEmail(email: string): Promise<Customer | null> {
+export const SetDefaultBillingAddress = async (
+  customerID: string,
+  customerVersion: number,
+  addressId: string | undefined
+) => {
   try {
     const response = await apiRoot
       .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
       .customers()
-      .get({
-        queryArgs: { where: `email="${email}"` },
+      .withId({ ID: customerID })
+      .post({
+        body: {
+          version: customerVersion,
+          actions: [
+            {
+              action: 'setDefaultBillingAddress',
+              addressId,
+            },
+          ],
+        },
       })
       .execute();
+    return response;
+  } catch (error) {
+    console.error(`Failed to set Default Billing Address: ${error}`);
+    throw new Error(`Failed to set Default Billing Address: ${error}`);
+  }
+};
 
-    const customerToFind: CustomerPagedQueryResponse = response.body;
+export const SetDefaultShippingAddress = async (
+  customerID: string,
+  customerVersion: number,
+  addressId: string | undefined
+) => {
+  try {
+    const response = await apiRoot
+      .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+      .customers()
+      .withId({ ID: customerID })
+      .post({
+        body: {
+          version: customerVersion,
+          actions: [
+            {
+              action: 'setDefaultShippingAddress',
+              addressId,
+            },
+          ],
+        },
+      })
+      .execute();
+    return response;
+  } catch (error) {
+    console.error(`Failed to set Default Shipping Address: ${error}`);
+    throw new Error(`Failed to set Default Shipping Address: ${error}`);
+  }
+};
 
-    if (customerToFind.count === 0) {
-      console.log('This email address has not been registered.');
-      return null;
-    }
+export const getCustomerByID = async (customerID: string) => {
+  try {
+    const response = await apiRoot
+      .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+      .customers()
+      .withId({ ID: customerID })
+      .get()
+      .execute();
 
-    const foundCustomerID: string = customerToFind.results[0].id;
-    console.log(`Customer ID found by email: ${foundCustomerID}`);
-    return customerToFind.results[0];
+    const customer = response.body;
+
+    return customer;
   } catch (error) {
     console.error(`Failed to get customer by email: ${error}`);
     throw error;
   }
-}
+};
