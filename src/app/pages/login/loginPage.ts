@@ -2,6 +2,9 @@ import { apiRoot } from '../../../api/BuildClient';
 import { getUserInfo, setUserInfo } from '../../utils/localstorage';
 import { hideLoading, showLoading, showMessage } from '../../utils/showmessage';
 import './loginPage.scss';
+import Header from '../../components/header/header';
+import State from '../../state/state';
+import Router from '../../router/router';
 
 interface User {
   name: string;
@@ -14,7 +17,7 @@ function handleError(error: Error, message: string): void {
 }
 
 const loginPage = {
-  after_render: (): void => {
+  after_render: (router: Router, state: State, header: Header): void => {
     console.log('after_render function is called');
     const signinForm = document.getElementById('signin-form');
     const checkPassword = document.getElementById('checkPassword');
@@ -60,8 +63,11 @@ const loginPage = {
             };
             setUserInfo(user);
 
-            // Перенаправление пользователя или выполнение других действий
-            // redirectUser();
+            state.saveUser(user);
+
+            header.configureView();
+
+            router.navigate('/');
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'An error occurred while logging in.');
@@ -107,10 +113,11 @@ const loginPage = {
               <form id="signin-form">
                 <div class="mb-3 form-floating">
                   <input type="email" class="form-control" name="email" id="email" aria-described by="emailHelp" placeholder="Email" required>
-                  <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                  <div id="emailHelp" class="form-text">example@email.com</div>
                 </div>
                 <div class="mb-3 form-floating">
                   <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                  <div id="emailHelp" class="form-text">Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number</div>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" value="FakePSW" id="checkPassword">

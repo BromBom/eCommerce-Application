@@ -1,5 +1,3 @@
-import './showmessage.scss';
-
 export const showLoading = (): void => {
   const loadingOverlay = document.getElementById('loading-overlay');
   if (loadingOverlay) {
@@ -15,30 +13,39 @@ export const hideLoading = (): void => {
 };
 
 export const showMessage = (message: string, callback?: () => void): void => {
-  const messageOverlay = document.getElementById('message-overlay');
-  if (messageOverlay) {
-    messageOverlay.innerHTML = `
-            <div class="card m-5">
-                <div id="message-overlay-content" class="card-body font-weight-bold">${message}</div>
-                <a id="message-overlay-close-button" class="btn btn-primary">OK</a>
-            </div>
-        `;
-    messageOverlay.classList.add('active');
-    const closeButton = document.getElementById('message-overlay-close-button');
+  const messageContainer = document.getElementById('message-container');
+
+  if (messageContainer) {
+    messageContainer.innerHTML = `
+      <div class="message-content">
+        <div class="message-text">${message}</div>
+        <button id="message-close-button" class="message-close-button">OK</button>
+      </div>
+    `;
+    messageContainer.classList.add('active');
+
+    const closeButton = document.getElementById('message-close-button');
     if (closeButton) {
-      closeButton.addEventListener('click', () => {
-        messageOverlay.classList.remove('active');
+      const closeOverlay = () => {
+        messageContainer.classList.remove('active');
         if (callback) {
           callback();
         }
-      });
+        hideLoading();
+      };
+
+      closeButton.addEventListener('click', closeOverlay);
+
+      setTimeout(closeOverlay, 5000);
     }
   }
 };
 
 export function handleError(error: Error, message: string): void {
   console.error(error);
-  showMessage(message);
+  showMessage(message, () => {
+    hideLoading();
+  });
 }
 
 // export const redirectUser = (): void => {
