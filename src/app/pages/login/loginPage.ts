@@ -5,6 +5,7 @@ import './loginPage.scss';
 import Header from '../../components/header/header';
 import State from '../../state/state';
 import Router from '../../router/router';
+import { Pages } from '../../router/pages';
 
 interface User {
   name: string;
@@ -46,6 +47,7 @@ const loginPage = {
               })
               .execute();
             console.log('Request sent, waiting for response...');
+            console.log(response);
 
             hideLoading();
 
@@ -56,6 +58,7 @@ const loginPage = {
 
             const data = response.body;
             console.log('Response received:', data);
+            localStorage.setItem('newCustomer', JSON.stringify(data));
 
             const user: User = {
               name: `${data.customer.firstName} ${data.customer.lastName}`,
@@ -67,10 +70,10 @@ const loginPage = {
 
             header.configureView();
 
-            router.navigate('/');
+            router.navigate(Pages.PRODUCT);
           } catch (error) {
             if (error instanceof Error) {
-              handleError(error, 'An error occurred while logging in.');
+              handleError(error, error.message);
             } else {
               console.error(error);
               handleError(new Error('Invalid form data'), 'Please enter both email and password.');
