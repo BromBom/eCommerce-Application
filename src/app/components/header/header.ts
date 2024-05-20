@@ -80,8 +80,6 @@ export default class Header extends Layout {
   updateLinks(pages: { [key: string]: string }) {
     const navElement = this.navElement.getElement();
 
-    console.log(navElement, 'current element');
-
     if (navElement) {
       navElement.innerHTML = '';
       this.headerLinkElements.clear();
