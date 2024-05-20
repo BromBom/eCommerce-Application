@@ -1,13 +1,18 @@
+import { CustomerDraft, BaseAddress } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../../components/simpleComponent';
 import RegProfile from './profile/profile';
 import RegAddress from './address/address';
 import Button from '../../../components/controls/button';
-// import Header from '../../../components/header/header';
-
 import './form.scss';
 import { Pages } from '../../../router/pages';
 import Router from '../../../router/router';
-import State, { KEY_USER_ID } from '../../../state/state';
+import State from '../../../state/state';
+import {
+  createCustomer,
+  SetDefaultBillingAddress,
+  SetDefaultShippingAddress,
+  getCustomerByID,
+} from '../../../../api/customer';
 
 export default class RegForm {
   element: HTMLFormElement;
@@ -83,20 +88,59 @@ export default class RegForm {
       checkButtonSubmit(arrFormInputElements);
     });
 
-    regForm.addEventListener('submit', (event) => {
+    regForm.addEventListener('submit', async (event) => {
       event.preventDefault();
-      console.log('создать пользователя');
-      if (regForm.elements.length > 14) console.log('установить 2 адреса');
-      else console.log('установить 1 адреса');
-      console.log('авторизироваться');
-      console.log('перейти на главную');
+      let customerID: string = '';
 
-      const userData = {
-        id: 'qwerty123',
+      const customerDraft: CustomerDraft = {
+        email: this.profile.inputEmail.getElement().value,
+        password: this.profile.inputPassword.getElement().value,
+        firstName: this.profile.inputName.getElement().value,
+        lastName: this.profile.inputLastName.getElement().value,
+        dateOfBirth: this.profile.inputDate.getElement().value,
+        addresses: [],
       };
 
-      this.state.setField(KEY_USER_ID, userData.id);
-      this.state.saveState();
+      const billingAddress: BaseAddress = {
+        streetName: this.address.inputStreet.getElement().value,
+        apartment: this.address.inputStreetNumber.getElement().value,
+        city: this.address.inputCity.getElement().value,
+        postalCode: this.address.inputPostalCode.getElement().value,
+        country: this.address.inputCountry.getElement().value,
+      };
+
+      const shippingAddress: BaseAddress = {
+        streetName: this.address.inputStreet.getElement().value,
+        apartment: this.address.inputStreetNumber.getElement().value,
+        city: this.address.inputCity.getElement().value,
+        postalCode: this.address.inputPostalCode.getElement().value,
+        country: this.address.inputCountry.getElement().value,
+      };
+
+      if (regForm.elements.length > 14) {
+        customerDraft.addresses!.push(billingAddress, shippingAddress);
+        const newCustomer = await createCustomer(customerDraft);
+        const newCustomerWithBilling = await SetDefaultBillingAddress(
+          newCustomer.id,
+          newCustomer.version,
+          newCustomer.addresses[0].id
+        );
+        await SetDefaultShippingAddress(
+          newCustomer.id,
+          newCustomerWithBilling.body.version,
+          newCustomer.addresses[1].id
+        );
+        customerID = newCustomer.id;
+      } else {
+        customerDraft.addresses!.push(billingAddress);
+        const newCustomer = await createCustomer(customerDraft);
+        await SetDefaultBillingAddress(newCustomer.id, newCustomer.version, newCustomer.addresses[0].id);
+        customerID = newCustomer.id;
+      }
+
+      const newCustomer = await getCustomerByID(customerID);
+      localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+
       this.router.navigate(Pages.PRODUCT);
     });
 
