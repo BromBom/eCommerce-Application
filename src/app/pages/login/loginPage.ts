@@ -20,20 +20,61 @@ function handleError(error: Error, message: string): void {
 const loginPage = {
   after_render: (router: Router, state: State, header: Header): void => {
     console.log('after_render function is called');
-    const signinForm = document.getElementById('signin-form');
-    const checkPassword = document.getElementById('checkPassword');
-    if (signinForm) {
+    const signinForm = document.getElementById('signin-form') as HTMLFormElement | null;
+    const emailInput = document.getElementById('email') as HTMLInputElement | null;
+    const passwordInput = document.getElementById('password') as HTMLInputElement | null;
+    const checkPassword = document.getElementById('checkPassword') as HTMLInputElement | null;
+
+    if (signinForm && emailInput && passwordInput) {
+      emailInput.addEventListener('input', () => {
+        const email = emailInput.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          emailInput.setCustomValidity('Please enter a valid email address.');
+        } else {
+          emailInput.setCustomValidity('');
+        }
+        emailInput.reportValidity();
+      });
+
+      passwordInput.addEventListener('input', () => {
+        const password = passwordInput.value.trim();
+        const passwordLengthOk = password.length >= 8;
+        const containsUpperCase = /[A-Z]/.test(password);
+        const containsLowerCase = /[a-z]/.test(password);
+        const containsNumber = /[0-9]/.test(password);
+        const containsSpecialChar = /[!@#$%^&*]/.test(password);
+
+        let errorMessage = '';
+        if (!passwordLengthOk) {
+          errorMessage += 'Password must be at least 8 characters long. ';
+        }
+        if (!containsUpperCase) {
+          errorMessage += 'Password must contain at least one uppercase letter. ';
+        }
+        if (!containsLowerCase) {
+          errorMessage += 'Password must contain at least one lowercase letter. ';
+        }
+        if (!containsNumber) {
+          errorMessage += 'Password must contain at least one number. ';
+        }
+        if (!containsSpecialChar) {
+          errorMessage += 'Password should contain at least one special character (e.g., !@#$%^&*).';
+        }
+
+        passwordInput.setCustomValidity(errorMessage);
+        passwordInput.reportValidity();
+      });
+
       signinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         console.log('Submit button is clicked');
-        showLoading();
-        const emailInput = document.getElementById('email') as HTMLInputElement | null;
-        const passwordInput = document.getElementById('password') as HTMLInputElement | null;
-        console.log(emailInput, passwordInput);
-        if (emailInput && passwordInput) {
-          const email = emailInput.value;
-          const password = passwordInput.value;
-          console.log(`Email: ${email}, Password: ${password}`);
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (emailInput.validity.valid && passwordInput.validity.valid) {
+          showLoading();
           try {
             console.log('Sending request to commercetools API...');
             const response = await apiRoot
@@ -72,6 +113,7 @@ const loginPage = {
 
             router.navigate(Pages.PRODUCT);
           } catch (error) {
+            hideLoading();
             if (error instanceof Error) {
               handleError(error, error.message);
             } else {
@@ -80,7 +122,7 @@ const loginPage = {
             }
           }
         } else {
-          handleError(new Error('Invalid form data'), 'Please enter both email and password.');
+          handleError(new Error('Invalid form data'), 'Please enter valid email and password.');
         }
       });
     } else {
@@ -101,7 +143,6 @@ const loginPage = {
     }
   },
   render: (): string => {
-    // Если пользователь уже вошел в систему, перенаправляем его на главную страницу
     if (getUserInfo().name) {
       // redirectUser();
     }
@@ -115,17 +156,18 @@ const loginPage = {
             <div class="modal-body">
               <form id="signin-form">
                 <div class="mb-3 form-floating">
-                  <input type="email" class="form-control" name="email" id="email" aria-described by="emailHelp" placeholder="Email" required>
+                  <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Email" required>
                   <div id="emailHelp" class="form-text">example@email.com</div>
                 </div>
                 <div class="mb-3 form-floating">
                   <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
-                  <div id="emailHelp" class="form-text">Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number</div>
+                  <div id="passwordHelp" class="form-text">Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number</div>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" value="FakePSW" id="checkPassword">
                   <label class="form-check-label" for="checkPassword">Show Password</label>
                 </div>
+                <div id="error-container" class="alert alert-danger" style="display: none;"></div>
                 <button type="submit" class="btn btn-primary mt-3">Login</button>
               </form>
             </div>
