@@ -131,7 +131,7 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            this.setContent(Pages.NOT_FOUND, new NotFound());
+            this.setContent(Pages.NOT_FOUND, new NotFound(this.router));
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Page not found.');
