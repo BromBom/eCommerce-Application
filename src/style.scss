@@ -31,3 +31,79 @@ body {
   height: 100vh;
   margin: 0 auto;
 }
+
+/* Overlay loading */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(16, 16, 16, 0.5);
+}
+
+.loading-overlay.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Spinner styles */
+.spinner {
+  border: 8px solid rgba(255, 255, 255, 0.3);
+  border-top: 8px solid white;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* message overlay */
+#message-container {
+  position: fixed;
+  top: 20px;
+  right: -300px;
+  width: 250px;
+  padding: 10px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: right 0.5s ease-in-out;
+  z-index: 1000;
+}
+
+#message-container.active {
+  right: 20px;
+}
+
+.message-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.message-text {
+  flex-grow: 1;
+  padding-right: 10px;
+}
+
+.message-close-button {
+  background: none;
+  border: none;
+  color: #721c24;
+  font-weight: bold;
+  cursor: pointer;
+}

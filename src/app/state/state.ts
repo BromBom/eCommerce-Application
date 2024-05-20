@@ -1,5 +1,10 @@
 export const KEY_USER_ID = 'userID';
 
+interface User {
+  name: string;
+  email: string;
+}
+
 export default class State {
   fields: Map<string, string>;
 
@@ -20,15 +25,14 @@ export default class State {
   }
 
   saveState() {
-    const fiedlsObject = Object.fromEntries(this.fields.entries());
-    localStorage.setItem(KEY_USER_ID, JSON.stringify(fiedlsObject));
+    const fieldsObject = Object.fromEntries(this.fields.entries());
+    localStorage.setItem(KEY_USER_ID, JSON.stringify(fieldsObject));
   }
 
   loadState() {
     const storageItem = localStorage.getItem(KEY_USER_ID);
     if (storageItem) {
       const fieldObject = JSON.parse(storageItem);
-
       this.fields = new Map(Object.entries(fieldObject));
       return this.fields;
     }
@@ -37,7 +41,19 @@ export default class State {
 
   clearState() {
     this.fields.clear();
-
     localStorage.clear();
+  }
+
+  saveUser(user: User) {
+    this.setField('name', user.name);
+    this.setField('email', user.email);
+    this.saveState();
+  }
+
+  loadUser(): User {
+    return {
+      name: this.getField('name') || '',
+      email: this.getField('email') || '',
+    };
   }
 }
