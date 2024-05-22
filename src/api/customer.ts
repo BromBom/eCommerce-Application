@@ -1,8 +1,10 @@
 import { CustomerSignInResult, CustomerDraft, Customer } from '@commercetools/platform-sdk';
 import { apiRoot } from './BuildClient';
+import { handleError, showLoading, hideLoading } from '../app/utils/showmessage';
 
 export const createCustomer = async (customerData: CustomerDraft): Promise<Customer> => {
   try {
+    showLoading();
     const response = await apiRoot
       .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
       .customers()
@@ -11,10 +13,12 @@ export const createCustomer = async (customerData: CustomerDraft): Promise<Custo
       })
       .execute();
 
+    hideLoading();
     const signInResult: CustomerSignInResult = response.body;
     return signInResult.customer;
   } catch (error) {
     console.error(`Failed to create customer: ${error}`);
+    if (error instanceof Error) handleError(error, error.message);
     throw new Error(`Failed to create customer: ${error}`);
   }
 };
@@ -25,6 +29,7 @@ export const SetDefaultBillingAddress = async (
   addressId: string | undefined
 ) => {
   try {
+    showLoading();
     const response = await apiRoot
       .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
       .customers()
@@ -41,9 +46,10 @@ export const SetDefaultBillingAddress = async (
         },
       })
       .execute();
+    hideLoading();
     return response;
   } catch (error) {
-    console.error(`Failed to set Default Billing Address: ${error}`);
+    if (error instanceof Error) handleError(error, error.message);
     throw new Error(`Failed to set Default Billing Address: ${error}`);
   }
 };
@@ -54,6 +60,7 @@ export const SetDefaultShippingAddress = async (
   addressId: string | undefined
 ) => {
   try {
+    showLoading();
     const response = await apiRoot
       .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
       .customers()
@@ -70,15 +77,17 @@ export const SetDefaultShippingAddress = async (
         },
       })
       .execute();
+    hideLoading();
     return response;
   } catch (error) {
-    console.error(`Failed to set Default Shipping Address: ${error}`);
+    if (error instanceof Error) handleError(error, error.message);
     throw new Error(`Failed to set Default Shipping Address: ${error}`);
   }
 };
 
 export const getCustomerByID = async (customerID: string) => {
   try {
+    showLoading();
     const response = await apiRoot
       .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
       .customers()
@@ -86,11 +95,12 @@ export const getCustomerByID = async (customerID: string) => {
       .get()
       .execute();
 
+    hideLoading();
     const customer = response.body;
 
     return customer;
   } catch (error) {
-    console.error(`Failed to get customer by email: ${error}`);
+    if (error instanceof Error) handleError(error, error.message);
     throw error;
   }
 };

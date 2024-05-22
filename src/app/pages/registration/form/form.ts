@@ -140,6 +140,7 @@ export default class RegForm {
 
       const newCustomer = await getCustomerByID(customerID);
       localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+      localStorage.setItem('userID', JSON.stringify(newCustomer));
 
       this.router.navigate(Pages.PRODUCT);
     });
