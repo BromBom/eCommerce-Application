@@ -56,7 +56,7 @@ export default class RegAddress {
         'Must contain at least one character'
       )
     );
-    const labelStreet = creatInputWithLabel(this.inputStreet.getElement(), 'Street:', 'Washington Pl, 36', 'text');
+    const labelStreet = creatInputWithLabel(this.inputStreet.getElement(), 'Street:', 'Washington', 'text');
     const msgErrStreet = this.massageErrorStreet.getElement();
 
     this.inputStreetNumber.addListener('input', () =>
@@ -93,14 +93,14 @@ export default class RegAddress {
         this.inputPostalCode.getElement(),
         this.massageErrorPostalCode.getElement(),
         4,
-        '[a-zA-Z0-9\\s]{5,}',
-        'Must follow the format for the country'
+        '[0-9]{5}-[0-9]{5}',
+        'Must follow the format "83703-83728"'
       )
     );
     const labelPostalCode = creatInputWithLabel(
       this.inputPostalCode.getElement(),
       'Postal code:',
-      '12345 or A1B 2C3',
+      '83703-83728',
       'text'
     );
     const msgErrPostalCode = this.massageErrorPostalCode.getElement();
@@ -110,11 +110,11 @@ export default class RegAddress {
         this.inputCountry.getElement(),
         this.massageErrorCountry.getElement(),
         1,
-        '[A-Z]{2,}',
-        'Must be a valid country'
+        'US',
+        'Must be "US" only'
       )
     );
-    const labelCountry = creatInputWithLabel(this.inputCountry.getElement(), 'Country:', 'US or RU', 'text');
+    const labelCountry = creatInputWithLabel(this.inputCountry.getElement(), 'Country:', 'US only', 'text');
     const msgErrCountry = this.massageErrorCountry.getElement();
 
     regAddress.classList.add('registration__address');

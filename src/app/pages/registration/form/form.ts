@@ -3,7 +3,6 @@ import SimpleComponent from '../../../components/simpleComponent';
 import RegProfile from './profile/profile';
 import RegAddress from './address/address';
 import Button from '../../../components/controls/button';
-import './form.scss';
 import { Pages } from '../../../router/pages';
 import Router from '../../../router/router';
 import State from '../../../state/state';
@@ -13,6 +12,8 @@ import {
   SetDefaultShippingAddress,
   getCustomerByID,
 } from '../../../../api/customer';
+
+import './form.scss';
 
 export default class RegForm {
   element: HTMLFormElement;
