@@ -42,7 +42,7 @@ export const showMessage = (message: string, callback?: () => void): void => {
 };
 
 export function handleError(error: Error, message: string): void {
-  console.error(error);
+  // console.error(error);
   showMessage(message, () => {
     hideLoading();
   });

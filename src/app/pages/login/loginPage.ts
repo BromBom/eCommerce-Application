@@ -1,5 +1,5 @@
 import { apiRoot } from '../../../api/BuildClient';
-import { getUserInfo, setUserInfo } from '../../utils/localstorage';
+import { setUserInfo } from '../../utils/localstorage';
 import { hideLoading, showLoading, showMessage } from '../../utils/showmessage';
 import './loginPage.scss';
 import Header from '../../components/header/header';
@@ -12,14 +12,13 @@ interface User {
   email: string;
 }
 
-function handleError(error: Error, message: string): void {
+export function handleError(error: Error, message: string): void {
   console.error(error);
   showMessage(message);
 }
 
 const loginPage = {
   after_render: (router: Router, state: State, header: Header): void => {
-    console.log('after_render function is called');
     const signinForm = document.getElementById('signin-form') as HTMLFormElement | null;
     const emailInput = document.getElementById('email') as HTMLInputElement | null;
     const passwordInput = document.getElementById('password') as HTMLInputElement | null;
@@ -28,7 +27,7 @@ const loginPage = {
     if (signinForm && emailInput && passwordInput) {
       emailInput.addEventListener('input', () => {
         const email = emailInput.value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegex = /[a-zA-Z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$/;
         if (!emailRegex.test(email)) {
           emailInput.setCustomValidity('Please enter a valid email address.');
         } else {
@@ -43,7 +42,6 @@ const loginPage = {
         const containsUpperCase = /[A-Z]/.test(password);
         const containsLowerCase = /[a-z]/.test(password);
         const containsNumber = /[0-9]/.test(password);
-        const containsSpecialChar = /[!@#$%^&*]/.test(password);
 
         let errorMessage = '';
         if (!passwordLengthOk) {
@@ -57,9 +55,6 @@ const loginPage = {
         }
         if (!containsNumber) {
           errorMessage += 'Password must contain at least one number. ';
-        }
-        if (!containsSpecialChar) {
-          errorMessage += 'Password should contain at least one special character (e.g., !@#$%^&*).';
         }
 
         passwordInput.setCustomValidity(errorMessage);
@@ -90,6 +85,8 @@ const loginPage = {
             console.log('Request sent, waiting for response...');
             console.log(response);
 
+            localStorage.setItem('newCustomer', JSON.stringify(response.body.customer));
+
             hideLoading();
 
             if (response.statusCode !== 200) {
@@ -99,7 +96,6 @@ const loginPage = {
 
             const data = response.body;
             console.log('Response received:', data);
-            localStorage.setItem('newCustomer', JSON.stringify(data));
 
             const user: User = {
               name: `${data.customer.firstName} ${data.customer.lastName}`,
@@ -108,6 +104,9 @@ const loginPage = {
             setUserInfo(user);
 
             state.saveUser(user);
+
+            localStorage.setItem('newCustomer', JSON.stringify(data.customer));
+            localStorage.setItem('userID', JSON.stringify(data.customer));
 
             header.configureView();
 
@@ -143,9 +142,6 @@ const loginPage = {
     }
   },
   render: (): string => {
-    if (getUserInfo().name) {
-      // redirectUser();
-    }
     return `
       <div>
         <div class="modal-dialog modal-dialog-centered">

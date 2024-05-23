@@ -3,7 +3,6 @@ import SimpleComponent from '../../../components/simpleComponent';
 import RegProfile from './profile/profile';
 import RegAddress from './address/address';
 import Button from '../../../components/controls/button';
-import './form.scss';
 import { Pages } from '../../../router/pages';
 import Router from '../../../router/router';
 import State from '../../../state/state';
@@ -13,6 +12,10 @@ import {
   SetDefaultShippingAddress,
   getCustomerByID,
 } from '../../../../api/customer';
+
+import { handleError, showLoading, hideLoading } from '../../../utils/showmessage';
+
+import './form.scss';
 
 export default class RegForm {
   element: HTMLFormElement;
@@ -117,31 +120,39 @@ export default class RegForm {
         country: this.address.inputCountry.getElement().value,
       };
 
-      if (regForm.elements.length > 14) {
-        customerDraft.addresses!.push(billingAddress, shippingAddress);
-        const newCustomer = await createCustomer(customerDraft);
-        const newCustomerWithBilling = await SetDefaultBillingAddress(
-          newCustomer.id,
-          newCustomer.version,
-          newCustomer.addresses[0].id
-        );
-        await SetDefaultShippingAddress(
-          newCustomer.id,
-          newCustomerWithBilling.body.version,
-          newCustomer.addresses[1].id
-        );
-        customerID = newCustomer.id;
-      } else {
-        customerDraft.addresses!.push(billingAddress);
-        const newCustomer = await createCustomer(customerDraft);
-        await SetDefaultBillingAddress(newCustomer.id, newCustomer.version, newCustomer.addresses[0].id);
-        customerID = newCustomer.id;
+      try {
+        showLoading();
+        if (regForm.elements.length > 14) {
+          customerDraft.addresses!.push(billingAddress, shippingAddress);
+          const newCustomer = await createCustomer(customerDraft);
+          const newCustomerWithBilling = await SetDefaultBillingAddress(
+            newCustomer.id,
+            newCustomer.version,
+            newCustomer.addresses[0].id
+          );
+          await SetDefaultShippingAddress(
+            newCustomer.id,
+            newCustomerWithBilling.body.version,
+            newCustomer.addresses[1].id
+          );
+          customerID = newCustomer.id;
+        } else {
+          customerDraft.addresses!.push(billingAddress);
+          const newCustomer = await createCustomer(customerDraft);
+          await SetDefaultBillingAddress(newCustomer.id, newCustomer.version, newCustomer.addresses[0].id);
+          customerID = newCustomer.id;
+        }
+
+        const newCustomer = await getCustomerByID(customerID);
+        localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+        localStorage.setItem('userID', JSON.stringify(newCustomer));
+
+        this.router.navigate(Pages.PRODUCT);
+        hideLoading();
+      } catch (error) {
+        console.error(`Failed to create customer: ${error}`);
+        handleError(new Error('Failed to create customer'), `Failed to create customer! ${error}`);
       }
-
-      const newCustomer = await getCustomerByID(customerID);
-      localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
-
-      this.router.navigate(Pages.PRODUCT);
     });
 
     return regForm;
