@@ -9,24 +9,25 @@ The application is responsive and displays correctly on various devices with a m
 ## Technology stack
 
 The application is developed in a static modular builder [`Wabpack`](https://webpack.js.org/) in a strongly typed programming language [`TypeScript`](https://www.typescriptlang.org/), with connection of a standard set of auxiliary tools:
- - [`Sass`](https://sass-lang.com/) - preprocessor for simplified work with CSS files.
- - [`ESLint`](https://eslint.org/) - JavaScript programming language linter designed to parse and evaluate patterns in code.
- - [`Prettier`](https://prettier.io/) - tool for auto-formatting code, aimed at using strictly defined rules for program design.
- - [`Husky`](https://typicode.github.io/husky/) - automatically lint your commit messages, code, and run tests upon committing or pushing.
- - [`Jest`](https://jestjs.io/) - JavaScript testing framework designed to ensure correctness of any JavaScript codebase.
 
- ### Available scripts
+- [`Sass`](https://sass-lang.com/) - preprocessor for simplified work with CSS files.
+- [`ESLint`](https://eslint.org/) - JavaScript programming language linter designed to parse and evaluate patterns in code.
+- [`Prettier`](https://prettier.io/) - tool for auto-formatting code, aimed at using strictly defined rules for program design.
+- [`Husky`](https://typicode.github.io/husky/) - automatically lint your commit messages, code, and run tests upon committing or pushing.
+- [`Jest`](https://jestjs.io/) - JavaScript testing framework designed to ensure correctness of any JavaScript codebase.
 
- - `npm run start` - launch `Webpack` server in development mode.
- - `npm run build` - launch `Webpack` to collect production bundle.
- - `npm run lint` - start `ESlint` checks.
- - `npm run ci:format` - start `Prettier` checking issues.
- - `npm run format` - start `Prettier` auto-formatting.
- - `npm run test` - start `Jest` testing.
+### Available scripts
 
- ## Setup instructions
+- `npm run start` - launch `Webpack` server in development mode.
+- `npm run build` - launch `Webpack` to collect production bundle.
+- `npm run lint` - start `ESlint` checks.
+- `npm run ci:format` - start `Prettier` checking issues.
+- `npm run format` - start `Prettier` auto-formatting.
+- `npm run test` - start `Jest` testing.
 
- 1. Install `Node.js`.
- 2. Clone this repository: `git clone https://github.com/BromBom/eCommerce-Application.git`.
- 3. Go to folder `eCommerce-Application`.
- 4. To install all dependencies use `npm install`.
+## Setup instructions
+
+1.  Install `Node.js`.
+2.  Clone this repository: `git clone https://github.com/BromBom/eCommerce-Application.git`.
+3.  Go to folder `eCommerce-Application`.
+4.  To install all dependencies use `npm install`.
