@@ -9,6 +9,7 @@ $background-color: #ffffff;
   padding: 0;
   box-sizing: border-box;
   scrollbar-width: 0px;
+  list-style-type: none;
 }
 
 *::-webkit-scrollbar {
@@ -64,6 +65,7 @@ body {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -106,4 +108,35 @@ body {
   color: #721c24;
   font-weight: bold;
   cursor: pointer;
+}
+
+/* Rating */
+.bi {
+  color: #babd42;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+}
+
+.rating .review {
+  font-size: 14px;
+  font-weight: 500;
+  color: #363062;
+  padding-left: 30px;
+}
+
+.bi-person {
+  font-size: 20px;
+  color: #0066ff;
+  font-weight: 500;
+  padding-right: 5px;
+}
+
+.profile-name {
+  font-weight: 500;
+  font-size: 20px;
+  text-decoration: none;
 }

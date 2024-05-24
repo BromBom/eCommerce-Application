@@ -36,4 +36,12 @@ export default class Layout {
     const element = this.viewElementCreator.getElement();
     element?.classList.remove('nav-item__selected');
   }
+
+  setTextContent(text: string) {
+    this.viewElementCreator.setTextContent(text);
+  }
+
+  setHTMLContent(html: string) {
+    this.viewElementCreator.setHTMLContent(html);
+  }
 }

@@ -9,12 +9,16 @@ export default class BaseComponent<T extends HTMLElement> {
   element: T | null;
 
   constructor(params: Params) {
-    this.element = null;
-    this.createElement(params);
+    const { tag, classNames, text = '' } = params;
+    this.element = document.createElement(tag) as T;
+    this.element.classList.add(...classNames);
+    if (text) {
+      this.element.textContent = text;
+    }
   }
 
   getElement(): T | null {
-    return this.element;
+    return this.element || null;
   }
 
   addInnerElement(element: BaseComponent<T> | HTMLElement) {
@@ -27,15 +31,20 @@ export default class BaseComponent<T extends HTMLElement> {
   createElement(params: Params) {
     this.element = document.createElement(params.tag) as T;
     this.setCssClasses(params.classNames);
-    this.setTextContent(params.text);
     this.setCallback(params.callback);
+  }
+
+  setHTMLContent(html: string) {
+    if (this.element) {
+      this.element.innerHTML = html;
+    }
   }
 
   setCssClasses(cssClasses: string[] = []) {
     cssClasses.map((cssClass) => this.element?.classList.add(cssClass));
   }
 
-  setTextContent(text = '') {
+  setTextContent(text: string) {
     if (this.element) {
       this.element.textContent = text;
     }
