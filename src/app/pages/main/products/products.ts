@@ -1,7 +1,9 @@
 import { ProductProjection } from '@commercetools/platform-sdk';
 import Layout from '../../../layout/layout';
 import { queryProduct } from '../../../../api/project';
+import { addToCart } from '../cart/cart';
 import Rating from '../../../components/rating';
+import { CartItem } from '../../../types/types';
 
 const TEXT = 'PRODUCTS PAGE';
 
@@ -14,6 +16,7 @@ export default class Products extends Layout {
     super(params);
     this.configureView();
     this.renderProducts();
+    this.addEventListeners();
   }
 
   configureView() {
@@ -48,11 +51,11 @@ export default class Products extends Layout {
           return `
               <li>
                 <div class="product">
-                  <a href="/#/product/${product.id}">
+                  <a href="/#/product/${product.id}" class="product-link" data-id="${product.id}">
                     <img class="product-image" src="${imageUrl}" alt="${productName}" data-tilt>
                   </a>
                   <div class="product-name">
-                    <a href="/#/product/${product.id}">
+                    <a href="/#/product/${product.id}" class="product-link" data-id="${product.id}">
                       ${productName}
                     </a>
                   </div>
@@ -60,7 +63,7 @@ export default class Products extends Layout {
                     ${Rating.render({ value: rating, text: `${numReviews} reviews` })}
                   </div>
                   <div class="product-buttons">
-                    <a href="/#/product/${product.id}" class="buynow btn btn-primary" id="cartCheckout">Buy Now</a>
+                    <button class="buynow btn btn-primary" data-id="${product.id}" data-name="${productName}" data-price="${price}" data-image="${imageUrl}">Buy Now</button>
                     <div class="product-price">
                       $${price}
                     </div>
@@ -76,9 +79,37 @@ export default class Products extends Layout {
           ${productElements}
         </ul>
       `);
+
+      this.addEventListeners();
     } catch (error) {
       console.error(error);
       this.setHTMLContent('<div class="error">Failed to load products</div>');
     }
+  }
+
+  addEventListeners() {
+    const buyNowButtons = document.getElementsByClassName('buynow');
+    Array.from(buyNowButtons).forEach((button) => {
+      button.addEventListener('click', (e: Event) => {
+        const target = e.target as HTMLButtonElement;
+        const productId = target.getAttribute('data-id');
+        const productName = target.getAttribute('data-name');
+        const productPrice = parseFloat(target.getAttribute('data-price') || '0');
+        const productImage = target.getAttribute('data-image');
+
+        if (productId && productName && productImage) {
+          const cartItem: CartItem = {
+            product: productId,
+            name: productName,
+            image: productImage,
+            price: productPrice,
+            quantityInStock: 10,
+            qty: 1,
+          };
+
+          addToCart(cartItem, true);
+        }
+      });
+    });
   }
 }

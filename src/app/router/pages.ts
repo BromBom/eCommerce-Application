@@ -2,7 +2,7 @@ interface PagesProps {
   REGISTRATION: string;
   LOGIN: string;
   PRODUCT: string;
-  PRODUCTS: 'products';
+  PRODUCTS: string;
   NOT_FOUND: string;
   [key: string]: string;
 }

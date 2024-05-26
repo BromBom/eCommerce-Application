@@ -20,6 +20,7 @@ export type InputType =
   | 'search'
   | 'submit'
   | 'time';
+
 export interface ProductType {
   id: string;
   version: number;
@@ -68,4 +69,13 @@ export interface ProductResponse {
   count: number;
   total: number;
   results: ProductType[];
+}
+
+export interface CartItem {
+  product: string;
+  name: string;
+  image: string;
+  price: number;
+  quantityInStock: number;
+  qty: number;
 }
