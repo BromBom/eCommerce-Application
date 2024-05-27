@@ -92,6 +92,22 @@ export default class App {
         },
       },
       {
+        path: `${Pages.CART}`,
+        callback: async () => {
+          showLoading();
+          try {
+            const { default: Cart } = await import('./pages/main/cart/cart');
+            this.setContent(Pages.Cart, new Cart());
+          } catch (error) {
+            if (error instanceof Error) {
+              handleError(error, 'Failed to load products page.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
         path: `${Pages.LOGIN}`,
         callback: async () => {
           showLoading();

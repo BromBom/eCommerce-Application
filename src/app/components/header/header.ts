@@ -54,6 +54,19 @@ export default class Header extends Layout {
     const logoCreator = new BaseComponent<HTMLElement>(logoParams);
     this.viewElementCreator.addInnerElement(logoCreator);
 
+    const cartParams = {
+      tag: 'img' as keyof HTMLElementTagNameMap,
+      classNames: ['cart'],
+      text: '',
+      callback: () => {
+        router.navigate(Pages.CART);
+        this.clearSelectedItems();
+      },
+    };
+
+    const profileCreator = new BaseComponent<HTMLElement>(cartParams);
+    this.viewElementCreator.addInnerElement(profileCreator);
+
     const navParams = {
       tag: 'nav' as keyof HTMLElementTagNameMap,
       classNames: ['nav'],

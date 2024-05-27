@@ -3,6 +3,7 @@ interface PagesProps {
   LOGIN: string;
   PRODUCT: string;
   NOT_FOUND: string;
+  CART: string;
   [key: string]: string;
 }
 
@@ -13,6 +14,7 @@ const Pages: PagesProps = {
   NOT_FOUND: 'not-found',
   PROFILE: 'Profile',
   LOGOUT: 'Logout',
+  CART: 'cart',
 };
 
 const ID_SELECTOR = '{id}';
