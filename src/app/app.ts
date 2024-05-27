@@ -4,7 +4,7 @@ import Layout from './layout/layout';
 import Main from './pages/main/main';
 import NotFound from './pages/not-found/not-found';
 import Registration from './pages/registration/registration';
-import { Pages } from './router/pages';
+import { ID_SELECTOR, Pages } from './router/pages';
 import Router, { RouterParams } from './router/router';
 import State from './state/state';
 import LoginPageLayout from './layout/loginLayout';
@@ -65,7 +65,7 @@ export default class App {
           showLoading();
           try {
             const { default: Products } = await import('./pages/main/products/products');
-            this.setContent(Pages.Product, new Products());
+            this.setContent(Pages.Product, new Products(this.router));
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product page.');
@@ -81,7 +81,7 @@ export default class App {
           showLoading();
           try {
             const { default: Products } = await import('./pages/main/products/products');
-            this.setContent(Pages.Product, new Products());
+            this.setContent(Pages.Product, new Products(this.router));
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load products page.');
@@ -89,6 +89,13 @@ export default class App {
           } finally {
             hideLoading();
           }
+        },
+      },
+      {
+        path: `${Pages.PRODUCT}/${ID_SELECTOR}`,
+        callback: async (id) => {
+          const { default: Products } = await import('./pages/main/products/products');
+          this.setContent(Pages.Product, new Products(this.router, id));
         },
       },
       {
