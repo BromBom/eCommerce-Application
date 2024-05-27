@@ -1,6 +1,6 @@
 import Layout from '../../../layout/layout';
 import Router from '../../../router/router';
-import { cardsData } from '../../../data/cards';
+import { cardsData } from '../../../../data/cards';
 import ProductCard from './productCard/productCard';
 import ProductDetails from './productDetails/productDetails';
 
