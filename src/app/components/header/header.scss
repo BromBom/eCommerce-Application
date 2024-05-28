@@ -81,6 +81,9 @@ img {
   // border-radius: 50%;
 }
 
-img {
-  border-style: none;
+.cart {
+  position: absolute;
+  top: 40px;
+  right: 250px;
+  transform: translate(-50%, -50%);
 }

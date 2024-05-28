@@ -9,6 +9,7 @@ import Router, { RouterParams } from './router/router';
 import State from './state/state';
 import LoginPageLayout from './layout/loginLayout';
 import { showLoading, hideLoading, handleError } from './utils/showmessage';
+import Profile from './pages/main/profile/profile';
 
 export default class App {
   header?: null | Header;
@@ -143,6 +144,21 @@ export default class App {
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load registration page.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
+        path: `${Pages.PROFILE}`,
+        callback: async () => {
+          showLoading();
+          try {
+            this.setContent(Pages.PRODUCT, new Profile());
+          } catch (error) {
+            if (error instanceof Error) {
+              handleError(error, 'Page not found.');
             }
           } finally {
             hideLoading();
