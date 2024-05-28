@@ -1,4 +1,4 @@
-import './style.css';
+import './style.scss';
 import { Pages } from '../../../../router/pages';
 import Layout from '../../../../layout/layout';
 import BaseComponent from '../../../../components/baseComponent/baseComponent';
@@ -7,10 +7,10 @@ import Router from '../../../../router/router';
 
 const CARD_TEXT_MORE = 'More details...';
 
-export default class productCard extends Layout {
+export default class ProductCard extends Layout {
   card: ICard;
+
   router: Router;
-  // htmlElement: HTMLElement;
 
   constructor(card: ICard, router: Router) {
     const params = {
@@ -22,27 +22,26 @@ export default class productCard extends Layout {
     this.card = card;
     this.router = router;
 
-    // this.htmlElement = this.configureView();
     this.configureView();
   }
 
   configureView() {
-    let labelParams = {
+    const labelParams = {
       tag: 'label' as keyof HTMLElementTagNameMap,
       classNames: ['card__field'],
       text: this.card.name,
-    //   callback: () => null,
+      callback: () => null,
     };
     const creatorLabel = new BaseComponent(labelParams);
     this.viewElementCreator.addInnerElement(creatorLabel);
 
-    labelParams = {
-      tag: 'button',
+    const buttonParams = {
+      tag: 'button' as keyof HTMLElementTagNameMap,
       classNames: ['card__button'],
       text: CARD_TEXT_MORE,
       callback: this.buttonClickHandler.bind(this, `${Pages.PRODUCT}/${this.card.id}`),
     };
-    const creatorButton = new BaseComponent(labelParams);
+    const creatorButton = new BaseComponent(buttonParams);
     this.viewElementCreator.addInnerElement(creatorButton);
   }
 

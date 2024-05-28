@@ -2,7 +2,8 @@ import Layout from '../../../layout/layout';
 import Router from '../../../router/router';
 import { cardsData } from '../../../../data/cards';
 import ProductCard from './productCard/productCard';
-import ProductDetails from './productDetails/productDetails';
+import ProductDetailPage from './productDetailedPage/productDetailedPage';
+import './products.scss';
 
 export default class Products extends Layout {
   constructor(router: Router, id = '') {
@@ -30,7 +31,7 @@ export default class Products extends Layout {
     const selectedCard = cardsData.find((card) => card.id === id);
 
     if (selectedCard) {
-      const largeCardComponent = new ProductDetails(selectedCard, router);
+      const largeCardComponent = new ProductDetailPage(selectedCard, router);
       this.viewElementCreator.addInnerElement(largeCardComponent.getHtmlElement());
     }
   }

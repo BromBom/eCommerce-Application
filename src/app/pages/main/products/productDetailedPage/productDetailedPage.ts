@@ -1,48 +1,39 @@
-import CardView from '../card/card-view';
+import ProductCard from '../productCard/productCard';
 import { Pages } from '../../../../router/pages';
 import BaseComponent from '../../../../components/baseComponent/baseComponent';
-import './style.css';
+import './style.scss';
 
-const CssClasses = {
-  CONTAINER: 'card',
-  CONTAINER_FULL: 'card__full',
-  FIELD: 'card__field',
-  BUTTON: 'card__button',
-};
-const CARD_TEXT_BACK = 'Назад...';
+const CARD_TEXT_BACK = 'Go back...';
 
-export default class CardDetailView extends ProductCard {
+export default class ProductDetailPage extends ProductCard {
   configureView() {
-    this.viewElementCreator.setCssClasses([CssClasses.CONTAINER, CssClasses.CONTAINER_FULL]);
+    this.viewElementCreator.setCssClasses(['card', 'card__full']);
 
-    /**
-     * @type {import('../../../../util/element-creator').ElementParams}
-     */
     let labelParams = {
-      tag: 'label',
-      classNames: [CssClasses.FIELD],
-      textContent: this.card.name,
-      callback: null,
+      tag: 'label' as keyof HTMLElementTagNameMap,
+      classNames: ['card__field'],
+      text: this.card.name,
+      callback: () => null,
     };
-    let creatorLabel = new ElementCreator(labelParams);
+    let creatorLabel = new BaseComponent(labelParams);
     this.viewElementCreator.addInnerElement(creatorLabel);
 
     labelParams = {
       tag: 'label',
-      classNames: [CssClasses.FIELD],
-      textContent: this.card.description,
-      callback: null,
+      classNames: ['card__field'],
+      text: this.card.description,
+      callback: () => null,
     };
-    creatorLabel = new ElementCreator(labelParams);
+    creatorLabel = new BaseComponent(labelParams);
     this.viewElementCreator.addInnerElement(creatorLabel);
 
     const buttonParams = {
-      tag: 'button',
-      classNames: [CssClasses.BUTTON],
-      textContent: CARD_TEXT_BACK,
+      tag: 'button' as keyof HTMLElementTagNameMap,
+      classNames: ['card__button'],
+      text: CARD_TEXT_BACK,
       callback: this.buttonClickHandler.bind(this, `${Pages.PRODUCT}`),
     };
-    const creatorButton = new ElementCreator(buttonParams);
+    const creatorButton = new BaseComponent(buttonParams);
     this.viewElementCreator.addInnerElement(creatorButton);
   }
 }
