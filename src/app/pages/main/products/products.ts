@@ -1,18 +1,38 @@
 import Layout from '../../../layout/layout';
-
-const TEXT = 'PRODUCTS PAGE';
+import Router from '../../../router/router';
+import { cardsData } from '../../../../data/cards';
+import ProductCard from './productCard/productCard';
+import ProductDetailPage from './productDetailedPage/productDetailedPage';
+import './products.scss';
 
 export default class Products extends Layout {
-  constructor() {
+  constructor(router: Router, id = '') {
     const params = {
       tag: 'section' as keyof HTMLElementTagNameMap,
-      classNames: ['index'],
+      classNames: ['product'],
     };
     super(params);
-    this.configureView();
+
+    if (id) {
+      this.addLargeCardToView(router, id);
+    } else {
+      this.addSmallCardsToView(router);
+    }
   }
 
-  configureView() {
-    this.viewElementCreator.setTextContent(TEXT);
+  addSmallCardsToView(router: Router) {
+    cardsData.forEach((card) => {
+      const smallCardComponent = new ProductCard(card, router);
+      this.viewElementCreator.addInnerElement(smallCardComponent.getHtmlElement());
+    });
+  }
+
+  addLargeCardToView(router: Router, id: string) {
+    const selectedCard = cardsData.find((card) => card.id === id);
+
+    if (selectedCard) {
+      const largeCardComponent = new ProductDetailPage(selectedCard, router);
+      this.viewElementCreator.addInnerElement(largeCardComponent.getHtmlElement());
+    }
   }
 }

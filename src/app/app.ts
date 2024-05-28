@@ -4,11 +4,12 @@ import Layout from './layout/layout';
 import Main from './pages/main/main';
 import NotFound from './pages/not-found/not-found';
 import Registration from './pages/registration/registration';
-import { Pages } from './router/pages';
+import { ID_SELECTOR, Pages } from './router/pages';
 import Router, { RouterParams } from './router/router';
 import State from './state/state';
 import LoginPageLayout from './layout/loginLayout';
 import { showLoading, hideLoading, handleError } from './utils/showmessage';
+import Profile from './pages/main/profile/profile';
 
 export default class App {
   header?: null | Header;
@@ -65,7 +66,7 @@ export default class App {
           showLoading();
           try {
             const { default: Products } = await import('./pages/main/products/products');
-            this.setContent(Pages.Product, new Products());
+            this.setContent(Pages.Product, new Products(this.router));
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product page.');
@@ -81,7 +82,30 @@ export default class App {
           showLoading();
           try {
             const { default: Products } = await import('./pages/main/products/products');
-            this.setContent(Pages.Product, new Products());
+            this.setContent(Pages.Product, new Products(this.router));
+          } catch (error) {
+            if (error instanceof Error) {
+              handleError(error, 'Failed to load products page.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
+        path: `${Pages.PRODUCT}/${ID_SELECTOR}`,
+        callback: async (id) => {
+          const { default: Products } = await import('./pages/main/products/products');
+          this.setContent(Pages.Product, new Products(this.router, id));
+        },
+      },
+      {
+        path: `${Pages.CART}`,
+        callback: async () => {
+          showLoading();
+          try {
+            const { default: Cart } = await import('./pages/main/cart/cart');
+            this.setContent(Pages.Cart, new Cart());
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load products page.');
@@ -120,6 +144,21 @@ export default class App {
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load registration page.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
+        path: `${Pages.PROFILE}`,
+        callback: async () => {
+          showLoading();
+          try {
+            this.setContent(Pages.PRODUCT, new Profile());
+          } catch (error) {
+            if (error instanceof Error) {
+              handleError(error, 'Page not found.');
             }
           } finally {
             hideLoading();

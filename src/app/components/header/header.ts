@@ -42,7 +42,7 @@ export default class Header extends Layout {
     this.state = state;
 
     const logoParams = {
-      tag: 'img' as keyof HTMLElementTagNameMap,
+      tag: 'div' as keyof HTMLElementTagNameMap,
       classNames: ['logo'],
       text: '',
       callback: () => {
@@ -53,6 +53,19 @@ export default class Header extends Layout {
 
     const logoCreator = new BaseComponent<HTMLElement>(logoParams);
     this.viewElementCreator.addInnerElement(logoCreator);
+
+    const cartParams = {
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['cart'],
+      text: '',
+      callback: () => {
+        router.navigate(Pages.CART);
+        this.clearSelectedItems();
+      },
+    };
+
+    const cartCreator = new BaseComponent<HTMLElement>(cartParams);
+    this.viewElementCreator.addInnerElement(cartCreator);
 
     const navParams = {
       tag: 'nav' as keyof HTMLElementTagNameMap,
