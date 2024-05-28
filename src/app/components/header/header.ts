@@ -42,7 +42,7 @@ export default class Header extends Layout {
     this.state = state;
 
     const logoParams = {
-      tag: 'img' as keyof HTMLElementTagNameMap,
+      tag: 'div' as keyof HTMLElementTagNameMap,
       classNames: ['logo'],
       text: '',
       callback: () => {
@@ -55,7 +55,7 @@ export default class Header extends Layout {
     this.viewElementCreator.addInnerElement(logoCreator);
 
     const cartParams = {
-      tag: 'img' as keyof HTMLElementTagNameMap,
+      tag: 'div' as keyof HTMLElementTagNameMap,
       classNames: ['cart'],
       text: '',
       callback: () => {

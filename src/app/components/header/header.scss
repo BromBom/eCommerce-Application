@@ -67,9 +67,10 @@ img {
 }
 
 .cart {
-  height: 40px;
-  width: 40px;
-  background-image: url('../../../assets/cart.png');
+  height: 30px;
+  width: 30px;
+  background-image: url('../../../assets/shopping_cart_24dp_FILL0_wght400_GRAD0_opsz24.svg');
+  background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
   cursor: pointer;
@@ -77,5 +78,9 @@ img {
   border-width: 0;
   border-style: none;
   border-color: transparent;
-  border-radius: 50%;
+  // border-radius: 50%;
+}
+
+img {
+  border-style: none;
 }
