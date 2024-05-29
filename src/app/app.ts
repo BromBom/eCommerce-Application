@@ -1,15 +1,16 @@
+import { Customer } from '@commercetools/platform-sdk';
 import Footer from './components/footer/footer';
 import Header from './components/header/header';
 import Layout from './layout/layout';
 import Main from './pages/main/main';
 import NotFound from './pages/not-found/not-found';
 import Registration from './pages/registration/registration';
+import PersonalData from './pages/personalData/personalData';
 import { ID_SELECTOR, Pages } from './router/pages';
 import Router, { RouterParams } from './router/router';
 import State from './state/state';
 import LoginPageLayout from './layout/loginLayout';
 import { showLoading, hideLoading, handleError } from './utils/showmessage';
-import Profile from './pages/main/profile/profile';
 
 export default class App {
   header?: null | Header;
@@ -155,7 +156,11 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            this.setContent(Pages.PRODUCT, new Profile());
+            const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
+            const mainContainer = this.main!.getHtmlElement();
+            const personalData = new PersonalData(this.router, customer).getElement();
+            mainContainer.innerHTML = '';
+            mainContainer.append(personalData);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Page not found.');
