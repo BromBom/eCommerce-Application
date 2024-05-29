@@ -158,11 +158,12 @@ export default class App {
           try {
             const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
             const mainContainer = this.main!.getHtmlElement();
-            const personalData = new PersonalData(this.router, customer).getElement();
+            const personalData = new PersonalData(this.router, customer).element;
             mainContainer.innerHTML = '';
             mainContainer.append(personalData);
           } catch (error) {
             if (error instanceof Error) {
+              console.log(error);
               handleError(error, 'Page not found.');
             }
           } finally {
