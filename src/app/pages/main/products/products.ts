@@ -71,13 +71,13 @@ export default class Products extends Layout {
         return `
           <li>
             <div class="product">
-              <a href="/#/product/${product.id}" class="product-link" data-id="${product.id}">
-                <img class="product-image" src="${imageUrl}" alt="${productName}" data-tilt>
-              </a>
-              <div class="product-name">
-                <a href="/#/product/${product.id}" class="product-link" data-id="${product.id}">
-                  ${productName}
-                </a>
+              <div class="product-container" data-cardid="${product.id}">
+                <div class="product-link">
+                  <img class="product-image" src="${imageUrl}" alt="${productName}" data-tilt>
+                </div>
+                <div class="product-name">
+                  <p>${productName}</p>
+                </div>
               </div>
               <div class="product-rating">
                 ${Rating.render({ value: rating, text: `${numReviews} reviews` })}

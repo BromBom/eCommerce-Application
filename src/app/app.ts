@@ -29,6 +29,17 @@ export default class App {
     this.router = new Router(routes);
   }
 
+  static addListenerOnCard() {
+    const CardDetail = document.querySelector('.products');
+    CardDetail?.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      const cardId = target!.dataset.cardid;
+      if (target!.classList.contains('product-container')) {
+        localStorage.setItem('cardId', cardId!);
+      }
+    });
+  }
+
   createView() {
     const loadingOverlay = document.createElement('div');
     loadingOverlay.id = 'loading-overlay';
@@ -96,14 +107,17 @@ export default class App {
         },
       },
       {
-        path: `${Pages.PRODUCT}/:id`,
+        path: `${Pages.PRODUCT}/${localStorage.getItem('cardid')}`,
         callback: async (id: string) => {
           showLoading();
           console.log('Route callback executed for ProductDetail with ID:', id);
           try {
             const { default: ProductDetail } = await import('./pages/main/products/productDetail/productDetail');
-            const productDetail = new ProductDetail(id);
-            this.setContent(Pages.PRODUCT, productDetail);
+            const mainContainer = this.main!.getHtmlElement();
+            const productDetailPage = new ProductDetail(localStorage.getItem('cardid') as string);
+            // mainContainer.innerHTML = '';
+            // const productDetail = new ProductDetail(id);
+            // this.setContent(Pages.PRODUCT, productDetail);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product detail page.');
@@ -183,6 +197,7 @@ export default class App {
 
     this.header?.setSelectedItem(page);
     this.main?.setContent(view);
+    App.addListenerOnCard();
 
     if (categoryId) {
       this.updateMainContent(categoryId);
