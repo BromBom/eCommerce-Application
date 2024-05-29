@@ -23,22 +23,27 @@ apiRoot
   })
   .catch(console.error);
 
-export const queryProduct = (): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
+export const queryProduct = (categoryId?: string): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
+  const filter = categoryId ? `categories.id:"${categoryId}"` : 'productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"';
   return apiRoot
     .productProjections()
     .search()
     .get({
       queryArgs: {
-        filter: 'productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"',
+        filter,
       },
     })
     .execute();
 };
 
-queryProduct()
-  .then((response) => {
-    console.log(response);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+export const sortProductClothing = () => {
+  return queryProduct('8da9d730-fdd3-4313-8814-20cd01dc7efd');
+};
+
+export const sortProductShoes = () => {
+  return queryProduct('292321b7-b3d4-42d5-b150-b1fecde7d470');
+};
+
+export const sortProductAccessories = () => {
+  return queryProduct('8cf8b1ac-7dfd-4405-9318-1582a38b6b26');
+};

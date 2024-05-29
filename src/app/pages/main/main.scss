@@ -1,9 +1,71 @@
 .main {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
   width: 100%;
+}
+
+.sidebar {
+  position: fixed;
+  width: 211px;
+  height: auto;
+  left: 0px;
+  top: 0px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-right: 1px solid #ddd;
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filter-category {
+  margin-bottom: 20px;
+}
+
+.filter-category h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+.checkbox {
+  margin-bottom: 10px;
+}
+
+.checkbox label {
+  margin-left: 5px;
+}
+
+.color-box {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  margin: 5px 0;
+  display: inline-block;
+}
+
+#price-range {
+  width: 100%;
+}
+
+.sort-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.sort-button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 29px;
+  color: #000000;
+  cursor: pointer;
+}
+
+.sort-button:hover {
+  color: #ff0000;
 }
 
 /* main container */

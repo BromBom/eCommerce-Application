@@ -1,7 +1,7 @@
 import { ProductProjection } from '@commercetools/platform-sdk';
 import Layout from '../../../layout/layout';
 import { queryProduct } from '../../../../api/project';
-import { addToCart } from '../cart/cart';
+import { addToCart } from '../../../utils/localstorage';
 import Rating from '../../../components/rating';
 import { CartItem } from '../../../types/types';
 
@@ -16,7 +16,7 @@ export default class Products extends Layout {
     super(params);
     this.configureView();
     this.renderProducts();
-    this.addEventListeners();
+    Products.addEventListeners();
   }
 
   configureView() {
@@ -48,6 +48,8 @@ export default class Products extends Layout {
               ? (product.masterVariant.prices[0].value.centAmount / 100).toFixed(2)
               : '0.00';
 
+          const description = product.description?.['en-US'] || 'No description'; // добавляем описание
+
           return `
               <li>
                 <div class="product">
@@ -63,7 +65,7 @@ export default class Products extends Layout {
                     ${Rating.render({ value: rating, text: `${numReviews} reviews` })}
                   </div>
                   <div class="product-buttons">
-                    <button class="buynow btn btn-primary" data-id="${product.id}" data-name="${productName}" data-price="${price}" data-image="${imageUrl}">Buy Now</button>
+                    <button class="buynow btn btn-primary" data-id="${product.id}" data-name="${productName}" data-price="${price}" data-image="${imageUrl}" data-description="${description}">Buy Now</button>
                     <div class="product-price">
                       $${price}
                     </div>
@@ -80,14 +82,14 @@ export default class Products extends Layout {
         </ul>
       `);
 
-      this.addEventListeners();
+      Products.addEventListeners();
     } catch (error) {
       console.error(error);
       this.setHTMLContent('<div class="error">Failed to load products</div>');
     }
   }
 
-  addEventListeners() {
+  static addEventListeners() {
     const buyNowButtons = document.getElementsByClassName('buynow');
     Array.from(buyNowButtons).forEach((button) => {
       button.addEventListener('click', (e: Event) => {
@@ -96,8 +98,9 @@ export default class Products extends Layout {
         const productName = target.getAttribute('data-name');
         const productPrice = parseFloat(target.getAttribute('data-price') || '0');
         const productImage = target.getAttribute('data-image');
+        const productDescription = target.getAttribute('data-description'); // получаем описание
 
-        if (productId && productName && productImage) {
+        if (productId && productName && productImage && productDescription) {
           const cartItem: CartItem = {
             product: productId,
             name: productName,
@@ -105,6 +108,7 @@ export default class Products extends Layout {
             price: productPrice,
             quantityInStock: 10,
             qty: 1,
+            description: productDescription, // добавляем описание
           };
 
           addToCart(cartItem, true);

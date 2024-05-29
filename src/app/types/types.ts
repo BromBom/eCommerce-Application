@@ -78,4 +78,5 @@ export interface CartItem {
   price: number;
   quantityInStock: number;
   qty: number;
+  description: string;
 }

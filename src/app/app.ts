@@ -25,9 +25,7 @@ export default class App {
     this.main = null;
 
     this.state = new State();
-
-    const routes = this.createRoutes(this.state);
-
+    const routes = this.createRoutes();
     this.router = new Router(routes);
   }
 
@@ -45,6 +43,7 @@ export default class App {
 
     this.header = new Header(this.router, this.state);
     this.main = new Main();
+
     const footer = new Footer();
 
     document.body.append(
@@ -54,10 +53,11 @@ export default class App {
       loadingOverlay,
       messageContainer
     );
+
+    Main.addFilterEventListeners();
   }
 
-  createRoutes(state: State): RouterParams[] {
-    console.log(state);
+  createRoutes(): RouterParams[] {
     return [
       {
         path: '',
@@ -81,10 +81,32 @@ export default class App {
           showLoading();
           try {
             const { default: Products } = await import('./pages/main/products/products');
-            this.setContent(Pages.Product, new Products());
+            const categoryId = '';
+            const productsPage = new Products();
+            const buttons: HTMLButtonElement[] = [];
+            const sidebar = null;
+            this.setContent(Pages.PRODUCT, productsPage, categoryId, buttons, sidebar);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load products page.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
+        path: `${Pages.PRODUCT}/:id`,
+        callback: async (id: string) => {
+          showLoading();
+          console.log('Route callback executed for ProductDetail with ID:', id);
+          try {
+            const { default: ProductDetail } = await import('./pages/main/products/productDetail/productDetail');
+            const productDetail = new ProductDetail(id);
+            this.setContent(Pages.PRODUCT, productDetail);
+          } catch (error) {
+            if (error instanceof Error) {
+              handleError(error, 'Failed to load product detail page.');
             }
           } finally {
             hideLoading();
@@ -144,11 +166,46 @@ export default class App {
     ];
   }
 
-  setContent(page: string, view: Layout) {
+  updateMainContent(categoryId: string) {
+    console.log('Updating main content with categoryId:', categoryId);
+    this.main?.renderProducts(categoryId);
+  }
+
+  setContent(
+    page: string,
+    view: Layout,
+    categoryId?: string,
+    buttons?: HTMLButtonElement[],
+    sidebar?: HTMLElement | null
+  ) {
+    console.log('Setting content for page:', page, 'with view:', view);
     const isLoggedIn = this.state.loadState().size > 0;
 
     this.header?.setSelectedItem(page);
     this.main?.setContent(view);
+
+    if (categoryId) {
+      this.updateMainContent(categoryId);
+    }
+
+    if (buttons) {
+      const buttonContainer = document.querySelector('.sort-buttons');
+      if (buttonContainer) {
+        buttonContainer.innerHTML = '';
+        buttons.forEach((button) => buttonContainer.appendChild(button));
+      }
+    }
+
+    if (sidebar !== undefined && sidebar !== null) {
+      const existingSidebar = document.querySelector('.sidebar');
+      if (existingSidebar) {
+        existingSidebar.remove();
+      }
+      const mainContainer = this.main?.getHtmlElement();
+      if (mainContainer) {
+        mainContainer.parentNode?.insertBefore(sidebar, mainContainer);
+      }
+    }
 
     if (isLoggedIn) {
       this.header?.configureView();

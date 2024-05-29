@@ -52,6 +52,25 @@ export const setCartItems = (cartItems: CartItem[]): void => {
   localStorage.setItem('cartItems', JSON.stringify(cartItems));
 };
 
+const addToCart = (item: CartItem, forceUpdate = false): void => {
+  const cartItems = getCartItems();
+  const existItemIndex = cartItems.findIndex((x: CartItem) => x.product === item.product);
+  if (existItemIndex !== -1) {
+    if (forceUpdate) {
+      cartItems[existItemIndex] = item;
+    }
+  } else {
+    cartItems.push(item);
+  }
+  setCartItems(cartItems);
+};
+
+const removeFromCart = (id: string): void => {
+  setCartItems(getCartItems().filter((x: CartItem) => x.product !== id));
+};
+
+export { addToCart, removeFromCart };
+
 export const setUserInfo = ({
   _id = '',
   name = '',
