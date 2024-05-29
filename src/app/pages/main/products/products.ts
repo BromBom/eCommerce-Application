@@ -27,66 +27,80 @@ export default class Products extends Layout {
     try {
       const response = await queryProduct();
       const products: ProductProjection[] = response.body.results;
-
-      const productElements = products
-        .map((product: ProductProjection) => {
-          const imageUrl =
-            product.masterVariant.images && product.masterVariant.images.length > 0
-              ? product.masterVariant.images[0].url
-              : 'default-image-url.jpg';
-
-          const productName = product.name['en-US'] || 'No name';
-
-          const ratingAttribute = product.masterVariant.attributes?.find((attr) => attr.name === 'rating');
-          const rating = ratingAttribute ? ratingAttribute.value : '0';
-
-          const numReviewsAttribute = product.masterVariant.attributes?.find((attr) => attr.name === 'numReviews');
-          const numReviews = numReviewsAttribute ? numReviewsAttribute.value : '0';
-
-          const price =
-            product.masterVariant.prices && product.masterVariant.prices.length > 0
-              ? (product.masterVariant.prices[0].value.centAmount / 100).toFixed(2)
-              : '0.00';
-
-          const description = product.description?.['en-US'] || 'No description'; // добавляем описание
-
-          return `
-              <li>
-                <div class="product">
-                  <a href="/#/product/${product.id}" class="product-link" data-id="${product.id}">
-                    <img class="product-image" src="${imageUrl}" alt="${productName}" data-tilt>
-                  </a>
-                  <div class="product-name">
-                    <a href="/#/product/${product.id}" class="product-link" data-id="${product.id}">
-                      ${productName}
-                    </a>
-                  </div>
-                  <div class="product-rating">
-                    ${Rating.render({ value: rating, text: `${numReviews} reviews` })}
-                  </div>
-                  <div class="product-buttons">
-                    <button class="buynow btn btn-primary" data-id="${product.id}" data-name="${productName}" data-price="${price}" data-image="${imageUrl}" data-description="${description}">Buy Now</button>
-                    <div class="product-price">
-                      $${price}
-                    </div>
-                  </div>
-                </div>
-              </li>
-            `;
-        })
-        .join('\n');
-
-      this.setHTMLContent(`
-        <ul class="products">
-          ${productElements}
-        </ul>
-      `);
-
-      Products.addEventListeners();
+      this.updateProducts(products);
     } catch (error) {
       console.error(error);
       this.setHTMLContent('<div class="error">Failed to load products</div>');
     }
+  }
+
+  async searchProducts(query: string) {
+    try {
+      const response = await queryProduct(query);
+      const products: ProductProjection[] = response.body.results;
+      this.updateProducts(products);
+    } catch (error) {
+      console.error(error);
+      this.setHTMLContent('<div class="error">Failed to load products</div>');
+    }
+  }
+
+  updateProducts(products: ProductProjection[]) {
+    const productElements = products
+      .map((product: ProductProjection) => {
+        const imageUrl =
+          product.masterVariant.images && product.masterVariant.images.length > 0
+            ? product.masterVariant.images[0].url
+            : 'default-image-url.jpg';
+
+        const productName = product.name['en-US'] || 'No name';
+
+        const ratingAttribute = product.masterVariant.attributes?.find((attr) => attr.name === 'rating');
+        const rating = ratingAttribute ? ratingAttribute.value : '0';
+
+        const numReviewsAttribute = product.masterVariant.attributes?.find((attr) => attr.name === 'numReviews');
+        const numReviews = numReviewsAttribute ? numReviewsAttribute.value : '0';
+
+        const price =
+          product.masterVariant.prices && product.masterVariant.prices.length > 0
+            ? (product.masterVariant.prices[0].value.centAmount / 100).toFixed(2)
+            : '0.00';
+
+        const description = product.description?.['en-US'] || 'No description';
+
+        return `
+          <li>
+            <div class="product">
+              <a href="/#/product/${product.id}" class="product-link" data-id="${product.id}">
+                <img class="product-image" src="${imageUrl}" alt="${productName}" data-tilt>
+              </a>
+              <div class="product-name">
+                <a href="/#/product/${product.id}" class="product-link" data-id="${product.id}">
+                  ${productName}
+                </a>
+              </div>
+              <div class="product-rating">
+                ${Rating.render({ value: rating, text: `${numReviews} reviews` })}
+              </div>
+              <div class="product-buttons">
+                <button class="buynow btn btn-primary" data-id="${product.id}" data-name="${productName}" data-price="${price}" data-image="${imageUrl}" data-description="${description}">Buy Now</button>
+                <div class="product-price">
+                  $${price}
+                </div>
+              </div>
+            </div>
+          </li>
+        `;
+      })
+      .join('\n');
+
+    this.setHTMLContent(`
+      <ul class="products">
+        ${productElements}
+      </ul>
+    `);
+
+    Products.addEventListeners();
   }
 
   static addEventListeners() {
@@ -98,7 +112,7 @@ export default class Products extends Layout {
         const productName = target.getAttribute('data-name');
         const productPrice = parseFloat(target.getAttribute('data-price') || '0');
         const productImage = target.getAttribute('data-image');
-        const productDescription = target.getAttribute('data-description'); // получаем описание
+        const productDescription = target.getAttribute('data-description');
 
         if (productId && productName && productImage && productDescription) {
           const cartItem: CartItem = {
@@ -108,7 +122,7 @@ export default class Products extends Layout {
             price: productPrice,
             quantityInStock: 10,
             qty: 1,
-            description: productDescription, // добавляем описание
+            description: productDescription,
           };
 
           addToCart(cartItem, true);

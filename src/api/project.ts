@@ -23,6 +23,24 @@ apiRoot
   })
   .catch(console.error);
 
+export const searchProduct = async (query: string): Promise<ProductProjectionPagedSearchResponse> => {
+  return apiRoot
+    .productProjections()
+    .search()
+    .get({
+      queryArgs: {
+        'text.en-US': query,
+        fuzzy: true,
+      },
+    })
+    .execute()
+    .then((response) => response.body)
+    .catch((error) => {
+      console.error('ERROR during search:', error);
+      throw error;
+    });
+};
+
 export const queryProduct = (categoryId?: string): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
   const filter = categoryId ? `categories.id:"${categoryId}"` : 'productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"';
   return apiRoot
