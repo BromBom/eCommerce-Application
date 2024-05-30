@@ -4,19 +4,25 @@ import { queryProduct } from '../../../../api/project';
 import { addToCart } from '../../../utils/localstorage';
 import Rating from '../../../components/rating';
 import { CartItem } from '../../../types/types';
+import Router from '../../../router/router';
 
 const TEXT = 'PRODUCTS PAGE';
 
 export default class Products extends Layout {
-  constructor() {
+  router: Router;
+  id: string;
+
+  constructor(router: Router, id = '') {
     const params = {
       tag: 'section' as keyof HTMLElementTagNameMap,
       classNames: ['index'],
     };
     super(params);
+    this.router = router;
     this.configureView();
     this.renderProducts();
-    Products.addEventListeners();
+    this.id = id;
+    this.addEventListeners(id);
   }
 
   configureView() {
@@ -100,10 +106,10 @@ export default class Products extends Layout {
       </ul>
     `);
 
-    Products.addEventListeners();
+    this.addEventListeners(this.id);
   }
 
-  static addEventListeners() {
+  addEventListeners(id: string) {
     const buyNowButtons = document.getElementsByClassName('buynow');
     Array.from(buyNowButtons).forEach((button) => {
       button.addEventListener('click', (e: Event) => {
@@ -126,6 +132,11 @@ export default class Products extends Layout {
           };
 
           addToCart(cartItem, true);
+
+          if (this.router) {
+            const productUrl = `/product/${id}`;
+            this.router.navigate(productUrl);
+          }
         }
       });
     });

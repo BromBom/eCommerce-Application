@@ -25,6 +25,12 @@ export default class ProductCard extends Layout {
     this.card = card;
     this.router = router;
 
+    this.router.onNavigate((path) => {
+      if (path.startsWith(`${Pages.PRODUCT}/`)) {
+        console.log(`Navigating to product detail page: ${path}`);
+      }
+    });
+
     this.configureView();
   }
 

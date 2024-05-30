@@ -31,7 +31,9 @@ export default class App {
 
   static addListenerOnCard() {
     const CardDetail = document.querySelector('.products');
+    console.log(CardDetail, 'carddetail');
     CardDetail?.addEventListener('click', (event) => {
+      console.log('clicked from app');
       const target = event.target as HTMLElement;
       const cardId = target!.dataset.cardid;
       if (target!.classList.contains('product-container')) {
@@ -115,6 +117,7 @@ export default class App {
             const { default: ProductDetail } = await import('./pages/main/products/productDetail/productDetail');
             const mainContainer = this.main!.getHtmlElement();
             const productDetailPage = new ProductDetail(localStorage.getItem('cardid') as string);
+            console.log(mainContainer, productDetailPage);
             // mainContainer.innerHTML = '';
             // const productDetail = new ProductDetail(id);
             // this.setContent(Pages.PRODUCT, productDetail);
