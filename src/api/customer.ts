@@ -37,10 +37,6 @@ export const SetDefaultBillingAddress = async (
     .execute();
 
   return response;
-  // } catch (error) {
-  //   if (error instanceof Error) handleError(error, error.message);
-  //   throw new Error(`Failed to set Default Billing Address: ${error}`);
-  // }
 };
 
 export const SetDefaultShippingAddress = async (
@@ -66,10 +62,6 @@ export const SetDefaultShippingAddress = async (
     .execute();
 
   return response;
-  // } catch (error) {
-  //   if (error instanceof Error) handleError(error, error.message);
-  //   throw new Error(`Failed to set Default Shipping Address: ${error}`);
-  // }
 };
 
 export const getCustomerByID = async (customerID: string) => {
@@ -83,8 +75,4 @@ export const getCustomerByID = async (customerID: string) => {
   const customer = response.body;
 
   return customer;
-  // } catch (error) {
-  //   if (error instanceof Error) handleError(error, error.message);
-  //   throw error;
-  // }
 };

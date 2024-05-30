@@ -8,6 +8,8 @@ export default class ProductDetail extends Layout {
 
   card: ICard;
 
+  element: HTMLDivElement | null;
+
   price: number | null;
 
   image: string | null;
@@ -18,12 +20,12 @@ export default class ProductDetail extends Layout {
       classNames: ['product-detail'],
     };
     super(params);
+    this.element = null;
     this.product = null;
     this.price = null;
     this.image = null;
-
     this.init();
-
+    console.log('555555 ProductDetail - init');
     this.card = {
       id: this.product!.id,
       name: this.product!.name['en-US'] || 'No name',
@@ -40,6 +42,7 @@ export default class ProductDetail extends Layout {
     this.product = await ProductDetail.getProductById(this.id);
     this.price = this.product!.masterVariant!.prices![0].value.centAmount;
     this.image = this.product!.masterVariant!.images![0].url;
+    console.log('6666 ProductDetail - init');
   }
 
   static async getProductById(id: string) {
@@ -52,7 +55,7 @@ export default class ProductDetail extends Layout {
       [productbyId] = response.body.results;
       console.log('Product found:', response.body.results[0]);
     } catch (error) {
-      console.error('Failed to get product information:', error);
+      console.log('information:', error);
       throw new Error('Failed to get product information');
     }
     return productbyId;
@@ -78,6 +81,13 @@ export default class ProductDetail extends Layout {
     stockElement.textContent = `In stock: ${this.card.stock}`;
 
     containerCardDetail.append(nameElement, imageElement, descriptionElement, priceElement, stockElement);
-    this.viewElementCreator.addInnerElement(containerCardDetail);
+    // this.viewElementCreator.addInnerElement(containerCardDetail);
+    this.element = containerCardDetail;
+
+    console.log('77777 ProductDetail - configureView - this.elem');
+  }
+
+  getElement() {
+    return this.element;
   }
 }

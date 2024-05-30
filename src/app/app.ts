@@ -29,17 +29,6 @@ export default class App {
     this.router = new Router(routes);
   }
 
-  static addListenerOnCard() {
-    const CardDetail = document.querySelector('.products');
-    CardDetail?.addEventListener('click', (event) => {
-      const target = event.target as HTMLElement;
-      const cardId = target!.dataset.cardid;
-      if (target!.classList.contains('product-container')) {
-        localStorage.setItem('cardId', cardId!);
-      }
-    });
-  }
-
   createView() {
     const loadingOverlay = document.createElement('div');
     loadingOverlay.id = 'loading-overlay';
@@ -76,7 +65,7 @@ export default class App {
           showLoading();
           try {
             const { default: Products } = await import('./pages/main/products/products');
-            this.setContent(Pages.Product, new Products());
+            this.setContent(Pages.Product, new Products(this.router));
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product page.');
@@ -92,11 +81,8 @@ export default class App {
           showLoading();
           try {
             const { default: Products } = await import('./pages/main/products/products');
-            const categoryId = '';
-            const productsPage = new Products();
-            const buttons: HTMLButtonElement[] = [];
-            const sidebar = null;
-            this.setContent(Pages.PRODUCT, productsPage, categoryId, buttons, sidebar);
+            const productsPage = new Products(this.router);
+            this.setContent(Pages.PRODUCT, productsPage);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load products page.');
@@ -107,19 +93,24 @@ export default class App {
         },
       },
       {
-        path: `${Pages.PRODUCT}/${localStorage.getItem('cardid')}`,
-        callback: async (id: string) => {
+        path: `${Pages.PRODUCTS}`,
+        callback: async () => {
           showLoading();
-          console.log('Route callback executed for ProductDetail with ID:', id);
+          console.log('Route callback executed for ProductDetail with ID:');
           try {
             const { default: ProductDetail } = await import('./pages/main/products/productDetail/productDetail');
             const mainContainer = this.main!.getHtmlElement();
-            const productDetailPage = new ProductDetail(localStorage.getItem('cardid') as string);
-            // mainContainer.innerHTML = '';
-            // const productDetail = new ProductDetail(id);
-            // this.setContent(Pages.PRODUCT, productDetail);
+            console.log('2222222222222clear>>>>>>>>>>>>>>>>>>');
+            const cardID = localStorage.getItem('cardId');
+            console.log('получили локал>>>>>>>>>>>>>>>>>>', typeof cardID);
+            const productDetailPage = new ProductDetail(`${cardID}`);
+            console.log('2clear>>>>>>>>>>>>>>>>>>');
+            mainContainer.innerHTML = '';
+            console.log('333333333333clear>>>>>>>>>>>>>>>>>>');
+            mainContainer.append(productDetailPage.getElement()!);
           } catch (error) {
             if (error instanceof Error) {
+              console.log('44444444444>>>>>>>>>>>>>>>>>>', error);
               handleError(error, 'Failed to load product detail page.');
             }
           } finally {
@@ -166,6 +157,7 @@ export default class App {
         path: `${Pages.NOT_FOUND}`,
         callback: async () => {
           showLoading();
+          console.log('444444444444notFound');
           try {
             this.setContent(Pages.NOT_FOUND, new NotFound(this.router));
           } catch (error) {
@@ -185,42 +177,12 @@ export default class App {
     this.main?.renderProducts(categoryId);
   }
 
-  setContent(
-    page: string,
-    view: Layout,
-    categoryId?: string,
-    buttons?: HTMLButtonElement[],
-    sidebar?: HTMLElement | null
-  ) {
+  setContent(page: string, view: Layout) {
     console.log('Setting content for page:', page, 'with view:', view);
     const isLoggedIn = this.state.loadState().size > 0;
 
     this.header?.setSelectedItem(page);
     this.main?.setContent(view);
-    App.addListenerOnCard();
-
-    if (categoryId) {
-      this.updateMainContent(categoryId);
-    }
-
-    if (buttons) {
-      const buttonContainer = document.querySelector('.sort-buttons');
-      if (buttonContainer) {
-        buttonContainer.innerHTML = '';
-        buttons.forEach((button) => buttonContainer.appendChild(button));
-      }
-    }
-
-    if (sidebar !== undefined && sidebar !== null) {
-      const existingSidebar = document.querySelector('.sidebar');
-      if (existingSidebar) {
-        existingSidebar.remove();
-      }
-      const mainContainer = this.main?.getHtmlElement();
-      if (mainContainer) {
-        mainContainer.parentNode?.insertBefore(sidebar, mainContainer);
-      }
-    }
 
     if (isLoggedIn) {
       this.header?.configureView();

@@ -13,7 +13,7 @@ const Pages: PagesProps = {
   REGISTRATION: 'registration',
   LOGIN: 'login',
   PRODUCT: 'product',
-  PRODUCTS: 'products',
+  PRODUCTS: 'details',
   NOT_FOUND: 'not-found',
   PROFILE: 'Profile',
   LOGOUT: 'Logout',

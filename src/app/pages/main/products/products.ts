@@ -4,19 +4,24 @@ import { queryProduct } from '../../../../api/project';
 import { addToCart } from '../../../utils/localstorage';
 import Rating from '../../../components/rating';
 import { CartItem } from '../../../types/types';
+import { Pages } from '../../../router/pages';
+import Router from '../../../router/router';
 
 const TEXT = 'PRODUCTS PAGE';
 
 export default class Products extends Layout {
-  constructor() {
+  router: Router;
+
+  constructor(router: Router) {
     const params = {
       tag: 'section' as keyof HTMLElementTagNameMap,
       classNames: ['index'],
     };
     super(params);
+    this.router = router;
     this.configureView();
     this.renderProducts();
-    Products.addEventListeners();
+    this.addEventListeners();
   }
 
   configureView() {
@@ -100,10 +105,10 @@ export default class Products extends Layout {
       </ul>
     `);
 
-    Products.addEventListeners();
+    this.addEventListeners();
   }
 
-  static addEventListeners() {
+  addEventListeners() {
     const buyNowButtons = document.getElementsByClassName('buynow');
     Array.from(buyNowButtons).forEach((button) => {
       button.addEventListener('click', (e: Event) => {
@@ -128,6 +133,23 @@ export default class Products extends Layout {
           addToCart(cartItem, true);
         }
       });
+    });
+
+    console.log('1.1Повеслили слушателей');
+    const CardDetail = document.querySelector('.products');
+    console.log('1.1.1 узел нашел', CardDetail);
+
+    CardDetail?.addEventListener('click', (event) => {
+      const targetTarget = event.target as HTMLElement;
+      const target = targetTarget.closest('.product-container') as HTMLDivElement;
+      console.log('1.1.2 узел родителя', target);
+      const cardId = target!.dataset.cardid;
+      if (target) {
+        localStorage.setItem('cardId', cardId!);
+        console.log(`1.2Сохранили - ${Pages.PRODUCT}/${cardId}`);
+      }
+      this.router.navigate(`${Pages.PRODUCTS}`);
+      console.log('1.3Запустили навигейт');
     });
   }
 }

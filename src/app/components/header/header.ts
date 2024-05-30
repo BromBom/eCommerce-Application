@@ -123,7 +123,7 @@ export default class Header extends Layout {
           console.log('Product projection search result:', searchData);
 
           if (searchData && searchData.results) {
-            const products = new Products();
+            const products = new Products(this.router);
             products.updateProducts(searchData.results);
             const mainElement = document.querySelector('.main');
             if (mainElement) {
