@@ -158,7 +158,7 @@ export default class App {
           try {
             const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
             const mainContainer = this.main!.getHtmlElement();
-            const personalData = new PersonalData(this.router, customer).element;
+            const personalData = new PersonalData(customer).getElement();
             mainContainer.innerHTML = '';
             mainContainer.append(personalData);
           } catch (error) {

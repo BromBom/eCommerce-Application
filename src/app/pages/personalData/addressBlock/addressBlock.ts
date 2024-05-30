@@ -1,6 +1,8 @@
 import { Address } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../../components/simpleComponent';
 
+import './addressBlock.scss';
+
 export default class AddressBlock {
   element: HTMLDivElement;
 
@@ -10,7 +12,7 @@ export default class AddressBlock {
 
   constructor(titleName: string, address: Address) {
     this.title = new SimpleComponent<HTMLHeadingElement>('h3', ['address__title'], titleName);
-    this.stringAddress = `${address.country}, ${address.city}, ${address.streetName}-${address.apartment}`;
+    this.stringAddress = `${address.country}, ${address.postalCode}, ${address.city}, ${address.streetName}-${address.apartment}`;
     this.element = this.init();
   }
 
@@ -25,10 +27,14 @@ export default class AddressBlock {
     editButton.classList.add('address__edit-button');
     const addButton = document.createElement('div');
     addButton.classList.add('address__add-button');
-    
+
     container.append(this.title.getElement(), addressBox, addButton);
     addressBox.append(this.stringAddress, editButton);
 
     return container;
+  }
+
+  getElement() {
+    return this.element;
   }
 }

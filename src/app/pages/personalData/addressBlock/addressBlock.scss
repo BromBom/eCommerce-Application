@@ -1,0 +1,17 @@
+.address__block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 15px;
+  width: 100%;
+  border: 1px solid #02b875;
+  border-radius: 5px;
+
+  .address__title {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #72767d;
+  }
+}

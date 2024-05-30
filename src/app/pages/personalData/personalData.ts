@@ -1,6 +1,6 @@
 import { Customer } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../components/simpleComponent';
-import Router from '../../router/router';
+import AddressBlock from './addressBlock/addressBlock';
 
 import './personalData.scss';
 
@@ -17,10 +17,7 @@ export default class PersonalData {
 
   dateOfBirth: SimpleComponent<HTMLSpanElement>;
 
-  constructor(
-    public router: Router,
-    customer: Customer
-  ) {
+  constructor(customer: Customer) {
     this.linkEdit = new SimpleComponent<HTMLSpanElement>('span', ['profile__edit-link'], 'Edit');
     this.firstName = new SimpleComponent<HTMLSpanElement>('span', ['profile__personalData'], `${customer.firstName}`);
     this.lastName = new SimpleComponent<HTMLSpanElement>('span', ['profile__personalData'], `${customer.lastName}`);
@@ -76,7 +73,16 @@ export default class PersonalData {
 
     personalData.append(titlePersonalData, profileBox, addressesBox);
     profileBox.append(profilList);
-    addressesBox.append(titleAddresses);
+
+    const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
+    const addressBilling = customer.addresses[0];
+    let addressShipping = customer.addresses[0];
+    if (customer.addresses.length > 1) {
+      [, addressShipping] = customer.addresses;
+    }
+    const billingBlock = new AddressBlock('Billing Address', addressBilling);
+    const shippingBlock = new AddressBlock('Shipping Address', addressShipping);
+    addressesBox.append(billingBlock.getElement(), shippingBlock.getElement(), titleAddresses);
 
     return personalData;
   }
