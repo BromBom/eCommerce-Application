@@ -11,6 +11,7 @@ import Router, { RouterParams } from './router/router';
 import State from './state/state';
 import LoginPageLayout from './layout/loginLayout';
 import { showLoading, hideLoading, handleError } from './utils/showmessage';
+import Navbar from './components/navbar/navbar';
 
 export default class App {
   header?: null | Header;
@@ -19,14 +20,23 @@ export default class App {
 
   router: Router;
 
+  navbar: null | Navbar;
+
   state: State;
 
   constructor() {
     this.header = null;
     this.main = null;
+    this.navbar = null;
     this.state = new State();
     const routes = this.createRoutes();
     this.router = new Router(routes);
+  }
+
+  static createNavbarContainer() {
+    const container = document.createElement('div');
+    container.className = 'navbar';
+    document.body.appendChild(container);
   }
 
   createView() {
@@ -41,8 +51,11 @@ export default class App {
     const messageContainer = document.createElement('div');
     messageContainer.id = 'message-container';
 
+    App.createNavbarContainer();
+
     this.header = new Header(this.router, this.state);
     this.main = new Main();
+    this.navbar = new Navbar();
 
     const footer = new Footer();
 

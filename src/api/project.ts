@@ -30,7 +30,7 @@ export const searchProduct = async (query: string): Promise<ProductProjectionPag
     .get({
       queryArgs: {
         'text.en-US': query,
-        fuzzy: false,
+        fuzzy: true,
       },
     })
     .execute()
