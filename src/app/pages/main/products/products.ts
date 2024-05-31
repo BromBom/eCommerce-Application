@@ -21,7 +21,6 @@ export default class Products extends Layout {
     this.router = router;
     this.configureView();
     this.renderProducts();
-    this.addEventListeners();
   }
 
   configureView() {
@@ -135,16 +134,17 @@ export default class Products extends Layout {
       });
     });
 
-    const CardDetail = document.querySelector('.products');
-
-    CardDetail?.addEventListener('click', (event) => {
-      const targetTarget = event.target as HTMLElement;
-      const target = targetTarget.closest('.product-container') as HTMLDivElement;
-      const cardId = target!.dataset.cardid;
-      if (target) {
-        localStorage.setItem('cardId', cardId!);
+    const cardDetailContainer = document.querySelector('.products');
+    cardDetailContainer?.addEventListener('click', (event) => {
+      const targetElement = event.target as HTMLElement;
+      const targetContainer = targetElement.closest('.product-container') as HTMLDivElement;
+      if (targetContainer) {
+        const cardId = targetContainer.dataset.cardid;
+        if (cardId) {
+          localStorage.setItem('cardId', cardId);
+          this.router.navigate(`${Pages.PRODUCTS}`);
+        }
       }
-      this.router.navigate(`${Pages.PRODUCTS}`);
     });
   }
 }
