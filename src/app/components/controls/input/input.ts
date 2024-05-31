@@ -40,7 +40,9 @@ export default class Input extends BaseComponent<HTMLDivElement> {
     }
   }
 
-  setCallback(callback: (event: MouseEvent) => void) {
-    this.element?.addEventListener('click', (event) => callback?.(event));
+  setCallback(callback: ((event: MouseEvent) => void) | null) {
+    if (this.element) {
+      this.element.addEventListener('click', (event) => callback?.(event));
+    }
   }
 }
