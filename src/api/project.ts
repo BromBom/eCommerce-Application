@@ -30,7 +30,7 @@ export const searchProduct = async (query: string): Promise<ProductProjectionPag
     .get({
       queryArgs: {
         'text.en-US': query,
-        fuzzy: true,
+        fuzzy: false,
       },
     })
     .execute()
@@ -39,6 +39,20 @@ export const searchProduct = async (query: string): Promise<ProductProjectionPag
       console.error('ERROR during search:', error);
       throw error;
     });
+};
+
+export const searchProductbyID = async (
+  productId: string
+): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
+  return apiRoot
+    .productProjections()
+    .search()
+    .get({
+      queryArgs: {
+        filter: `id:"${productId}"`,
+      },
+    })
+    .execute();
 };
 
 export const queryProduct = (categoryId?: string): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
@@ -65,3 +79,30 @@ export const sortProductShoes = () => {
 export const sortProductAccessories = () => {
   return queryProduct('8cf8b1ac-7dfd-4405-9318-1582a38b6b26');
 };
+
+// export const filterProductList = async (): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
+//   return (
+//     apiRoot
+//       // .productProjections()
+//       // .search()
+//       // .get({
+//       // queryArgs: {
+//       // filter: 'masterData.current.masterVariant.attributes'
+//       // },
+//       // })
+//       // .execute();
+//       .productProjections()
+//       .search()
+//       .get({
+//         queryArgs: {
+//           limit: 500,
+//           // where: 'variants.prices.discounted:exists',
+//           // where: 'masterVariant(attributes(color = "#F00000"))',
+//           // where: 'masterVariant.attributes.[1].color: "#FECB69"',
+//           'filter.query': 'variants.attributes.color_attributes.key:"black"',
+//           // facet: 'm'
+//         },
+//       })
+//       .execute()
+//   );
+// };

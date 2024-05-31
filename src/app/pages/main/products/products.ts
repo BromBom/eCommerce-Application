@@ -135,21 +135,16 @@ export default class Products extends Layout {
       });
     });
 
-    console.log('1.1Повеслили слушателей');
     const CardDetail = document.querySelector('.products');
-    console.log('1.1.1 узел нашел', CardDetail);
 
     CardDetail?.addEventListener('click', (event) => {
       const targetTarget = event.target as HTMLElement;
       const target = targetTarget.closest('.product-container') as HTMLDivElement;
-      console.log('1.1.2 узел родителя', target);
       const cardId = target!.dataset.cardid;
       if (target) {
         localStorage.setItem('cardId', cardId!);
-        console.log(`1.2Сохранили - ${Pages.PRODUCT}/${cardId}`);
       }
       this.router.navigate(`${Pages.PRODUCTS}`);
-      console.log('1.3Запустили навигейт');
     });
   }
 }

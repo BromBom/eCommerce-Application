@@ -5,41 +5,14 @@ import { hideLoading, showLoading, handleError } from '../../utils/showmessage';
 
 import './main.scss';
 
-interface FilterCriteria {
-  sizes: string[];
-  priceRange: [number, number];
-  types: string[];
-  genders: string[];
-  colors: string[];
-  discount: boolean;
-}
-
 export default class Main extends Layout {
-  filters: FilterCriteria;
-
   constructor() {
     const params = {
       tag: 'section' as keyof HTMLElementTagNameMap,
       classNames: ['main'],
     };
     super(params);
-    this.filters = {
-      sizes: [],
-      priceRange: [0, 1000],
-      types: [],
-      genders: [],
-      colors: [],
-      discount: false,
-    };
     this.createSortButtons();
-
-    const htmlElement = document.querySelector('.index') as HTMLElement | null;
-    if (htmlElement) {
-      Main.createSidebar(htmlElement);
-      Main.addFilterEventListeners();
-    } else {
-      console.error('HTML element with class "index" not found');
-    }
   }
 
   createSortButtons() {
@@ -62,12 +35,8 @@ export default class Main extends Layout {
       buttonContainer.appendChild(btn);
     });
 
-    const htmlElement = document.querySelector('.index') as HTMLElement | null;
-    if (htmlElement) {
-      htmlElement.appendChild(buttonContainer);
-    } else {
-      console.error('HTML element with class "index" not found');
-    }
+    const mainElement = this.getHtmlElement();
+    mainElement.appendChild(buttonContainer);
   }
 
   async renderProducts(categoryId: string) {
@@ -78,7 +47,7 @@ export default class Main extends Layout {
 
       const products: ProductProjection[] = response.body.results;
 
-      const htmlElement = this.viewElementCreator.getElement();
+      const htmlElement = this.getHtmlElement();
       if (htmlElement) {
         htmlElement.innerHTML = '';
       }
@@ -101,89 +70,13 @@ export default class Main extends Layout {
   }
 
   setContent(content: Layout) {
-    const htmlElement = this.viewElementCreator.getElement();
+    const htmlElement = this.getHtmlElement();
 
     while (htmlElement?.firstElementChild) {
       htmlElement.firstElementChild.remove();
     }
 
     this.viewElementCreator.addInnerElement(content.getHtmlElement());
-  }
-
-  static createSidebar(container: HTMLElement) {
-    const sidebar = document.createElement('aside');
-    sidebar.className = 'sidebar';
-
-    sidebar.innerHTML = `
-    <section class="main">
-  <section class="index">
-      <div class="filter-category">
-        <h3>Size</h3>
-        <div class="checkbox">
-          <input type="checkbox" id="size-small" name="size-small">
-          <label for="size-small">Small</label>
-        </div>
-        <div class="checkbox">
-          <input type="checkbox" id="size-medium" name="size-medium">
-          <label for="size-medium">Medium</label>
-        </div>
-        <div class="checkbox">
-          <input type="checkbox" id="size-large" name="size-large">
-          <label for="size-large">Large</label>
-        </div>
-      </div>
-
-      <div class="filter-category">
-        <h3>Price</h3>
-        <input type="range" id="price-range" name="price-range" min="0" max="1000">
-      </div>
-
-      <div class="filter-category">
-        <h3>Type of clothing</h3>
-        <div class="checkbox">
-          <input type="checkbox" id="type-clothing" name="type-clothing">
-          <label for="type-clothing">Clothing</label>
-        </div>
-        <div class="checkbox">
-          <input type="checkbox" id="type-shoes" name="type-shoes">
-          <label for="type-shoes">Shoes</label>
-        </div>
-        <div class="checkbox">
-          <input type="checkbox" id="type-accessories" name="type-accessories">
-          <label for="type-accessories">Accessories</label>
-        </div>
-      </div>
-
-      <div class="filter-category">
-        <h3>Gender</h3>
-        <div class="checkbox">
-          <input type="checkbox" id="gender-male" name="gender-male">
-          <label for="gender-male">Male</label>
-        </div>
-        <div class="checkbox">
-          <input type="checkbox" id="gender-female" name="gender-female">
-          <label for="gender-female">Female</label>
-        </div>
-      </div>
-
-      <div class="filter-category">
-        <h3>Color</h3>
-        <div class="color-box" style="background: #29292D;"></div>
-        <div class="color-box" style="background: #A13FBA;"></div>
-        <div class="color-box" style="background: #FF1818;"></div>
-      </div>
-
-      <div class="filter-category">
-        <h3>Discount</h3>
-        <div class="checkbox">
-          <input type="checkbox" id="discount" name="discount">
-          <label for="discount">Discount</label>
-        </div>
-        </section>
-        </section>
-    `;
-
-    container.appendChild(sidebar);
   }
 
   static addFilterEventListeners() {

@@ -1,12 +1,12 @@
 import { ProductProjection } from '@commercetools/platform-sdk';
 import Layout from '../../../../layout/layout';
 import { ICard } from '../../../../data/cards';
-import { queryProduct } from '../../../../../api/project';
+import { searchProductbyID } from '../../../../../api/project';
 
 export default class ProductDetail extends Layout {
   product: ProductProjection | null;
 
-  card: ICard;
+  card: ICard | null;
 
   element: HTMLDivElement | null;
 
@@ -24,46 +24,55 @@ export default class ProductDetail extends Layout {
     this.product = null;
     this.price = null;
     this.image = null;
+    this.card = null;
     this.init();
-    console.log('555555 ProductDetail - init');
-    this.card = {
-      id: this.product!.id,
-      name: this.product!.name['en-US'] || 'No name',
-      image: this.image ?? 'default-image-url.jpg',
-      description: this.product!.description?.['en-US'] || 'No description',
-      price: this.price ? this.price / 100 : 0,
-      stock: this.product!.masterVariant.prices?.[0]?.value.centAmount || 0,
-    };
-
-    this.configureView();
   }
 
   async init() {
-    this.product = await ProductDetail.getProductById(this.id);
-    this.price = this.product!.masterVariant!.prices![0].value.centAmount;
-    this.image = this.product!.masterVariant!.images![0].url;
-    console.log('6666 ProductDetail - init');
+    try {
+      this.product = await ProductDetail.getProductById(this.id);
+      this.price = this.product!.masterVariant!.prices![0].value.centAmount;
+      this.image = this.product!.masterVariant!.images![0].url;
+
+      this.card = {
+        id: this.product.id,
+        name: this.product.name['en-US'] || 'No name',
+        image: this.image ?? 'default-image-url.jpg',
+        description: this.product.description?.['en-US'] || 'No description',
+        price: this.price / 100,
+        stock: this.product.masterVariant.prices?.[0]?.value.centAmount || 0,
+      };
+
+      this.configureView();
+    } catch (error) {
+      console.error('Failed to initialize ProductDetail:', error);
+    }
   }
 
   static async getProductById(id: string) {
     let productbyId;
     try {
-      const response = await queryProduct(id);
+      const response = await searchProductbyID(id);
       if (response.body.results.length === 0) {
         throw new Error('Product not found');
       }
       [productbyId] = response.body.results;
-      console.log('Product found:', response.body.results[0]);
     } catch (error) {
-      console.log('information:', error);
+      console.error('Error fetching product:', error);
       throw new Error('Failed to get product information');
     }
     return productbyId;
   }
 
   configureView() {
+    if (!this.card) {
+      console.error('No card data available');
+      return;
+    }
+
     const containerCardDetail = document.createElement('div');
     containerCardDetail.classList.add('cardDetailPage');
+
     const nameElement = document.createElement('h1');
     nameElement.textContent = this.card.name;
 
@@ -81,13 +90,13 @@ export default class ProductDetail extends Layout {
     stockElement.textContent = `In stock: ${this.card.stock}`;
 
     containerCardDetail.append(nameElement, imageElement, descriptionElement, priceElement, stockElement);
-    // this.viewElementCreator.addInnerElement(containerCardDetail);
     this.element = containerCardDetail;
-
-    console.log('77777 ProductDetail - configureView - this.elem');
   }
 
   getElement() {
+    if (!this.element) {
+      console.error('Element is not initialized yet');
+    }
     return this.element;
   }
 }

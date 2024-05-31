@@ -21,9 +21,7 @@ export default class App {
 
   constructor() {
     this.header = null;
-
     this.main = null;
-
     this.state = new State();
     const routes = this.createRoutes();
     this.router = new Router(routes);
@@ -96,21 +94,19 @@ export default class App {
         path: `${Pages.PRODUCTS}`,
         callback: async () => {
           showLoading();
-          console.log('Route callback executed for ProductDetail with ID:');
           try {
             const { default: ProductDetail } = await import('./pages/main/products/productDetail/productDetail');
             const mainContainer = this.main!.getHtmlElement();
-            console.log('2222222222222clear>>>>>>>>>>>>>>>>>>');
             const cardID = localStorage.getItem('cardId');
-            console.log('получили локал>>>>>>>>>>>>>>>>>>', typeof cardID);
-            const productDetailPage = new ProductDetail(`${cardID}`);
-            console.log('2clear>>>>>>>>>>>>>>>>>>');
+            if (!cardID) {
+              throw new Error('No card ID found in localStorage');
+            }
+            const productDetailPage = new ProductDetail(cardID);
+            await productDetailPage.init(); // Ensure init completes
             mainContainer.innerHTML = '';
-            console.log('333333333333clear>>>>>>>>>>>>>>>>>>');
             mainContainer.append(productDetailPage.getElement()!);
           } catch (error) {
             if (error instanceof Error) {
-              console.log('44444444444>>>>>>>>>>>>>>>>>>', error);
               handleError(error, 'Failed to load product detail page.');
             }
           } finally {
@@ -157,7 +153,6 @@ export default class App {
         path: `${Pages.NOT_FOUND}`,
         callback: async () => {
           showLoading();
-          console.log('444444444444notFound');
           try {
             this.setContent(Pages.NOT_FOUND, new NotFound(this.router));
           } catch (error) {
