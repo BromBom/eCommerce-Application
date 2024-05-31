@@ -150,6 +150,25 @@ export default class App {
         },
       },
       {
+        path: `${Pages.PROFILE}`,
+        callback: async () => {
+          showLoading();
+          try {
+            const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
+            const mainContainer = this.main!.getHtmlElement();
+            const personalData = new PersonalData(this.router, customer).getElement();
+            mainContainer.innerHTML = '';
+            mainContainer.append(personalData);
+          } catch (error) {
+            if (error instanceof Error) {
+              handleError(error, 'Page not found.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
         path: `${Pages.NOT_FOUND}`,
         callback: async () => {
           showLoading();

@@ -85,6 +85,28 @@ img {
   border-color: transparent;
 }
 
+.cart {
+  height: 30px;
+  width: 30px;
+  background-image: url('../../../assets/shopping_cart_24dp_FILL0_wght400_GRAD0_opsz24.svg');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  border: none;
+  border-width: 0;
+  border-style: none;
+  border-color: transparent;
+  // border-radius: 50%;
+}
+
+.cart {
+  position: absolute;
+  top: 40px;
+  right: 250px;
+  transform: translate(-50%, -50%);
+}
+
 .search_container {
   display: flex;
   align-items: center;
