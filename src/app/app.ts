@@ -12,11 +12,14 @@ import State from './state/state';
 import LoginPageLayout from './layout/loginLayout';
 import { showLoading, hideLoading, handleError } from './utils/showmessage';
 import Navbar from './components/navbar/navbar';
+import Modal from './components/modal/modal';
 
 export default class App {
   header?: null | Header;
 
   main: null | Main;
+
+  modal: null | Modal;
 
   router: Router;
 
@@ -28,6 +31,9 @@ export default class App {
     this.header = null;
     this.main = null;
     this.navbar = null;
+
+    this.modal = null;
+
     this.state = new State();
     const routes = this.createRoutes();
     this.router = new Router(routes);
@@ -57,6 +63,8 @@ export default class App {
     this.main = new Main();
     this.navbar = new Navbar();
 
+    this.modal = new Modal();
+
     const footer = new Footer();
 
     document.body.append(
@@ -64,7 +72,8 @@ export default class App {
       this.main.getHtmlElement(),
       footer.getHtmlElement(),
       loadingOverlay,
-      messageContainer
+      messageContainer,
+      this.modal.getHtmlElement()
     );
 
     Main.addFilterEventListeners();
@@ -94,8 +103,11 @@ export default class App {
           showLoading();
           try {
             const { default: Products } = await import('./pages/main/products/products');
+            const categoryId = '';
             const productsPage = new Products(this.router);
-            this.setContent(Pages.PRODUCT, productsPage);
+            const buttons: HTMLButtonElement[] = [];
+            const sidebar = null;
+            this.setContent(Pages.PRODUCT, productsPage, categoryId, buttons, sidebar);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load products page.');
