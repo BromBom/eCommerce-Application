@@ -36,9 +36,10 @@ export default class Modal extends Layout {
       tag: 'button' as keyof HTMLElementTagNameMap,
       classNames: ['close'],
       text: 'X',
-      callback: () => this.closeModal(),
+      callback: () => null,
     };
     const button = new BaseComponent<HTMLElement>(buttonParams);
+
     content.addInnerElement(button);
 
     this.closeButton = button.getElement() as HTMLElement | undefined;
@@ -49,7 +50,10 @@ export default class Modal extends Layout {
   }
 
   closeModal() {
-    this.viewElementCreator.getElement()!.style.display = 'none';
+    const element = this.viewElementCreator.getElement();
+    if (element !== null) {
+      element.style.display = 'none';
+    }
   }
 
   openModal() {
