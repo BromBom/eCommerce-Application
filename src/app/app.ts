@@ -54,14 +54,14 @@ export default class App {
     App.createNavbarContainer();
 
     this.header = new Header(this.router, this.state);
-    this.main = new Main();
+    this.main = new Main(this.router); // Создаем экземпляр Main и передаем router
     this.navbar = new Navbar();
 
     const footer = new Footer();
 
     document.body.append(
       this.header.getHtmlElement(),
-      this.main.getHtmlElement(),
+      this.main.getHtmlElement(), // Добавляем Main в DOM
       footer.getHtmlElement(),
       loadingOverlay,
       messageContainer

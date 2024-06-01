@@ -4,6 +4,13 @@
   width: 100%;
 }
 
+.sort-buttons-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
 .sort-buttons {
   display: flex;
   justify-content: center;

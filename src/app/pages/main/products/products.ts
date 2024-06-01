@@ -27,9 +27,9 @@ export default class Products extends Layout {
     this.setTextContent(TEXT);
   }
 
-  async renderProducts() {
+  async renderProducts(categoryId?: string) {
     try {
-      const response = await queryProduct();
+      const response = await queryProduct(categoryId);
       const products: ProductProjection[] = response.body.results;
       this.updateProducts(products);
     } catch (error) {

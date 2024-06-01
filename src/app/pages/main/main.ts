@@ -2,22 +2,27 @@ import { ClientResponse, ProductProjectionPagedSearchResponse, ProductProjection
 import Layout from '../../layout/layout';
 import { queryProduct, sortProductClothing, sortProductShoes, sortProductAccessories } from '../../../api/project';
 import { hideLoading, showLoading, handleError } from '../../utils/showmessage';
+import Products from './products/products';
+import Router from '../../router/router';
 
 import './main.scss';
 
 export default class Main extends Layout {
-  constructor() {
+  products: Products;
+
+  constructor(router: Router) {
     const params = {
       tag: 'section' as keyof HTMLElementTagNameMap,
       classNames: ['main'],
     };
     super(params);
+    this.products = new Products(router);
     this.createSortButtons();
   }
 
   createSortButtons() {
     const buttonContainer = document.createElement('div');
-    buttonContainer.className = 'sort-buttons';
+    buttonContainer.className = 'sort-buttons-section';
 
     const buttons = [
       { name: 'Clothing', handler: sortProductClothing, id: '8da9d730-fdd3-4313-8814-20cd01dc7efd' },
@@ -30,13 +35,23 @@ export default class Main extends Layout {
       btn.className = 'sort-button';
       btn.textContent = button.name;
       btn.addEventListener('click', async () => {
-        await this.renderProducts(button.id);
+        await this.products.renderProducts(button.id);
       });
       buttonContainer.appendChild(btn);
     });
 
     const mainElement = this.getHtmlElement();
     mainElement.appendChild(buttonContainer);
+  }
+
+  setContent(content: Layout) {
+    const htmlElement = this.getHtmlElement();
+
+    while (htmlElement?.firstElementChild) {
+      htmlElement.firstElementChild.remove();
+    }
+
+    this.viewElementCreator.addInnerElement(content.getHtmlElement());
   }
 
   async renderProducts(categoryId: string) {
@@ -67,16 +82,6 @@ export default class Main extends Layout {
     } finally {
       hideLoading();
     }
-  }
-
-  setContent(content: Layout) {
-    const htmlElement = this.getHtmlElement();
-
-    while (htmlElement?.firstElementChild) {
-      htmlElement.firstElementChild.remove();
-    }
-
-    this.viewElementCreator.addInnerElement(content.getHtmlElement());
   }
 
   static addFilterEventListeners() {
