@@ -11,17 +11,17 @@ export const getProject = () => {
   return apiRoot.get().execute();
 };
 
-getProject().then(console.log).catch(console.error);
+// getProject().then(console.log).catch(console.error);
 
-apiRoot
-  .shoppingLists()
-  .withId({ ID: 'a-shoppinglist-id' })
-  .get()
-  .execute()
-  .then(({ body }) => {
-    console.log(JSON.stringify(body));
-  })
-  .catch(console.error);
+// apiRoot
+//   .shoppingLists()
+//   .withId({ ID: 'a-shoppinglist-id' })
+//   .get()
+//   .execute()
+//   .then(({ body }) => {
+//     console.log(JSON.stringify(body));
+//   })
+//   .catch(console.error);
 
 export const searchProduct = async (query: string): Promise<ProductProjectionPagedSearchResponse> => {
   return apiRoot
