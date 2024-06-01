@@ -1,5 +1,6 @@
 import { Address } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../../components/simpleComponent';
+import AddressBox from './addressBox/addrtessBox';
 
 import './addressList.scss';
 
@@ -16,12 +17,17 @@ export default class AddressList {
 
     const addressContainer = document.createElement('div');
     addressContainer.classList.add('address__container');
-    const addButton = new SimpleComponent<HTMLDivElement>('div', ['address__add-button'], 'Add new address').getElement();
+
+    const addButton = new SimpleComponent<HTMLDivElement>(
+      'div',
+      ['address__add-button'],
+      '+Add new address'
+    ).getElement();
     addressList.append(addressContainer, addButton);
 
     this.addresses.forEach((address) => {
       const addressBox = new AddressBox(address).getElement();
-      addressList.append(addressBox);
+      addressContainer.append(addressBox);
     });
 
     return addressList;

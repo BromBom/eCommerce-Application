@@ -1,6 +1,7 @@
 import { Customer } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../components/simpleComponent';
 import AddressBlock from './addressBlock/addressBlock';
+import AddressList from './addressList/addressList';
 
 import './personalData.scss';
 
@@ -84,7 +85,10 @@ export default class PersonalData {
     const billingBlock = new AddressBlock('Billing Address', addressBilling!);
     const shippingBlock = new AddressBlock('Shipping Address', addressShipping);
     shippingBlock.getElement().classList.add('shipping');
-    addressesBox.append(billingBlock.getElement(), shippingBlock.getElement(), titleAddresses);
+
+    const addressList = new AddressList(customer.addresses).getElement();
+
+    addressesBox.append(billingBlock.getElement(), shippingBlock.getElement(), titleAddresses, addressList);
 
     return personalData;
   }
