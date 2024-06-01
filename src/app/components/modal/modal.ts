@@ -2,14 +2,14 @@ import './style.scss';
 import Layout from '../../layout/layout';
 import BaseComponent from '../baseComponent/baseComponent';
 
-const MESSAGE_DEFAULT = 'Default message';
+// const MESSAGE_DEFAULT = 'Default message';
 
 export default class Modal extends Layout {
-  contentType: string;
-
   closeButton?: HTMLElement;
 
-  constructor(contentType: string = MESSAGE_DEFAULT) {
+  contentImage: HTMLElement | null;
+
+  constructor(contentImage: HTMLElement | null) {
     const params = {
       tag: 'div' as keyof HTMLElementTagNameMap,
       classNames: ['modal'],
@@ -17,7 +17,7 @@ export default class Modal extends Layout {
 
     super(params);
 
-    this.contentType = contentType;
+    this.contentImage = contentImage;
 
     this.configureView();
   }
@@ -26,11 +26,22 @@ export default class Modal extends Layout {
     const contentParams = {
       tag: 'div' as keyof HTMLElementTagNameMap,
       classNames: ['modal-content'],
-      text: this.contentType,
+      text: '',
       callback: () => null,
     };
     const content = new BaseComponent<HTMLElement>(contentParams);
     this.viewElementCreator.addInnerElement(content);
+
+    if (this.contentImage) {
+      const imgParams = {
+        tag: 'img' as keyof HTMLElementTagNameMap,
+        classNames: ['modal-image'],
+        callback: () => null,
+      };
+      const img = new BaseComponent<HTMLImageElement>(imgParams);
+      img.addInnerElement(this.contentImage);
+      content.addInnerElement(img);
+    }
 
     const buttonParams = {
       tag: 'button' as keyof HTMLElementTagNameMap,
@@ -40,26 +51,27 @@ export default class Modal extends Layout {
     };
     const button = new BaseComponent<HTMLElement>(buttonParams);
 
-    content.addInnerElement(button);
+    this.viewElementCreator.addInnerElement(button);
 
     this.closeButton = button.getElement() as HTMLElement | undefined;
 
     if (this.closeButton !== undefined) {
-      this.closeButton.addEventListener('click', () => this.closeModal());
+      this.closeButton.addEventListener('click', () => Modal.closeModal(this.viewElementCreator.getElement()!));
     }
   }
 
-  closeModal() {
-    const element = this.viewElementCreator.getElement();
-    if (element !== null) {
-      element.style.display = 'none';
+  static closeModal(element: HTMLElement) {
+    if (element) {
+      element.classList.toggle('active');
+      element.firstElementChild!.firstElementChild?.remove();
+      console.log(element.firstElementChild, 'element close');
     }
   }
 
-  openModal() {
-    const element = this.viewElementCreator.getElement();
-    if (element !== null) {
-      element.style.display = 'block';
+  static openModal(element: HTMLElement) {
+    if (element) {
+      element.classList.toggle('active');
+      console.log({ element }, 'element open');
     }
   }
 }

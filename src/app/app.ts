@@ -31,7 +31,7 @@ export default class App {
     this.header = null;
     this.main = null;
     this.navbar = null;
-    this.modal = new Modal();
+    this.modal = new Modal(null);
     this.state = new State();
     const routes = this.createRoutes();
     this.router = new Router(routes);
@@ -121,7 +121,7 @@ export default class App {
             if (!cardID) {
               throw new Error('No card ID found in localStorage');
             }
-            const productDetailPage = new ProductDetail(cardID);
+            const productDetailPage = new ProductDetail(cardID, this.modal);
             await productDetailPage.init(); // Ensure init completes
             mainContainer.innerHTML = '';
             mainContainer.append(productDetailPage.getElement()!);
