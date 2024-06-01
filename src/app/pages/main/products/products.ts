@@ -142,7 +142,7 @@ export default class Products extends Layout {
         const cardId = targetContainer.dataset.cardid;
         if (cardId) {
           localStorage.setItem('cardId', cardId);
-          this.router.navigate(`${Pages.PRODUCTS}`);
+          this.router.navigate(`${Pages.DETAILS}`);
         }
       }
     });

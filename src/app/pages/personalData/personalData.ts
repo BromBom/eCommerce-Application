@@ -74,12 +74,14 @@ export default class PersonalData {
     profileBox.append(profilList);
 
     const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
-    const addressBilling = customer.addresses[0];
-    let addressShipping = customer.addresses[0];
+    const addressBillingID = customer.defaultBillingAddressId;
+    const addressShippingID = customer.defaultShippingAddressId;
+    const addressBilling = customer.addresses.find((address) => address.id === addressBillingID)!;
+    let addressShipping = addressBilling;
     if (customer.addresses.length > 1) {
-      [, addressShipping] = customer.addresses;
+      addressShipping = customer.addresses.find((address) => address.id === addressShippingID)!;
     }
-    const billingBlock = new AddressBlock('Billing Address', addressBilling);
+    const billingBlock = new AddressBlock('Billing Address', addressBilling!);
     const shippingBlock = new AddressBlock('Shipping Address', addressShipping);
     shippingBlock.getElement().classList.add('shipping');
     addressesBox.append(billingBlock.getElement(), shippingBlock.getElement(), titleAddresses);

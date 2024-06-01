@@ -106,7 +106,7 @@ export default class App {
         },
       },
       {
-        path: `${Pages.PRODUCTS}`,
+        path: `${Pages.DETAILS}`,
         callback: async () => {
           showLoading();
           try {
