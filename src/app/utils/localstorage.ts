@@ -1,3 +1,5 @@
+import { CartItem } from '../types/types';
+
 interface UserInfo {
   _id: string;
   name: string;
@@ -7,9 +9,38 @@ interface UserInfo {
   isAdmin: boolean;
 }
 
-interface CartItem {
-  // свойства корзины
+export const parseRequestUrl = () => {
+  const address = document.location.hash.slice(1).split('?')[0];
+
+  const queryString =
+    document.location.hash.slice(1).split('?').length === 2 ? document.location.hash.slice(1).split('?')[1] : '';
+
+  const url = address.toLowerCase();
+  const r = url.split('/');
+  const q = queryString.split('=');
+  return {
+    resource: r[1],
+    id: r[2],
+    verb: r[3],
+    name: q[0],
+    value: q[1],
+  };
+};
+
+export interface Component {
+  render: () => Promise<string>;
+  after_render: () => Promise<void> | void;
 }
+
+export const rerender = async (component: Component): Promise<void> => {
+  const mainContainer = document.getElementById('main-container');
+  if (mainContainer) {
+    mainContainer.innerHTML = await component.render();
+    await component.after_render();
+  } else {
+    console.error('Main container not found');
+  }
+};
 
 export const getCartItems = (): CartItem[] => {
   const cartItemsString: string | null = localStorage.getItem('cartItems');
@@ -20,6 +51,25 @@ export const getCartItems = (): CartItem[] => {
 export const setCartItems = (cartItems: CartItem[]): void => {
   localStorage.setItem('cartItems', JSON.stringify(cartItems));
 };
+
+const addToCart = (item: CartItem, forceUpdate = false): void => {
+  const cartItems = getCartItems();
+  const existItemIndex = cartItems.findIndex((x: CartItem) => x.product === item.product);
+  if (existItemIndex !== -1) {
+    if (forceUpdate) {
+      cartItems[existItemIndex] = item;
+    }
+  } else {
+    cartItems.push(item);
+  }
+  setCartItems(cartItems);
+};
+
+const removeFromCart = (id: string): void => {
+  setCartItems(getCartItems().filter((x: CartItem) => x.product !== id));
+};
+
+export { addToCart, removeFromCart };
 
 export const setUserInfo = ({
   _id = '',

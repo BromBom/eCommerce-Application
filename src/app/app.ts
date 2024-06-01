@@ -6,11 +6,12 @@ import Main from './pages/main/main';
 import NotFound from './pages/not-found/not-found';
 import Registration from './pages/registration/registration';
 import PersonalData from './pages/personalData/personalData';
-import { ID_SELECTOR, Pages } from './router/pages';
+import { Pages } from './router/pages';
 import Router, { RouterParams } from './router/router';
 import State from './state/state';
 import LoginPageLayout from './layout/loginLayout';
 import { showLoading, hideLoading, handleError } from './utils/showmessage';
+import Navbar from './components/navbar/navbar';
 
 export default class App {
   header?: null | Header;
@@ -19,18 +20,23 @@ export default class App {
 
   router: Router;
 
+  navbar: null | Navbar;
+
   state: State;
 
   constructor() {
     this.header = null;
-
     this.main = null;
-
+    this.navbar = null;
     this.state = new State();
-
-    const routes = this.createRoutes(this.state);
-
+    const routes = this.createRoutes();
     this.router = new Router(routes);
+  }
+
+  static createNavbarContainer() {
+    const container = document.createElement('div');
+    container.className = 'navbar';
+    document.body.appendChild(container);
   }
 
   createView() {
@@ -45,8 +51,12 @@ export default class App {
     const messageContainer = document.createElement('div');
     messageContainer.id = 'message-container';
 
+    App.createNavbarContainer();
+
     this.header = new Header(this.router, this.state);
     this.main = new Main();
+    this.navbar = new Navbar();
+
     const footer = new Footer();
 
     document.body.append(
@@ -56,10 +66,11 @@ export default class App {
       loadingOverlay,
       messageContainer
     );
+
+    Main.addFilterEventListeners();
   }
 
-  createRoutes(state: State): RouterParams[] {
-    console.log(state);
+  createRoutes(): RouterParams[] {
     return [
       {
         path: '',
@@ -83,7 +94,8 @@ export default class App {
           showLoading();
           try {
             const { default: Products } = await import('./pages/main/products/products');
-            this.setContent(Pages.Product, new Products(this.router));
+            const productsPage = new Products(this.router);
+            this.setContent(Pages.PRODUCT, productsPage);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load products page.');
@@ -94,22 +106,23 @@ export default class App {
         },
       },
       {
-        path: `${Pages.PRODUCT}/${ID_SELECTOR}`,
-        callback: async (id) => {
-          const { default: Products } = await import('./pages/main/products/products');
-          this.setContent(Pages.Product, new Products(this.router, id));
-        },
-      },
-      {
-        path: `${Pages.CART}`,
+        path: `${Pages.PRODUCTS}`,
         callback: async () => {
           showLoading();
           try {
-            const { default: Cart } = await import('./pages/main/cart/cart');
-            this.setContent(Pages.Cart, new Cart());
+            const { default: ProductDetail } = await import('./pages/main/products/productDetail/productDetail');
+            const mainContainer = this.main!.getHtmlElement();
+            const cardID = localStorage.getItem('cardId');
+            if (!cardID) {
+              throw new Error('No card ID found in localStorage');
+            }
+            const productDetailPage = new ProductDetail(cardID);
+            await productDetailPage.init(); // Ensure init completes
+            mainContainer.innerHTML = '';
+            mainContainer.append(productDetailPage.getElement()!);
           } catch (error) {
             if (error instanceof Error) {
-              handleError(error, 'Failed to load products page.');
+              handleError(error, 'Failed to load product detail page.');
             }
           } finally {
             hideLoading();
@@ -189,7 +202,13 @@ export default class App {
     ];
   }
 
+  updateMainContent(categoryId: string) {
+    console.log('Updating main content with categoryId:', categoryId);
+    this.main?.renderProducts(categoryId);
+  }
+
   setContent(page: string, view: Layout) {
+    console.log('Setting content for page:', page, 'with view:', view);
     const isLoggedIn = this.state.loadState().size > 0;
 
     this.header?.setSelectedItem(page);
