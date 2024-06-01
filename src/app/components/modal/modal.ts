@@ -35,7 +35,7 @@ export default class Modal extends Layout {
     const buttonParams = {
       tag: 'button' as keyof HTMLElementTagNameMap,
       classNames: ['close'],
-      text: 'Close',
+      text: 'X',
       callback: () => this.closeModal(),
     };
     const button = new BaseComponent<HTMLElement>(buttonParams);

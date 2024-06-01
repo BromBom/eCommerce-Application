@@ -12,19 +12,31 @@
 }
 
 .modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
   background-color: #fefefe;
   margin: 15% auto;
-  padding: 20px;
+  padding: 60px 20px 20px 20px;
   border: 1px solid #888;
   width: 60vw;
   height: 450px;
 }
 
 .close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  height: 25px;
+  width: 25px;
   font-weight: bold;
+  //   background-image: url('../../../assets/cross-button.svg');
+  //   background-position: center;
+  //   background-repeat: no-repeat;
+  //   background-position: right top;
+  //   background-size: 50px;
 }
 
 .close:hover,
