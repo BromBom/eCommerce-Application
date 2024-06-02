@@ -38,7 +38,13 @@ export default class Header extends Layout {
 
   additionalButtons: HTMLElement[];
 
-  constructor(router: Router, state: State) {
+  cartCreator: BaseComponent<HTMLElement>;
+
+  constructor(
+    router: Router,
+    state: State,
+    public products: Products
+  ) {
     const params = {
       tag: 'header' as keyof HTMLElementTagNameMap,
       classNames: ['header'],
@@ -49,6 +55,17 @@ export default class Header extends Layout {
     this.headerLinkElements = new Map();
     this.state = state;
     this.additionalButtons = [];
+
+    const cartParams = {
+      tag: 'a' as keyof HTMLElementTagNameMap,
+      classNames: ['cart'],
+      text: '',
+      callback: () => {
+        this.router.navigate(Pages.CART);
+        this.clearSelectedItems();
+      },
+    };
+    this.cartCreator = new BaseComponent<HTMLElement>(cartParams);
 
     const topContainer = new BaseComponent<HTMLElement>({
       tag: 'div',
@@ -70,26 +87,18 @@ export default class Header extends Layout {
       classNames: ['logo'],
       text: '',
       callback: () => {
-        router.navigate(Pages.PRODUCT);
+        console.log('Logo clicked');
+        this.router.navigate(Pages.PRODUCT);
         this.clearSelectedItems();
       },
     };
 
     const logoCreator = new BaseComponent<HTMLElement>(logoParams);
+    logoCreator.getElement()?.addEventListener('click', () => {
+      this.router.navigate(Pages.PRODUCT);
+      this.clearSelectedItems();
+    });
     topContainer.addInnerElement(logoCreator);
-
-    const cartParams = {
-      tag: 'div' as keyof HTMLElementTagNameMap,
-      classNames: ['cart'],
-      text: '',
-      callback: () => {
-        router.navigate(Pages.CART);
-        this.clearSelectedItems();
-      },
-    };
-
-    const cartCreator = new BaseComponent<HTMLElement>(cartParams);
-    this.viewElementCreator.addInnerElement(cartCreator);
 
     const navParams = {
       tag: 'nav' as keyof HTMLElementTagNameMap,
@@ -136,12 +145,11 @@ export default class Header extends Layout {
           console.log('Product projection search result:', searchData);
 
           if (searchData && searchData.results) {
-            const products = new Products(this.router);
-            products.updateProducts(searchData.results);
+            this.products.updateProducts(searchData.results);
             const mainElement = document.querySelector('.main');
             if (mainElement) {
               mainElement.innerHTML = '';
-              mainElement.appendChild(products.getHtmlElement());
+              mainElement.appendChild(this.products.getHtmlElement());
             } else {
               console.error('Main element not found.');
             }
@@ -198,6 +206,11 @@ export default class Header extends Layout {
     if (navElement) {
       navElement.innerHTML = '';
       this.headerLinkElements.clear();
+      this.navElement.addInnerElement(this.cartCreator);
+
+      this.cartCreator.getElement()!.addEventListener('click', () => {
+        this.router.navigate(Pages.CART);
+      });
 
       Object.keys(pages).forEach((key) => {
         const pageParams = {
@@ -215,7 +228,6 @@ export default class Header extends Layout {
 
         const linkElement = new LinkView(pageParams, this.headerLinkElements);
         this.navElement.addInnerElement(linkElement.getHtmlElement());
-
         this.headerLinkElements.set(Pages[key].toUpperCase(), linkElement);
       });
     } else {

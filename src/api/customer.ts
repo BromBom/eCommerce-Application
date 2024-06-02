@@ -76,3 +76,40 @@ export const getCustomerByID = async (customerID: string) => {
 
   return customer;
 };
+
+export const changeAddress = async (
+  customerID: string,
+  customerVersion: number,
+  addressId: string,
+  country: string,
+  postalCode: string,
+  city: string,
+  streetName: string,
+  apartment: string
+) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .withId({ ID: customerID })
+    .post({
+      body: {
+        version: customerVersion,
+        actions: [
+          {
+            action: 'changeAddress',
+            addressId,
+            address: {
+              country,
+              postalCode,
+              city,
+              streetName,
+              apartment,
+            },
+          },
+        ],
+      },
+    })
+    .execute();
+
+  return response;
+};

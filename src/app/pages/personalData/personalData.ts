@@ -2,6 +2,7 @@ import { Customer } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../components/simpleComponent';
 import AddressBlock from './addressBlock/addressBlock';
 import AddressList from './addressList/addressList';
+import Modal from '../../components/modal/modal';
 
 import './personalData.scss';
 
@@ -18,7 +19,10 @@ export default class PersonalData {
 
   dateOfBirth: SimpleComponent<HTMLSpanElement>;
 
-  constructor(customer: Customer) {
+  constructor(
+    customer: Customer,
+    public modal: Modal
+  ) {
     this.linkEdit = new SimpleComponent<HTMLSpanElement>('span', ['profile__edit-link'], 'Edit');
     this.firstName = new SimpleComponent<HTMLSpanElement>('span', ['profile__personalData'], `${customer.firstName}`);
     this.lastName = new SimpleComponent<HTMLSpanElement>('span', ['profile__personalData'], `${customer.lastName}`);
@@ -86,7 +90,7 @@ export default class PersonalData {
     const shippingBlock = new AddressBlock('Shipping Address', addressShipping);
     shippingBlock.getElement().classList.add('shipping');
 
-    const addressList = new AddressList(customer.addresses).getElement();
+    const addressList = new AddressList(customer.addresses, this.modal).getElement();
 
     addressesBox.append(billingBlock.getElement(), shippingBlock.getElement(), titleAddresses, addressList);
 
