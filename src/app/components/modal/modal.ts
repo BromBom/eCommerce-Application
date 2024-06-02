@@ -2,8 +2,6 @@ import './style.scss';
 import Layout from '../../layout/layout';
 import BaseComponent from '../baseComponent/baseComponent';
 
-// const MESSAGE_DEFAULT = 'Default message';
-
 export default class Modal extends Layout {
   closeButton?: HTMLElement;
 
@@ -32,16 +30,14 @@ export default class Modal extends Layout {
     const content = new BaseComponent<HTMLElement>(contentParams);
     this.viewElementCreator.addInnerElement(content);
 
-    if (this.contentImage) {
-      const imgParams = {
-        tag: 'img' as keyof HTMLElementTagNameMap,
-        classNames: ['modal-image'],
-        callback: () => null,
-      };
-      const img = new BaseComponent<HTMLImageElement>(imgParams);
-      img.addInnerElement(this.contentImage);
-      content.addInnerElement(img);
-    }
+    const imageContainerParams = {
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['image-container'],
+      callback: () => null,
+    };
+
+    const imageContainer = new BaseComponent<HTMLElement>(imageContainerParams);
+    content.addInnerElement(imageContainer);
 
     const buttonParams = {
       tag: 'button' as keyof HTMLElementTagNameMap,
@@ -51,7 +47,7 @@ export default class Modal extends Layout {
     };
     const button = new BaseComponent<HTMLElement>(buttonParams);
 
-    this.viewElementCreator.addInnerElement(button);
+    content.addInnerElement(button);
 
     this.closeButton = button.getElement() as HTMLElement | undefined;
 
@@ -63,15 +59,13 @@ export default class Modal extends Layout {
   static closeModal(element: HTMLElement) {
     if (element) {
       element.classList.toggle('active');
-      element.firstElementChild!.firstElementChild?.remove();
-      console.log(element.firstElementChild, 'element close');
+      element.firstElementChild!.firstElementChild?.firstElementChild?.remove();
     }
   }
 
   static openModal(element: HTMLElement) {
     if (element) {
       element.classList.toggle('active');
-      console.log({ element }, 'element open');
     }
   }
 }

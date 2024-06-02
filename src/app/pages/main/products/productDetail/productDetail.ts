@@ -92,14 +92,13 @@ export default class ProductDetail extends Layout {
 
     this.innerContent = imageElement;
 
-    console.log({ imageElement }, 'IMAGE');
-
     this.innerContent.addEventListener('click', () => {
       const modalImage = document.createElement('img');
       modalImage.src = this.card!.image;
       modalImage.alt = this.card!.name;
       const modal = this.modal.getHtmlElement();
-      const modalContainer = modal.firstChild as HTMLElement;
+
+      const modalContainer = modal.firstChild?.firstChild as HTMLElement;
       modalContainer.append(modalImage);
       Modal.openModal(this.modal.getHtmlElement());
     });
