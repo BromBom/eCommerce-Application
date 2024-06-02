@@ -1,5 +1,11 @@
+.navbar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
 .sidebar {
-  position: fixed;
+  position: relative;
   width: 211px;
   height: auto;
   left: 0px;

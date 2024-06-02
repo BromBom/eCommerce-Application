@@ -1,7 +1,15 @@
 import { ClientResponse, ProductProjectionPagedSearchResponse, ProductProjection } from '@commercetools/platform-sdk';
 import Layout from '../../layout/layout';
-import { queryProduct, sortProductClothing, sortProductShoes, sortProductAccessories } from '../../../api/project';
+import {
+  queryProduct,
+  sortProductClothing,
+  sortProductShoes,
+  sortProductAccessories,
+  sortProductbyASC,
+} from '../../../api/project';
 import { hideLoading, showLoading, handleError } from '../../utils/showmessage';
+import Products from '../../pages/main/products/products';
+import Router from '../../router/router';
 
 import './navbar.scss';
 
@@ -17,12 +25,15 @@ interface FilterCriteria {
 export default class Navbar extends Layout {
   filters: FilterCriteria;
 
-  constructor() {
+  router: Router;
+
+  constructor(router: Router) {
     const params = {
       tag: 'section' as keyof HTMLElementTagNameMap,
       classNames: ['navbar'],
     };
     super(params);
+    this.router = router;
     this.filters = {
       sizes: [],
       priceRange: [0, 1000],
@@ -31,14 +42,15 @@ export default class Navbar extends Layout {
       colors: [],
       discount: false,
     };
-    const htmlElement = document.querySelector('.navbar') as HTMLElement | null;
+    this.createSortButtons();
+
+    const htmlElement = this.getHtmlElement();
     if (htmlElement) {
       Navbar.createSidebar(htmlElement);
-      Navbar.addFilterEventListeners();
+      this.addFilterEventListeners();
     } else {
-      console.error('HTML element with class "navbar" not found');
+      console.error('HTML element for Navbar not found');
     }
-    this.createSortButtons();
   }
 
   createSortButtons() {
@@ -65,7 +77,7 @@ export default class Navbar extends Layout {
     if (htmlElement) {
       htmlElement.appendChild(buttonContainer);
     } else {
-      console.error('HTML element with class "sidebar-container" not found');
+      console.error('HTML element with class "index" not found');
     }
   }
 
@@ -115,6 +127,13 @@ export default class Navbar extends Layout {
 
     sidebar.innerHTML = `
     <div class="sidebar-container">
+    <div class="filter-category">
+        <h3>Price (low-high)</h3>
+        <div class="checkbox">
+          <input type="checkbox" id="asc" name="sort-asc">
+          <label for="sort-asc">Cheap ones first</label>
+        </div>
+      </div>
       <div class="filter-category">
         <h3>Size</h3>
         <div class="checkbox">
@@ -183,17 +202,44 @@ export default class Navbar extends Layout {
     container.appendChild(sidebar);
   }
 
-  static addFilterEventListeners() {
+  addFilterEventListeners() {
     const filtersContainer = document.querySelector('.sidebar') as HTMLElement | null;
     if (filtersContainer) {
       filtersContainer.addEventListener('change', (event) => {
         const target = event.target as HTMLInputElement;
-        if (target.type === 'checkbox') {
-          // методы применения фильтров к товарам или другие соответствующие действия
+        if (target.type === 'checkbox' && target.id === 'asc') {
+          this.handleSortByPriceAsc(target.checked);
         }
       });
     } else {
       console.error('Sidebar container not found');
+    }
+  }
+
+  async handleSortByPriceAsc(checked: boolean) {
+    if (checked) {
+      try {
+        const response = await sortProductbyASC();
+        const products = response.body.results;
+        this.updateProductList(products);
+      } catch (error) {
+        console.error('Failed to sort products by price:', error);
+      }
+    }
+  }
+
+  updateProductList(products: ProductProjection[]) {
+    const mainContent = document.querySelector('.main');
+    if (mainContent) {
+      mainContent.innerHTML = '';
+      products.forEach((product: ProductProjection) => {
+        const productElement = document.createElement('div');
+        productElement.textContent = product.name['en-US'] || 'No name';
+        mainContent.appendChild(productElement);
+      });
+
+      const productsComponent = new Products(this.router);
+      productsComponent.updateProducts(products);
     }
   }
 }

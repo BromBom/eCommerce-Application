@@ -20,23 +20,15 @@ export default class App {
 
   router: Router;
 
-  navbar: null | Navbar;
-
   state: State;
 
   constructor() {
     this.header = null;
     this.main = null;
-    this.navbar = null;
+
     this.state = new State();
     const routes = this.createRoutes();
     this.router = new Router(routes);
-  }
-
-  static createNavbarContainer() {
-    const container = document.createElement('div');
-    container.className = 'navbar';
-    document.body.appendChild(container);
   }
 
   createView() {
@@ -51,17 +43,13 @@ export default class App {
     const messageContainer = document.createElement('div');
     messageContainer.id = 'message-container';
 
-    App.createNavbarContainer();
-
     this.header = new Header(this.router, this.state);
-    this.main = new Main(this.router); // Создаем экземпляр Main и передаем router
-    this.navbar = new Navbar();
-
+    this.main = new Main(this.router);
     const footer = new Footer();
 
     document.body.append(
       this.header.getHtmlElement(),
-      this.main.getHtmlElement(), // Добавляем Main в DOM
+      this.main.getHtmlElement(),
       footer.getHtmlElement(),
       loadingOverlay,
       messageContainer
@@ -78,7 +66,9 @@ export default class App {
           showLoading();
           try {
             const { default: Products } = await import('./pages/main/products/products');
-            this.setContent(Pages.Product, new Products(this.router));
+            const navbar = new Navbar(this.router);
+            const productsPage = new Products(this.router);
+            this.setContent(Pages.PRODUCT, productsPage, navbar);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product page.');
@@ -94,8 +84,9 @@ export default class App {
           showLoading();
           try {
             const { default: Products } = await import('./pages/main/products/products');
+            const navbar = new Navbar(this.router);
             const productsPage = new Products(this.router);
-            this.setContent(Pages.PRODUCT, productsPage);
+            this.setContent(Pages.PRODUCT, productsPage, navbar);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load products page.');
@@ -117,7 +108,7 @@ export default class App {
               throw new Error('No card ID found in localStorage');
             }
             const productDetailPage = new ProductDetail(cardID);
-            await productDetailPage.init(); // Ensure init completes
+            await productDetailPage.init();
             mainContainer.innerHTML = '';
             mainContainer.append(productDetailPage.getElement()!);
           } catch (error) {
@@ -207,12 +198,19 @@ export default class App {
     this.main?.renderProducts(categoryId);
   }
 
-  setContent(page: string, view: Layout) {
+  setContent(page: string, view: Layout, navbar?: Navbar) {
     console.log('Setting content for page:', page, 'with view:', view);
     const isLoggedIn = this.state.loadState().size > 0;
 
     this.header?.setSelectedItem(page);
-    this.main?.setContent(view);
+    const mainContainer = this.main!.getHtmlElement();
+    mainContainer.innerHTML = '';
+
+    if (navbar) {
+      mainContainer.appendChild(navbar.getHtmlElement());
+    }
+
+    mainContainer.appendChild(view.getHtmlElement());
 
     if (isLoggedIn) {
       this.header?.configureView();
