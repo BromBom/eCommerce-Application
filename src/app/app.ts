@@ -12,6 +12,7 @@ import State from './state/state';
 import LoginPageLayout from './layout/loginLayout';
 import { showLoading, hideLoading, handleError } from './utils/showmessage';
 import Navbar from './components/navbar/navbar';
+import Modal from './components/modal/modal';
 
 export default class App {
   header?: null | Header;
@@ -22,12 +23,15 @@ export default class App {
 
   navbar: null | Navbar;
 
+  modal: Modal;
+
   state: State;
 
   constructor() {
     this.header = null;
     this.main = null;
     this.navbar = null;
+    this.modal = new Modal(null);
     this.state = new State();
     const routes = this.createRoutes();
     this.router = new Router(routes);
@@ -63,6 +67,7 @@ export default class App {
       this.header.getHtmlElement(),
       this.main.getHtmlElement(),
       footer.getHtmlElement(),
+      this.modal.getHtmlElement(),
       loadingOverlay,
       messageContainer
     );
@@ -116,7 +121,7 @@ export default class App {
             if (!cardID) {
               throw new Error('No card ID found in localStorage');
             }
-            const productDetailPage = new ProductDetail(cardID);
+            const productDetailPage = new ProductDetail(cardID, this.modal);
             await productDetailPage.init(); // Ensure init completes
             mainContainer.innerHTML = '';
             mainContainer.append(productDetailPage.getElement()!);
@@ -178,6 +183,22 @@ export default class App {
             if (error instanceof Error) {
               console.log(error);
               handleError(error, 'Page not found.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
+        path: `${Pages.CART}`,
+        callback: async () => {
+          showLoading();
+          try {
+            const { default: CartScreen } = await import('./pages/main/cart/cart');
+            this.setContent(Pages.CART, new CartScreen(this.router));
+          } catch (error) {
+            if (error instanceof Error) {
+              handleError(error, 'Failed to load product page.');
             }
           } finally {
             hideLoading();

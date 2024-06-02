@@ -2,6 +2,7 @@ import { ProductProjection } from '@commercetools/platform-sdk';
 import Layout from '../../../../layout/layout';
 import { ICard } from '../../../../data/cards';
 import { searchProductbyID } from '../../../../../api/project';
+import Modal from '../../../../components/modal/modal';
 
 export default class ProductDetail extends Layout {
   product: ProductProjection | null;
@@ -14,7 +15,14 @@ export default class ProductDetail extends Layout {
 
   image: string | null;
 
-  constructor(public id: string) {
+  innerContent: HTMLElement | null;
+
+  modal: Modal;
+
+  constructor(
+    public id: string,
+    modal: Modal
+  ) {
     const params = {
       tag: 'article' as keyof HTMLElementTagNameMap,
       classNames: ['product-detail'],
@@ -25,7 +33,9 @@ export default class ProductDetail extends Layout {
     this.price = null;
     this.image = null;
     this.card = null;
+    this.innerContent = null;
     this.init();
+    this.modal = modal;
   }
 
   async init() {
@@ -79,6 +89,19 @@ export default class ProductDetail extends Layout {
     const imageElement = document.createElement('img');
     imageElement.src = this.card.image;
     imageElement.alt = this.card.name;
+
+    this.innerContent = imageElement;
+
+    this.innerContent.addEventListener('click', () => {
+      const modalImage = document.createElement('img');
+      modalImage.src = this.card!.image;
+      modalImage.alt = this.card!.name;
+      const modal = this.modal.getHtmlElement();
+
+      const modalContainer = modal.firstChild?.firstChild as HTMLElement;
+      modalContainer.append(modalImage);
+      Modal.openModal(this.modal.getHtmlElement());
+    });
 
     const descriptionElement = document.createElement('p');
     descriptionElement.textContent = this.card.description;
