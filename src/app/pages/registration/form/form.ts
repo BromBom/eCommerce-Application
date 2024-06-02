@@ -139,7 +139,16 @@ export default class RegForm {
         } else {
           customerDraft.addresses!.push(billingAddress);
           const newCustomer = await createCustomer(customerDraft);
-          await SetDefaultBillingAddress(newCustomer.id, newCustomer.version, newCustomer.addresses[0].id);
+          const newCustomerWithBilling = await SetDefaultBillingAddress(
+            newCustomer.id,
+            newCustomer.version,
+            newCustomer.addresses[0].id
+          );
+          await SetDefaultShippingAddress(
+            newCustomer.id,
+            newCustomerWithBilling.body.version,
+            newCustomer.addresses[0].id
+          );
           customerID = newCustomer.id;
         }
 
