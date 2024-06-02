@@ -1,3 +1,7 @@
+.sidebar {
+  display: none;
+}
+
 .profile__root {
   display: flex;
   flex-direction: column;
@@ -36,6 +40,7 @@
       font-style: italic;
       font-size: 16px;
       color: #0071e6;
+      user-select: none;
       cursor: pointer;
 
       &:hover {
