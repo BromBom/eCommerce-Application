@@ -189,6 +189,22 @@ export default class App {
         },
       },
       {
+        path: `${Pages.CART}`,
+        callback: async () => {
+          showLoading();
+          try {
+            const { default: CartScreen } = await import('./pages/main/cart/cart');
+            this.setContent(Pages.CART, new CartScreen(this.router));
+          } catch (error) {
+            if (error instanceof Error) {
+              handleError(error, 'Failed to load product page.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
         path: `${Pages.NOT_FOUND}`,
         callback: async () => {
           showLoading();
