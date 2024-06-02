@@ -40,7 +40,11 @@ export default class Header extends Layout {
 
   cartCreator: BaseComponent<HTMLElement>;
 
-  constructor(router: Router, state: State) {
+  constructor(
+    router: Router,
+    state: State,
+    public products: Products
+  ) {
     const params = {
       tag: 'header' as keyof HTMLElementTagNameMap,
       classNames: ['header'],
@@ -141,12 +145,11 @@ export default class Header extends Layout {
           console.log('Product projection search result:', searchData);
 
           if (searchData && searchData.results) {
-            const products = new Products(this.router);
-            products.updateProducts(searchData.results);
+            this.products.updateProducts(searchData.results);
             const mainElement = document.querySelector('.main');
             if (mainElement) {
               mainElement.innerHTML = '';
-              mainElement.appendChild(products.getHtmlElement());
+              mainElement.appendChild(this.products.getHtmlElement());
             } else {
               console.error('Main element not found.');
             }

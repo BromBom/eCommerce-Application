@@ -1,4 +1,5 @@
 import { Address } from '@commercetools/platform-sdk';
+import Modal from '../../../components/modal/modal';
 import SimpleComponent from '../../../components/simpleComponent';
 import AddressBox from './addressBox/addrtessBox';
 
@@ -7,7 +8,10 @@ import './addressList.scss';
 export default class AddressList {
   element: HTMLDivElement;
 
-  constructor(public addresses: Address[]) {
+  constructor(
+    public addresses: Address[],
+    public modal: Modal
+  ) {
     this.element = this.init();
   }
 
@@ -26,7 +30,7 @@ export default class AddressList {
     addressList.append(addressContainer, addButton);
 
     this.addresses.forEach((address) => {
-      const addressBox = new AddressBox(address).getElement();
+      const addressBox = new AddressBox(address, this.modal).getElement();
       addressContainer.append(addressBox);
     });
 

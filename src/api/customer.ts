@@ -80,7 +80,7 @@ export const getCustomerByID = async (customerID: string) => {
 export const changeAddress = async (
   customerID: string,
   customerVersion: number,
-  addressId: string | undefined,
+  addressId: string,
   country: string,
   postalCode: string,
   city: string,
