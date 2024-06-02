@@ -1,56 +1,94 @@
 import { Customer } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../components/simpleComponent';
-import Router from '../../router/router';
+import AddressBlock from './addressBlock/addressBlock';
+import AddressList from './addressList/addressList';
+
+import './personalData.scss';
 
 export default class PersonalData {
   element: HTMLDivElement;
 
-  titlePersonalData: SimpleComponent<HTMLHeadingElement>;
+  linkEdit: SimpleComponent<HTMLSpanElement>;
 
-  titleProfile: SimpleComponent<HTMLHeadingElement>;
+  firstName: SimpleComponent<HTMLSpanElement>;
 
-  firstName: SimpleComponent<HTMLHeadingElement>;
+  lastName: SimpleComponent<HTMLSpanElement>;
 
-  lastName: SimpleComponent<HTMLHeadingElement>;
+  email: SimpleComponent<HTMLSpanElement>;
 
-  email: SimpleComponent<HTMLHeadingElement>;
+  dateOfBirth: SimpleComponent<HTMLSpanElement>;
 
-  dateOfBirth: SimpleComponent<HTMLHeadingElement>;
-
-  titleAddresses: SimpleComponent<HTMLHeadingElement>;
-
-  constructor(
-    public router: Router,
-    customer: Customer
-  ) {
-    this.element = this.init();
-    this.titlePersonalData = new SimpleComponent<HTMLHeadingElement>('h2', ['profile__title'], 'Personal Data');
-    this.titleProfile = new SimpleComponent<HTMLHeadingElement>('h3', ['profile__title'], 'Profile');
-    this.firstName = new SimpleComponent<HTMLHeadingElement>('h4', ['profile__personalData'], `${customer.firstName}`);
-    this.lastName = new SimpleComponent<HTMLHeadingElement>('h4', ['profile__personalData'], `${customer.lastName}`);
-    this.email = new SimpleComponent<HTMLHeadingElement>('h4', ['profile__personalData'], `${customer.email}`);
-    this.dateOfBirth = new SimpleComponent<HTMLHeadingElement>(
-      'h4',
+  constructor(customer: Customer) {
+    this.linkEdit = new SimpleComponent<HTMLSpanElement>('span', ['profile__edit-link'], 'Edit');
+    this.firstName = new SimpleComponent<HTMLSpanElement>('span', ['profile__personalData'], `${customer.firstName}`);
+    this.lastName = new SimpleComponent<HTMLSpanElement>('span', ['profile__personalData'], `${customer.lastName}`);
+    this.dateOfBirth = new SimpleComponent<HTMLSpanElement>(
+      'span',
       ['profile__personalData'],
       `${customer.dateOfBirth}`
     );
-    this.titleAddresses = new SimpleComponent<HTMLHeadingElement>('h3', ['profile__title'], 'Addresses');
+    this.email = new SimpleComponent<HTMLSpanElement>('span', ['profile__personalData'], `${customer.email}`);
+    this.element = this.init();
   }
 
   private init() {
     const personalData = document.createElement('div');
+    personalData.classList.add('profile__root');
     const profileBox = document.createElement('div');
+    profileBox.classList.add('profile__profileBox');
     const addressesBox = document.createElement('div');
+    addressesBox.classList.add('profile__addressesBox');
 
-    personalData.append(this.titlePersonalData.getElement(), profileBox, addressesBox);
-    profileBox.append(
-      this.titleProfile.getElement(),
-      this.firstName.getElement(),
-      this.lastName.getElement(),
-      this.email.getElement(),
-      this.dateOfBirth.getElement()
-    );
-    addressesBox.append(this.titleAddresses.getElement());
+    const titlePersonalData = new SimpleComponent<HTMLHeadingElement>(
+      'h2',
+      ['profile__title-root'],
+      'Personal Data'
+    ).getElement();
+    const titleProfile = new SimpleComponent<HTMLHeadingElement>('h3', ['profile__title'], 'Profile').getElement();
+    const titleAddresses = new SimpleComponent<HTMLHeadingElement>('h3', ['profile__title'], 'Addresses').getElement();
+
+    const profilList = new SimpleComponent<HTMLUListElement>('ul', ['profile__list']).getElement();
+
+    const titleBox = new SimpleComponent<HTMLLIElement>('li', ['profile__item']).getElement();
+    const firstName = new SimpleComponent<HTMLLIElement>('li', ['profile__item']).getElement();
+    const lastName = new SimpleComponent<HTMLLIElement>('li', ['profile__item']).getElement();
+    const dateOfBirth = new SimpleComponent<HTMLLIElement>('li', ['profile__item']).getElement();
+    const email = new SimpleComponent<HTMLLIElement>('li', ['profile__item']).getElement();
+
+    const labelFirstName = new SimpleComponent<HTMLSpanElement>(
+      'span',
+      ['profile__label'],
+      'first name: '
+    ).getElement();
+    const labelLastName = new SimpleComponent<HTMLSpanElement>('span', ['profile__label'], 'last name: ').getElement();
+    const labelBirth = new SimpleComponent<HTMLSpanElement>('span', ['profile__label'], 'birth: ').getElement();
+    const labelEmail = new SimpleComponent<HTMLSpanElement>('span', ['profile__label'], 'email: ').getElement();
+
+    titleBox.append(titleProfile, this.linkEdit.getElement());
+    firstName.append(labelFirstName, this.firstName.getElement());
+    lastName.append(labelLastName, this.lastName.getElement());
+    dateOfBirth.append(labelBirth, this.dateOfBirth.getElement());
+    email.append(labelEmail, this.email.getElement());
+
+    profilList.append(titleBox, firstName, lastName, dateOfBirth, email);
+    personalData.append(titlePersonalData, profileBox, addressesBox);
+    profileBox.append(profilList);
+
+    const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
+    const addressBillingID = customer.defaultBillingAddressId;
+    const addressShippingID = customer.defaultShippingAddressId;
+    const addressBilling = customer.addresses.find((address) => address.id === addressBillingID)!;
+    let addressShipping = addressBilling;
+    if (customer.addresses.length > 1) {
+      addressShipping = customer.addresses.find((address) => address.id === addressShippingID)!;
+    }
+    const billingBlock = new AddressBlock('Billing Address', addressBilling!);
+    const shippingBlock = new AddressBlock('Shipping Address', addressShipping);
+    shippingBlock.getElement().classList.add('shipping');
+
+    const addressList = new AddressList(customer.addresses).getElement();
+
+    addressesBox.append(billingBlock.getElement(), shippingBlock.getElement(), titleAddresses, addressList);
 
     return personalData;
   }

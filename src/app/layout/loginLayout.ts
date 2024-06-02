@@ -1,5 +1,3 @@
-// loginLayout.ts
-
 import Layout from './layout';
 import loginPage from '../pages/login/loginPage';
 import Header from '../components/header/header';

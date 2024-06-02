@@ -31,8 +31,6 @@ export default class Navbar extends Layout {
       colors: [],
       discount: false,
     };
-    this.createSortButtons();
-
     const htmlElement = document.querySelector('.navbar') as HTMLElement | null;
     if (htmlElement) {
       Navbar.createSidebar(htmlElement);
@@ -40,6 +38,7 @@ export default class Navbar extends Layout {
     } else {
       console.error('HTML element with class "navbar" not found');
     }
+    this.createSortButtons();
   }
 
   createSortButtons() {
@@ -66,7 +65,7 @@ export default class Navbar extends Layout {
     if (htmlElement) {
       htmlElement.appendChild(buttonContainer);
     } else {
-      console.error('HTML element with class "index" not found');
+      console.error('HTML element with class "sidebar-container" not found');
     }
   }
 

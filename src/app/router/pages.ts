@@ -2,7 +2,7 @@ interface PagesProps {
   REGISTRATION: string;
   LOGIN: string;
   PRODUCT: string;
-  PRODUCTS: string;
+  DETAILS: string;
   NOT_FOUND: string;
   CART: string;
   PROFILE: string;
@@ -13,7 +13,7 @@ const Pages: PagesProps = {
   REGISTRATION: 'registration',
   LOGIN: 'login',
   PRODUCT: 'product',
-  PRODUCTS: 'details',
+  DETAILS: 'details',
   NOT_FOUND: 'not-found',
   PROFILE: 'profile',
   LOGOUT: 'logout',

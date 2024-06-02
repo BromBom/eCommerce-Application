@@ -42,16 +42,7 @@ export const showMessage = (message: string, callback?: () => void): void => {
 };
 
 export function handleError(error: Error, message: string): void {
-  // console.error(error);
   showMessage(message, () => {
     hideLoading();
   });
 }
-
-// export const redirectUser = (): void => {
-//   if (getCartItems().length !== 0) {
-//     document.location.hash = '/address';
-//   } else {
-//     document.location.hash = '/';
-//   }
-// };
