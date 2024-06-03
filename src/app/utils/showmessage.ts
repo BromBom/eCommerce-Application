@@ -46,3 +46,12 @@ export function handleError(error: Error, message: string): void {
     hideLoading();
   });
 }
+
+export function handleSucsess(message: string): void {
+  const messageContainer = document.getElementById('message-container');
+  messageContainer?.classList.add('sucsess');
+  showMessage(message, () => {
+    hideLoading();
+  });
+  messageContainer?.classList.remove('sucsess');
+}

@@ -3,8 +3,8 @@ import SimpleComponent from '../../../../components/simpleComponent';
 import Modal from '../../../../components/modal/modal';
 import RegAddress from '../../../registration/form/address/address';
 import Button from '../../../../components/controls/button';
-// import { changeAddress } from '../../../../../api/customer';
-// import { handleError, showLoading, hideLoading } from '../../../../utils/showmessage';
+import { changeAddress, getCustomerByID } from '../../../../../api/customer';
+import { handleError, showLoading, handleSucsess } from '../../../../utils/showmessage';
 
 export default class AddressBox {
   element: HTMLDivElement;
@@ -81,59 +81,31 @@ export default class AddressBox {
     modalForm.addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      //   try {
-      //     showLoading();
-      //     changeAddress(
-      //       this.customer.id,
-      //       this.customer.version,
-      //       this.address.id!,
-      //       this.address.country,
-      //       this.address.postalCode!,
-      //       this.address.city!,
-      //       this.address.streetName!,
-      //       this.address.apartment!,
-      //     )
+        try {
+          showLoading();
+          const customerWithChangeAddress = await changeAddress(
+            this.customer.id,
+            this.customer.version,
+            this.address.id!,
+            this.address.country,
+            this.address.postalCode!,
+            this.address.city!,
+            this.address.streetName!,
+            this.address.apartment!,
+          )
 
-      //     if (regForm.elements.length > 14) {
-      //       customerDraft.addresses!.push(billingAddress, shippingAddress);
-      //       const newCustomer = await createCustomer(customerDraft);
-      //       const newCustomerWithBilling = await SetDefaultBillingAddress(
-      //         newCustomer.id,
-      //         newCustomer.version,
-      //         newCustomer.addresses[0].id
-      //       );
-      //       await SetDefaultShippingAddress(
-      //         newCustomer.id,
-      //         newCustomerWithBilling.body.version,
-      //         newCustomer.addresses[1].id
-      //       );
-      //       customerID = newCustomer.id;
-      //     } else {
-      //       customerDraft.addresses!.push(billingAddress);
-      //       const newCustomer = await createCustomer(customerDraft);
-      //       const newCustomerWithBilling = await SetDefaultBillingAddress(
-      //         newCustomer.id,
-      //         newCustomer.version,
-      //         newCustomer.addresses[0].id
-      //       );
-      //       await SetDefaultShippingAddress(
-      //         newCustomer.id,
-      //         newCustomerWithBilling.body.version,
-      //         newCustomer.addresses[0].id
-      //       );
-      //       customerID = newCustomer.id;
-      //     }
+          const customerID = customerWithChangeAddress.body.id;
+          const newCustomer = await getCustomerByID(customerID);
+          localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+          localStorage.setItem('userID', JSON.stringify(newCustomer));
 
-      //     const newCustomer = await getCustomerByID(customerID);
-      //     localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
-      //     localStorage.setItem('userID', JSON.stringify(newCustomer));
+          Modal.openModal(this.modal.getHtmlElement());
 
-      //     this.router.navigate(Pages.PRODUCT);
-      //     hideLoading();
-      //   } catch (error) {
-      //     console.error(`Failed to change address: ${error}`);
-      //     handleError(new Error('Failed to change address'), `Failed to change address! ${error}`);
-      //   }
+          handleSucsess('The address change was successful!');
+        } catch (error) {
+          console.error(`Failed to change address: ${error}`);
+          handleError(new Error('Failed to change address'), `Failed to change address! ${error}`);
+        }
     });
   }
 
