@@ -36,20 +36,20 @@
   input {
     width: 60%;
   }
+
+  input:valid {
+    background-color: #7bff82;
+  }
+
+  input:invalid {
+    background-color: #ffcbcbce;
+  }
 }
 
 .massage-error {
   height: 20px;
   align-self: end;
   font-size: 12px;
-}
-
-input:valid {
-  background-color: #7bff82;
-}
-
-input:invalid {
-  background-color: #ffcbcbce;
 }
 
 .registration__btn-submit {

@@ -5,6 +5,7 @@ import RegAddress from '../../../registration/form/address/address';
 import Button from '../../../../components/controls/button';
 import { changeAddress, getCustomerByID } from '../../../../../api/customer';
 import { handleError, showLoading, handleSucsess } from '../../../../utils/showmessage';
+import AddressBlock from '../../addressBlock/addressBlock';
 
 export default class AddressBox {
   element: HTMLDivElement;
@@ -15,7 +16,7 @@ export default class AddressBox {
 
   modalButtonSubmit: SimpleComponent<HTMLButtonElement>;
 
-  stringAddress: string;
+  stringAddress: SimpleComponent<HTMLParagraphElement>;
 
   linkEdit: SimpleComponent<HTMLSpanElement>;
 
@@ -25,12 +26,18 @@ export default class AddressBox {
 
   constructor(
     public address: Address,
-    public modal: Modal
+    public modal: Modal,
+    public billingBlock: AddressBlock,
+    public shippingBlock: AddressBlock
   ) {
     this.customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
     this.modalAddressBlock = new RegAddress();
     this.modalButtonSubmit = Button(['registration__btn-submit'], 'Submit');
-    this.stringAddress = `${address.country}, ${address.postalCode}, ${address.city}, ${address.streetName} - ${address.apartment}`;
+    this.stringAddress = new SimpleComponent<HTMLParagraphElement>(
+      'p',
+      ['profile__address-string'],
+      `${address.country}, ${address.postalCode}, ${address.city}, ${address.streetName} - ${address.apartment}`
+    );
     this.linkEdit = new SimpleComponent<HTMLSpanElement>('span', ['profile__edit-link'], 'Edit');
     this.setBillingButton = new SimpleComponent<HTMLDivElement>('div', ['address__setBilling-button'], 'Billing');
     this.setShippingButton = new SimpleComponent<HTMLDivElement>('div', ['address__setShipping-button'], 'Shipping');
@@ -48,8 +55,10 @@ export default class AddressBox {
     buttonContainer.classList.add('address__container-buttons');
 
     addressBox.append(addressContainer, buttonContainer);
-    addressContainer.append(this.stringAddress, this.linkEdit.getElement());
+    addressContainer.append(this.stringAddress.getElement(), this.linkEdit.getElement());
     buttonContainer.append(this.setBillingButton.getElement(), this.setShippingButton.getElement());
+
+    this.creatModalFormChangeAddress();
 
     return addressBox;
   }
@@ -62,12 +71,20 @@ export default class AddressBox {
     this.modalAddressBlock.inputPostalCode.getElement().value = this.address.postalCode!;
     this.modalAddressBlock.inputCity.getElement().value = this.address.city!;
     this.modalAddressBlock.inputStreet.getElement().value = this.address.streetName!;
-    this.modalAddressBlock.inputStreetNumber.getElement().value = this.address.building!;
+    this.modalAddressBlock.inputStreetNumber.getElement().value = this.address.apartment!;
 
     const buttonSubmit = this.modalButtonSubmit.getElement();
     buttonSubmit.disabled = true;
 
     modalForm.append(this.modalAddressBlock.getElement(), buttonSubmit);
+
+    const modal = this.modal.getHtmlElement();
+    const modalContainer = modal.firstChild!.firstChild as HTMLElement;
+
+    this.linkEdit.addListener('click', () => {
+      modalContainer.append(modalForm);
+      Modal.openModal(modal);
+    });
 
     const checkButtonSubmit = (arrayInputs: Element[]) => {
       buttonSubmit.disabled = arrayInputs.some((el) => !(el as HTMLInputElement).checkValidity());
@@ -81,41 +98,45 @@ export default class AddressBox {
     modalForm.addEventListener('submit', async (event) => {
       event.preventDefault();
 
-        try {
-          showLoading();
-          const customerWithChangeAddress = await changeAddress(
-            this.customer.id,
-            this.customer.version,
-            this.address.id!,
-            this.address.country,
-            this.address.postalCode!,
-            this.address.city!,
-            this.address.streetName!,
-            this.address.apartment!,
-          )
+      const addressID = this.address.id!;
+      const country = this.modalAddressBlock.inputCountry.getElement().value;
+      const postalCode = this.modalAddressBlock.inputPostalCode.getElement().value;
+      const city = this.modalAddressBlock.inputCity.getElement().value;
+      const streetName = this.modalAddressBlock.inputStreet.getElement().value;
+      const apartment = this.modalAddressBlock.inputStreetNumber.getElement().value;
 
-          const customerID = customerWithChangeAddress.body.id;
-          const newCustomer = await getCustomerByID(customerID);
-          localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
-          localStorage.setItem('userID', JSON.stringify(newCustomer));
+      try {
+        showLoading();
+        const customerWithChangeAddress = await changeAddress(
+          this.customer.id,
+          this.customer.version,
+          addressID,
+          country,
+          postalCode,
+          city,
+          streetName,
+          apartment
+        );
 
-          Modal.openModal(this.modal.getHtmlElement());
+        const customerID = customerWithChangeAddress.body.id;
+        const newCustomer = await getCustomerByID(customerID);
+        localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+        localStorage.setItem('userID', JSON.stringify(newCustomer));
 
-          handleSucsess('The address change was successful!');
-        } catch (error) {
-          console.error(`Failed to change address: ${error}`);
-          handleError(new Error('Failed to change address'), `Failed to change address! ${error}`);
+        this.stringAddress.getElement().textContent = `${country}, ${postalCode}, ${city}, ${streetName} - ${apartment}`;
+        if (addressID === newCustomer.defaultBillingAddressId) {
+          this.billingBlock.stringAddress.getElement().textContent = `${country}, ${postalCode}, ${city}, ${streetName} - ${apartment}`;
         }
-    });
-  }
+        if (addressID === newCustomer.defaultShippingAddressId) {
+          this.shippingBlock.stringAddress.getElement().textContent = `${country}, ${postalCode}, ${city}, ${streetName} - ${apartment}`;
+        }
 
-  addlisteners() {
-    this.linkEdit.addListener('click', () => {
-      const modal = this.modal.getHtmlElement();
-      const modalContainer = modal.firstChild?.firstChild as HTMLElement;
-      const addressForm = this.modalAddressBlock.getElement();
-      modalContainer.append(addressForm);
-      Modal.openModal(modal);
+        Modal.closeModal(modal);
+        handleSucsess('The address change was successful!');
+      } catch (error) {
+        console.error(`Failed to change address: ${error}`);
+        handleError(new Error('Failed to change address'), `Failed to change address! ${error}`);
+      }
     });
   }
 

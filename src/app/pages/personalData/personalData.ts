@@ -90,7 +90,7 @@ export default class PersonalData {
     const shippingBlock = new AddressBlock('Shipping Address', addressShipping);
     shippingBlock.getElement().classList.add('shipping');
 
-    const addressList = new AddressList(customer.addresses, this.modal).getElement();
+    const addressList = new AddressList(customer.addresses, this.modal, billingBlock, shippingBlock).getElement();
 
     addressesBox.append(billingBlock.getElement(), shippingBlock.getElement(), titleAddresses, addressList);
 

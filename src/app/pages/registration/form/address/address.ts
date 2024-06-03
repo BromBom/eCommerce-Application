@@ -30,10 +30,10 @@ export default class RegAddress {
 
   constructor() {
     this.legend = new SimpleComponent<HTMLLegendElement>('legend', ['registration__legend'], 'Billing address');
-    this.inputStreet = Input(['registration__input-street']);
-    this.massageErrorStreet = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputStreetNumber = Input(['registration__input-street-number']);
     this.massageErrorStreetNumber = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.inputStreet = Input(['registration__input-street']);
+    this.massageErrorStreet = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputCity = Input(['registration__input-password']);
     this.massageErrorCity = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
     this.inputPostalCode = Input(['registration__input-name']);
@@ -46,18 +46,6 @@ export default class RegAddress {
   private init() {
     const regAddress = document.createElement('fieldset');
     const legend = this.legend.getElement();
-
-    this.inputStreet.addListener('input', () =>
-      checkInputValue(
-        this.inputStreet.getElement(),
-        this.massageErrorStreet.getElement(),
-        1,
-        '[a-zA-Z0-9\\s\\-\\,]{2,}',
-        'Must contain at least one character'
-      )
-    );
-    const labelStreet = creatInputWithLabel(this.inputStreet.getElement(), 'Street:', 'Washington', 'text');
-    const msgErrStreet = this.massageErrorStreet.getElement();
 
     this.inputStreetNumber.addListener('input', () =>
       checkInputValue(
@@ -75,6 +63,18 @@ export default class RegAddress {
       'text'
     );
     const msgErrStreetNumber = this.massageErrorStreetNumber.getElement();
+
+    this.inputStreet.addListener('input', () =>
+      checkInputValue(
+        this.inputStreet.getElement(),
+        this.massageErrorStreet.getElement(),
+        1,
+        '[a-zA-Z0-9\\s\\-\\,]{2,}',
+        'Must contain at least one character'
+      )
+    );
+    const labelStreet = creatInputWithLabel(this.inputStreet.getElement(), 'Street:', 'Washington', 'text');
+    const msgErrStreet = this.massageErrorStreet.getElement();
 
     this.inputCity.addListener('input', () =>
       checkInputValue(
@@ -120,10 +120,10 @@ export default class RegAddress {
     regAddress.classList.add('registration__address');
     regAddress.append(
       legend,
-      labelStreet,
-      msgErrStreet,
       labelStreetNumber,
       msgErrStreetNumber,
+      labelStreet,
+      msgErrStreet,
       labelCity,
       msgErrCity,
       labelPostalCode,
