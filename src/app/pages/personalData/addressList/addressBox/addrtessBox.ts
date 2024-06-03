@@ -4,7 +4,7 @@ import Modal from '../../../../components/modal/modal';
 import RegAddress from '../../../registration/form/address/address';
 import Button from '../../../../components/controls/button';
 import { changeAddress, getCustomerByID } from '../../../../../api/customer';
-import { handleError, showLoading, handleSucsess } from '../../../../utils/showmessage';
+import { handleError, showLoading, handleSucsess, hideLoading } from '../../../../utils/showmessage';
 import AddressBlock from '../../addressBlock/addressBlock';
 
 export default class AddressBox {
@@ -60,6 +60,13 @@ export default class AddressBox {
 
     this.creatModalFormChangeAddress();
 
+    if (this.address.id === this.customer.defaultBillingAddressId) {
+      this.setBillingButton.getElement().classList.add('clicked');
+    }
+    if (this.address.id === this.customer.defaultShippingAddressId) {
+      this.setShippingButton.getElement().classList.add('clicked');
+    }
+
     return addressBox;
   }
 
@@ -74,7 +81,7 @@ export default class AddressBox {
     this.modalAddressBlock.inputStreetNumber.getElement().value = this.address.apartment!;
 
     const buttonSubmit = this.modalButtonSubmit.getElement();
-    buttonSubmit.disabled = true;
+    // buttonSubmit.disabled = true;
 
     modalForm.append(this.modalAddressBlock.getElement(), buttonSubmit);
 
@@ -105,11 +112,13 @@ export default class AddressBox {
       const streetName = this.modalAddressBlock.inputStreet.getElement().value;
       const apartment = this.modalAddressBlock.inputStreetNumber.getElement().value;
 
+      const customer = await getCustomerByID(this.customer.id);
+
       try {
         showLoading();
         const customerWithChangeAddress = await changeAddress(
-          this.customer.id,
-          this.customer.version,
+          customer.id,
+          customer.version,
           addressID,
           country,
           postalCode,
@@ -132,6 +141,7 @@ export default class AddressBox {
         }
 
         Modal.closeModal(modal);
+        hideLoading();
         handleSucsess('The address change was successful!');
       } catch (error) {
         console.error(`Failed to change address: ${error}`);

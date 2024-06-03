@@ -84,6 +84,18 @@
           }
         }
 
+        .address__setBilling-button {
+          &:hover {
+              border: 2px dashed #02b875;
+            }
+        }
+
+        .address__setShipping-button {
+          &:hover {
+              border: 2px dashed #b88e02;
+            }
+        }
+
         .address__setBilling-button.clicked {
           color: #3f3f3f;
           background-color: #d4fdee;

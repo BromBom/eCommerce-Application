@@ -31,15 +31,15 @@ export default class RegProfile {
   constructor() {
     this.legend = new SimpleComponent<HTMLLegendElement>('legend', [], 'Profile');
     this.inputEmail = Input(['registration__input-email']);
-    this.massageErrorEmail = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorEmail = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputPassword = Input(['registration__input-password']);
-    this.massageErrorPassword = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorPassword = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputName = Input(['registration__input-name']);
-    this.massageErrorName = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorName = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputLastName = Input(['registration__input-lastname']);
-    this.massageErrorLastName = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorLastName = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputDate = Input(['registration__input-date']);
-    this.massageErrorDate = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorDate = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.element = this.init();
   }
 

@@ -31,15 +31,15 @@ export default class RegAddress {
   constructor() {
     this.legend = new SimpleComponent<HTMLLegendElement>('legend', ['registration__legend'], 'Billing address');
     this.inputStreetNumber = Input(['registration__input-street-number']);
-    this.massageErrorStreetNumber = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorStreetNumber = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputStreet = Input(['registration__input-street']);
-    this.massageErrorStreet = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorStreet = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputCity = Input(['registration__input-password']);
-    this.massageErrorCity = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorCity = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputPostalCode = Input(['registration__input-name']);
-    this.massageErrorPostalCode = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorPostalCode = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputCountry = Input(['registration__input-lastname']);
-    this.massageErrorCountry = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorCountry = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.element = this.init();
   }
 
