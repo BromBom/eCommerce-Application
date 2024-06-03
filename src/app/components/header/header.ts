@@ -5,7 +5,7 @@ import { Pages } from '../../router/pages';
 import Router from '../../router/router';
 import Layout from '../../layout/layout';
 import State, { KEY_USER_ID } from '../../state/state';
-import { searchProduct } from '../../../api/project';
+import { searchProduct, sortProductClothing, sortProductShoes, sortProductAccessories } from '../../../api/project';
 import Products from '../../pages/main/products/products';
 
 const NamePages: { [key: string]: string } = {
@@ -36,7 +36,7 @@ export default class Header extends Layout {
 
   searchButton!: HTMLButtonElement;
 
-  additionalButtons: HTMLElement[];
+  additionalButtons: BaseComponent<HTMLElement>[];
 
   cartCreator: BaseComponent<HTMLElement>;
 
@@ -116,6 +116,66 @@ export default class Header extends Layout {
     this.listenForStorageChanges();
   }
 
+  createAdditionalButtons(container: BaseComponent<HTMLElement>) {
+    const buttonNames: { [key: string]: string } = {
+      Clothing: '8da9d730-fdd3-4313-8814-20cd01dc7efd',
+      Shoes: '292321b7-b3d4-42d5-b150-b1fecde7d470',
+      Accessories: '8cf8b1ac-7dfd-4405-9318-1582a38b6b26',
+    };
+
+    const handleClick = async (categoryId: string) => {
+      try {
+        let sortResponse;
+        switch (categoryId) {
+          case '8da9d730-fdd3-4313-8814-20cd01dc7efd':
+            sortResponse = await sortProductClothing();
+            break;
+          case '292321b7-b3d4-42d5-b150-b1fecde7d470':
+            sortResponse = await sortProductShoes();
+            break;
+          case '8cf8b1ac-7dfd-4405-9318-1582a38b6b26':
+            sortResponse = await sortProductAccessories();
+            break;
+          default:
+            break;
+        }
+
+        console.log(sortResponse);
+
+        if (sortResponse && sortResponse.body.results) {
+          this.products.updateProducts(sortResponse.body.results);
+          const mainElement = document.querySelector('.main');
+          if (mainElement) {
+            mainElement.innerHTML = '';
+            mainElement.appendChild(this.products.getHtmlElement());
+          } else {
+            console.error('Main element not found.');
+          }
+        } else {
+          console.log('No sort results found.');
+        }
+      } catch (error) {
+        console.error('ERROR during sorting:', error);
+      }
+    };
+
+    Object.keys(buttonNames).forEach((name) => {
+      const buttonParams = {
+        tag: 'button' as keyof HTMLElementTagNameMap,
+        classNames: ['additional_button'],
+        text: name,
+        callback: () => {
+          console.log(`${name} clicked`);
+          handleClick(buttonNames[name]);
+        },
+      };
+
+      const button = new BaseComponent<HTMLElement>(buttonParams);
+      this.additionalButtons.push(button);
+      container.addInnerElement(button);
+    });
+  }
+
   createSearchBar(container: BaseComponent<HTMLElement>) {
     const searchContainer = document.createElement('div');
     searchContainer.className = 'search_container';
@@ -165,29 +225,6 @@ export default class Header extends Layout {
     } else {
       console.error('Container element is null, cannot append search bar.');
     }
-  }
-
-  createAdditionalButtons(container: BaseComponent<HTMLElement>) {
-    const buttonNames = ['+7 951 999 28 34', 'info@stageboxbrand.ru'];
-
-    buttonNames.forEach((name) => {
-      const button = document.createElement('button');
-      button.className = 'additional_button';
-      button.textContent = name;
-
-      button.addEventListener('click', () => {
-        console.log(`${name} clicked`);
-      });
-
-      this.additionalButtons.push(button);
-
-      const containerElement = container.getElement();
-      if (containerElement) {
-        containerElement.appendChild(button);
-      } else {
-        console.error('Container element is null, cannot append additional buttons.');
-      }
-    });
   }
 
   configureView() {

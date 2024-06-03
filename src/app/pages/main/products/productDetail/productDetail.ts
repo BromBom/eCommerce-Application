@@ -13,6 +13,8 @@ export default class ProductDetail extends Layout {
 
   price: number | null;
 
+  discountedPrice: number | null;
+
   image: string | null;
 
   innerContent: HTMLElement | null;
@@ -31,6 +33,7 @@ export default class ProductDetail extends Layout {
     this.element = null;
     this.product = null;
     this.price = null;
+    this.discountedPrice = null;
     this.image = null;
     this.card = null;
     this.innerContent = null;
@@ -41,37 +44,43 @@ export default class ProductDetail extends Layout {
   async init() {
     try {
       this.product = await ProductDetail.getProductById(this.id);
-      this.price = this.product!.masterVariant!.prices![0].value.centAmount;
-      this.image = this.product!.masterVariant!.images![0].url;
+      if (this.product) {
+        this.price = this.product.masterVariant!.prices![0].value.centAmount;
+        this.discountedPrice = this.product.masterVariant!.prices![0].discounted
+          ? this.product.masterVariant!.prices![0].discounted!.value.centAmount
+          : null;
+        this.image = this.product.masterVariant!.images![0].url;
 
-      this.card = {
-        id: this.product.id,
-        name: this.product.name['en-US'] || 'No name',
-        image: this.image ?? 'default-image-url.jpg',
-        description: this.product.description?.['en-US'] || 'No description',
-        price: this.price / 100,
-        stock: this.product.masterVariant.prices?.[0]?.value.centAmount || 0,
-      };
+        this.card = {
+          id: this.product.id,
+          name: this.product.name['en-US'] || 'No name',
+          image: this.image ?? 'default-image-url.jpg',
+          description: this.product.description?.['en-US'] || 'No description',
+          price: this.price / 100,
+          discountedPrice: this.discountedPrice ? this.discountedPrice / 100 : null,
+          stock: this.product.masterVariant.prices?.[0]?.value.centAmount || 0,
+        };
 
-      this.configureView();
+        this.configureView();
+      }
     } catch (error) {
       console.error('Failed to initialize ProductDetail:', error);
     }
   }
 
   static async getProductById(id: string) {
-    let productbyId;
+    let productById;
     try {
       const response = await searchProductbyID(id);
       if (response.body.results.length === 0) {
         throw new Error('Product not found');
       }
-      [productbyId] = response.body.results;
+      [productById] = response.body.results;
     } catch (error) {
       console.error('Error fetching product:', error);
       throw new Error('Failed to get product information');
     }
-    return productbyId;
+    return productById;
   }
 
   configureView() {
@@ -107,12 +116,24 @@ export default class ProductDetail extends Layout {
     descriptionElement.textContent = this.card.description;
 
     const priceElement = document.createElement('p');
+    priceElement.classList.add('product-price');
     priceElement.textContent = `Price: $${this.card.price}`;
+
+    const discountedPriceElement = document.createElement('p');
+    if (this.card.discountedPrice !== null) {
+      priceElement.classList.add('discounted');
+      discountedPriceElement.classList.add('product-discount');
+      discountedPriceElement.textContent = `Discounted Price: $${this.card.discountedPrice}`;
+    }
 
     const stockElement = document.createElement('p');
     stockElement.textContent = `In stock: ${this.card.stock}`;
 
-    containerCardDetail.append(nameElement, imageElement, descriptionElement, priceElement, stockElement);
+    containerCardDetail.append(nameElement, imageElement, descriptionElement, priceElement);
+    if (this.card.discountedPrice !== null) {
+      containerCardDetail.appendChild(discountedPriceElement);
+    }
+    containerCardDetail.append(stockElement);
     this.element = containerCardDetail;
   }
 

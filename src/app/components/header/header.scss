@@ -26,7 +26,8 @@
   padding: 10px 0;
 }
 
-@media (max-width: 680px), screen and (orientation: portrait) {
+@media (max-width: 680px),
+screen and (orientation: portrait) {
   .bottom-container {
     display: flex;
     flex-direction: column;
@@ -130,10 +131,9 @@ img {
 .additional_button {
   margin-left: 10px;
   padding: 10px 20px;
-  font-family: 'Montserrat';
   font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
+  font-weight: 800;
+  font-size: 18px;
   line-height: 22px;
   color: #29292d;
   cursor: pointer;
@@ -141,4 +141,22 @@ img {
 
 .additional_button:hover {
   color: #ff0000;
+}
+
+.index {
+  position: relative;
+  display: flex;
+}
+
+.sort-buttons-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.sort-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }

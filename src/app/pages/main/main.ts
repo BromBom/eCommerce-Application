@@ -1,6 +1,6 @@
 import { ClientResponse, ProductProjectionPagedSearchResponse, ProductProjection } from '@commercetools/platform-sdk';
 import Layout from '../../layout/layout';
-import { queryProduct, sortProductClothing, sortProductShoes, sortProductAccessories } from '../../../api/project';
+import { queryProduct } from '../../../api/project';
 import { hideLoading, showLoading, handleError } from '../../utils/showmessage';
 import Products from './products/products';
 import Router from '../../router/router';
@@ -17,31 +17,6 @@ export default class Main extends Layout {
     };
     super(params);
     this.products = new Products(router);
-    this.createSortButtons();
-  }
-
-  createSortButtons() {
-    const buttonContainer = document.createElement('div');
-    buttonContainer.className = 'sort-buttons-section';
-
-    const buttons = [
-      { name: 'Clothing', handler: sortProductClothing, id: '8da9d730-fdd3-4313-8814-20cd01dc7efd' },
-      { name: 'Shoes', handler: sortProductShoes, id: '292321b7-b3d4-42d5-b150-b1fecde7d470' },
-      { name: 'Accessories', handler: sortProductAccessories, id: '8cf8b1ac-7dfd-4405-9318-1582a38b6b26' },
-    ];
-
-    buttons.forEach((button) => {
-      const btn = document.createElement('button');
-      btn.className = 'sort-button';
-      btn.textContent = button.name;
-      btn.addEventListener('click', async () => {
-        await this.products.renderProducts(button.id);
-      });
-      buttonContainer.appendChild(btn);
-    });
-
-    const mainElement = this.getHtmlElement();
-    mainElement.appendChild(buttonContainer);
   }
 
   setContent(content: Layout) {
@@ -81,20 +56,6 @@ export default class Main extends Layout {
       }
     } finally {
       hideLoading();
-    }
-  }
-
-  static addFilterEventListeners() {
-    const filtersContainer = document.querySelector('.sidebar') as HTMLElement | null;
-    if (filtersContainer) {
-      filtersContainer.addEventListener('change', (event) => {
-        const target = event.target as HTMLInputElement;
-        if (target.type === 'checkbox') {
-          // методы применения фильтров к товарам или другие соответствующие действия
-        }
-      });
-    } else {
-      console.error('Sidebar container not found');
     }
   }
 }

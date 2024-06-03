@@ -29,6 +29,7 @@ export const searchProduct = async (query: string): Promise<ProductProjectionPag
     .search()
     .get({
       queryArgs: {
+        filter: `productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"`,
         'text.en-US': query,
         fuzzy: true,
       },
@@ -93,29 +94,29 @@ export const sortProductbyASC = async (): Promise<ClientResponse<ProductProjecti
     .execute();
 };
 
-// export const filterProductList = async (): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
-//   return (
-//     apiRoot
-//       // .productProjections()
-//       // .search()
-//       // .get({
-//       // queryArgs: {
-//       // filter: 'masterData.current.masterVariant.attributes'
-//       // },
-//       // })
-//       // .execute();
-//       .productProjections()
-//       .search()
-//       .get({
-//         queryArgs: {
-//           limit: 500,
-//           // where: 'variants.prices.discounted:exists',
-//           // where: 'masterVariant(attributes(color = "#F00000"))',
-//           // where: 'masterVariant.attributes.[1].color: "#FECB69"',
-//           'filter.query': 'variants.attributes.color_attributes.key:"black"',
-//           // facet: 'm'
-//         },
-//       })
-//       .execute()
-//   );
-// };
+export const filterProductList = async (): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
+  return (
+    apiRoot
+      // .productProjections()
+      // .search()
+      // .get({
+      // queryArgs: {
+      // filter: 'masterData.current.masterVariant.attributes'
+      // },
+      // })
+      // .execute();
+      .productProjections()
+      .search()
+      .get({
+        queryArgs: {
+          limit: 500,
+          // where: 'variants.prices.discounted:exists',
+          // where: 'masterVariant(attributes(color = "#F00000"))',
+          // where: 'masterVariant.attributes.[1].color: "#FECB69"',
+          'filter.query': 'variants.attributes.color_attributes.key:"black"',
+          // facet: 'm'
+        },
+      })
+      .execute()
+  );
+};

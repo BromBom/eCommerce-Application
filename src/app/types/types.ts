@@ -49,6 +49,7 @@ export interface ProductType {
     }[];
     prices: {
       id: string;
+      discount: string;
       value: {
         type: string;
         currencyCode: string;

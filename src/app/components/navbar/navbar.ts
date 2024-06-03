@@ -159,15 +159,15 @@ export default class Navbar extends Layout {
         <h3>Type of clothing</h3>
         <div class="checkbox">
           <input type="checkbox" id="type-clothing" name="type-clothing">
-          <label for="type-clothing">Clothing</label>
+          <label for="type-clothing">Jersey</label>
         </div>
         <div class="checkbox">
           <input type="checkbox" id="type-shoes" name="type-shoes">
-          <label for="type-shoes">Shoes</label>
+          <label for="type-shoes">Shirt</label>
         </div>
         <div class="checkbox">
           <input type="checkbox" id="type-accessories" name="type-accessories">
-          <label for="type-accessories">Accessories</label>
+          <label for="type-accessories">Shorts</label>
         </div>
       </div>
 
