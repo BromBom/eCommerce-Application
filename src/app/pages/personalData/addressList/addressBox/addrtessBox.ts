@@ -54,18 +54,35 @@ export default class AddressBox {
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('address__container-buttons');
 
+    const billingButton = this.setBillingButton.getElement();
+    const shippingButton = this.setShippingButton.getElement();
+
     addressBox.append(addressContainer, buttonContainer);
     addressContainer.append(this.stringAddress.getElement(), this.linkEdit.getElement());
-    buttonContainer.append(this.setBillingButton.getElement(), this.setShippingButton.getElement());
+    buttonContainer.append(billingButton, shippingButton);
 
     this.creatModalFormChangeAddress();
 
     if (this.address.id === this.customer.defaultBillingAddressId) {
-      this.setBillingButton.getElement().classList.add('clicked');
+      billingButton.classList.add('clicked');
     }
     if (this.address.id === this.customer.defaultShippingAddressId) {
-      this.setShippingButton.getElement().classList.add('clicked');
+      shippingButton.classList.add('clicked');
     }
+
+    billingButton.addEventListener('click', () => {
+      const arrBillingButtons = [...Array.from(document.querySelectorAll('.address__setBilling-button'))];
+      if (billingButton.classList.contains('clicked')) return;
+      arrBillingButtons.forEach((button) => button.classList.remove('clicked'));
+      billingButton.classList.add('clicked');
+    });
+
+    shippingButton.addEventListener('click', () => {
+      const arrShippingButtons = [...Array.from(document.querySelectorAll('.address__setShipping-button'))];
+      if (shippingButton.classList.contains('clicked')) return;
+      arrShippingButtons.forEach((button) => button.classList.remove('clicked'));
+      shippingButton.classList.add('clicked');
+    });
 
     return addressBox;
   }
@@ -81,7 +98,6 @@ export default class AddressBox {
     this.modalAddressBlock.inputStreetNumber.getElement().value = this.address.apartment!;
 
     const buttonSubmit = this.modalButtonSubmit.getElement();
-    // buttonSubmit.disabled = true;
 
     modalForm.append(this.modalAddressBlock.getElement(), buttonSubmit);
 
