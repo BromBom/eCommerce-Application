@@ -7,6 +7,7 @@ import Layout from '../../layout/layout';
 import State, { KEY_USER_ID } from '../../state/state';
 import { searchProduct, sortProductClothing, sortProductShoes, sortProductAccessories } from '../../../api/project';
 import Products from '../../pages/main/products/products';
+import Navbar from '../navbar/navbar';
 
 const NamePages: { [key: string]: string } = {
   LOGIN: 'Login',
@@ -147,6 +148,8 @@ export default class Header extends Layout {
           const mainElement = document.querySelector('.main');
           if (mainElement) {
             mainElement.innerHTML = '';
+            const navbar = new Navbar(this.router);
+            mainElement.appendChild(navbar.getHtmlElement());
             mainElement.appendChild(this.products.getHtmlElement());
           } else {
             console.error('Main element not found.');
@@ -173,6 +176,19 @@ export default class Header extends Layout {
       const button = new BaseComponent<HTMLElement>(buttonParams);
       this.additionalButtons.push(button);
       container.addInnerElement(button);
+    });
+
+    document.body.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (target && target.classList.contains('additional_button')) {
+        console.log('Button clicked:', target);
+        const buttonName = target.textContent?.trim();
+        if (buttonName && buttonNames[buttonName]) {
+          handleClick(buttonNames[buttonName]);
+        } else {
+          console.error('Button name not found or invalid:', buttonName);
+        }
+      }
     });
   }
 
@@ -209,6 +225,8 @@ export default class Header extends Layout {
             const mainElement = document.querySelector('.main');
             if (mainElement) {
               mainElement.innerHTML = '';
+              const navbar = new Navbar(this.router);
+              mainElement.appendChild(navbar.getHtmlElement());
               mainElement.appendChild(this.products.getHtmlElement());
             } else {
               console.error('Main element not found.');

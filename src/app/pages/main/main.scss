@@ -176,3 +176,25 @@
 .product-rating {
   padding: 20px 0;
 }
+
+@media (max-width: 768px) {
+  .products li .product {
+    width: 200px;
+  }
+
+  .product-image {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .products li .product {
+    width: 100%;
+  }
+
+  .product-image {
+    width: 100%;
+    height: auto;
+  }
+}

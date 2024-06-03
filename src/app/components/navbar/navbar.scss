@@ -42,3 +42,69 @@
 #price-range {
   width: 100%;
 }
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 180px;
+  }
+
+  .filter-category h3 {
+    font-size: 16px;
+  }
+
+  .checkbox label {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 150px;
+  }
+
+  .filter-category h3 {
+    font-size: 14px;
+  }
+
+  .checkbox label {
+    font-size: 12px;
+  }
+
+  .color-box {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    top: 0;
+    left: 0;
+    background: #fff;
+    border-right: none;
+    padding: 10px;
+  }
+
+  .filter-category {
+    margin-bottom: 15px;
+  }
+
+  .filter-category h3 {
+    font-size: 14px;
+  }
+
+  .checkbox label {
+    font-size: 12px;
+  }
+
+  .color-box {
+    width: 20px;
+    height: 20px;
+  }
+
+  .main {
+    margin-top: 20px;
+  }
+}

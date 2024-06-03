@@ -126,77 +126,75 @@ export default class Navbar extends Layout {
     sidebar.className = 'sidebar';
 
     sidebar.innerHTML = `
-    <div class="sidebar-container">
+    <aside class="sidebar">
+  <div class="sidebar-container">
     <div class="filter-category">
-        <h3>Price (low-high)</h3>
-        <div class="checkbox">
-          <input type="checkbox" id="asc" name="sort-asc">
-          <label for="sort-asc">Cheap ones first</label>
-        </div>
+      <h3>Price (low-high)</h3>
+      <div class="checkbox">
+        <input type="checkbox" id="asc" name="sort-asc">
+        <label for="sort-asc">Cheap ones first</label>
       </div>
-      <div class="filter-category">
-        <h3>Size</h3>
-        <div class="checkbox">
-          <input type="checkbox" id="size-small" name="size-small">
-          <label for="size-small">Small</label>
-        </div>
-        <div class="checkbox">
-          <input type="checkbox" id="size-medium" name="size-medium">
-          <label for="size-medium">Medium</label>
-        </div>
-        <div class="checkbox">
-          <input type="checkbox" id="size-large" name="size-large">
-          <label for="size-large">Large</label>
-        </div>
+    </div>
+    <div class="filter-category">
+      <h3>Size</h3>
+      <div class="checkbox">
+        <input type="checkbox" id="size-small" name="size-small">
+        <label for="size-small">Small</label>
       </div>
-
-      <div class="filter-category">
-        <h3>Price</h3>
-        <input type="range" id="price-range" name="price-range" min="0" max="1000">
+      <div class="checkbox">
+        <input type="checkbox" id="size-medium" name="size-medium">
+        <label for="size-medium">Medium</label>
       </div>
-
-      <div class="filter-category">
-        <h3>Type of clothing</h3>
-        <div class="checkbox">
-          <input type="checkbox" id="type-clothing" name="type-clothing">
-          <label for="type-clothing">Jersey</label>
-        </div>
-        <div class="checkbox">
-          <input type="checkbox" id="type-shoes" name="type-shoes">
-          <label for="type-shoes">Shirt</label>
-        </div>
-        <div class="checkbox">
-          <input type="checkbox" id="type-accessories" name="type-accessories">
-          <label for="type-accessories">Shorts</label>
-        </div>
+      <div class="checkbox">
+        <input type="checkbox" id="size-large" name="size-large">
+        <label for="size-large">Large</label>
       </div>
-
-      <div class="filter-category">
-        <h3>Gender</h3>
-        <div class="checkbox">
-          <input type="checkbox" id="gender-male" name="gender-male">
-          <label for="gender-male">Male</label>
-        </div>
-        <div class="checkbox">
-          <input type="checkbox" id="gender-female" name="gender-female">
-          <label for="gender-female">Female</label>
-        </div>
+    </div>
+    <div class="filter-category">
+      <h3>Price</h3>
+      <input type="range" id="price-range" name="price-range" min="0" max="1000">
+    </div>
+    <div class="filter-category">
+      <h3>Type of clothing</h3>
+      <div class="checkbox">
+        <input type="checkbox" id="type-clothing" name="type-clothing">
+        <label for="type-clothing">Jersey</label>
       </div>
-
-      <div class="filter-category">
-        <h3>Color</h3>
-        <div class="color-box" style="background: #29292D;"></div>
-        <div class="color-box" style="background: #A13FBA;"></div>
-        <div class="color-box" style="background: #FF1818;"></div>
+      <div class="checkbox">
+        <input type="checkbox" id="type-shoes" name="type-shoes">
+        <label for="type-shoes">Shirt</label>
       </div>
-
-      <div class="filter-category">
-        <h3>Discount</h3>
-        <div class="checkbox">
-          <input type="checkbox" id="discount" name="discount">
-          <label for="discount">Discount</label>
-        </div>
-        </div>
+      <div class="checkbox">
+        <input type="checkbox" id="type-accessories" name="type-accessories">
+        <label for="type-accessories">Shorts</label>
+      </div>
+    </div>
+    <div class="filter-category">
+      <h3>Gender</h3>
+      <div class="checkbox">
+        <input type="checkbox" id="gender-male" name="gender-male">
+        <label for="gender-male">Male</label>
+      </div>
+      <div class="checkbox">
+        <input type="checkbox" id="gender-female" name="gender-female">
+        <label for="gender-female">Female</label>
+      </div>
+    </div>
+    <div class="filter-category">
+      <h3>Color</h3>
+      <div class="color-box" style="background: #29292D;"></div>
+      <div class="color-box" style="background: #A13FBA;"></div>
+      <div class="color-box" style="background: #FF1818;"></div>
+    </div>
+    <div class="filter-category">
+      <h3>Discount</h3>
+      <div class="checkbox">
+        <input type="checkbox" id="discount" name="discount">
+        <label for="discount">Discount</label>
+      </div>
+    </div>
+  </div>
+</aside>
     `;
 
     container.appendChild(sidebar);
