@@ -3,7 +3,12 @@ import SimpleComponent from '../../../../components/simpleComponent';
 import Modal from '../../../../components/modal/modal';
 import RegAddress from '../../../registration/form/address/address';
 import Button from '../../../../components/controls/button';
-import { changeAddress, getCustomerByID } from '../../../../../api/customer';
+import {
+  changeAddress,
+  getCustomerByID,
+  SetDefaultBillingAddress,
+  SetDefaultShippingAddress,
+} from '../../../../../api/customer';
 import { handleError, showLoading, handleSucsess, hideLoading } from '../../../../utils/showmessage';
 import AddressBlock from '../../addressBlock/addressBlock';
 
@@ -70,18 +75,62 @@ export default class AddressBox {
       shippingButton.classList.add('clicked');
     }
 
-    billingButton.addEventListener('click', () => {
+    billingButton.addEventListener('click', async () => {
       const arrBillingButtons = [...Array.from(document.querySelectorAll('.address__setBilling-button'))];
       if (billingButton.classList.contains('clicked')) return;
       arrBillingButtons.forEach((button) => button.classList.remove('clicked'));
       billingButton.classList.add('clicked');
+      try {
+        showLoading();
+        const customer = await getCustomerByID(this.customer.id);
+
+        const newCustomerWithBilling = await SetDefaultBillingAddress(customer.id, customer.version, this.address.id);
+
+        const newCustomer = newCustomerWithBilling.body;
+        localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+        localStorage.setItem('userID', JSON.stringify(newCustomer));
+        this.customer = newCustomer;
+
+        this.billingBlock.stringAddress.getElement().textContent = this.stringAddress.getElement().textContent;
+
+        hideLoading();
+        handleSucsess('Seting Default Billing Address was successful!');
+      } catch (error) {
+        console.error(`Failed to set Default Billing Address: ${error}`);
+        handleError(
+          new Error('Failed to set Default Billing Address'),
+          `Failed to set Default Billing Address! ${error}`
+        );
+      }
     });
 
-    shippingButton.addEventListener('click', () => {
+    shippingButton.addEventListener('click', async () => {
       const arrShippingButtons = [...Array.from(document.querySelectorAll('.address__setShipping-button'))];
       if (shippingButton.classList.contains('clicked')) return;
       arrShippingButtons.forEach((button) => button.classList.remove('clicked'));
       shippingButton.classList.add('clicked');
+      try {
+        showLoading();
+        const customer = await getCustomerByID(this.customer.id);
+
+        const newCustomerWithShipping = await SetDefaultShippingAddress(customer.id, customer.version, this.address.id);
+
+        const newCustomer = newCustomerWithShipping.body;
+        localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+        localStorage.setItem('userID', JSON.stringify(newCustomer));
+        this.customer = newCustomer;
+
+        this.shippingBlock.stringAddress.getElement().textContent = this.stringAddress.getElement().textContent;
+
+        hideLoading();
+        handleSucsess('Seting Default Shipping Address was successful!');
+      } catch (error) {
+        console.error(`Failed to set Default Shipping Address: ${error}`);
+        handleError(
+          new Error('Failed to set Default Shipping Address'),
+          `Failed to set Default Shipping Address! ${error}`
+        );
+      }
     });
 
     return addressBox;
@@ -128,10 +177,9 @@ export default class AddressBox {
       const streetName = this.modalAddressBlock.inputStreet.getElement().value;
       const apartment = this.modalAddressBlock.inputStreetNumber.getElement().value;
 
-      const customer = await getCustomerByID(this.customer.id);
-
       try {
         showLoading();
+        const customer = await getCustomerByID(this.customer.id);
         const customerWithChangeAddress = await changeAddress(
           customer.id,
           customer.version,
@@ -147,6 +195,7 @@ export default class AddressBox {
         const newCustomer = await getCustomerByID(customerID);
         localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
         localStorage.setItem('userID', JSON.stringify(newCustomer));
+        this.customer = newCustomer;
 
         this.stringAddress.getElement().textContent = `${country}, ${postalCode}, ${city}, ${streetName} - ${apartment}`;
         if (addressID === newCustomer.defaultBillingAddressId) {
