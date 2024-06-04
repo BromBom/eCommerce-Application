@@ -99,18 +99,13 @@ export default class RegProfile {
     const msgErrDate = this.massageErrorDate.getElement();
     this.inputDate.getElement().setAttribute('max', '2006-01-01');
     this.inputDate.getElement().setAttribute('min', '1900-01-01');
-    this.inputDate.getElement().setAttribute('autocomplete', 'on');
-    this.inputDate.addListener('input', () => {
+    this.inputDate.addListener('change', () => {
       if (+this.inputDate.getElement().value.split('-')[0] < 1900) {
         const errorMessage = 'You are too old for it! Year must be 1900 or later.';
-        this.inputDate.getElement().setCustomValidity(errorMessage);
-        this.inputDate.getElement().reportValidity();
         this.massageErrorDate.getElement().textContent = errorMessage;
       }
       if (+this.inputDate.getElement().value.split('-')[0] > 2006) {
         const errorMessage = 'You must be at least 18 years old.';
-        this.inputDate.getElement().setCustomValidity(errorMessage);
-        this.inputDate.getElement().reportValidity();
         this.massageErrorDate.getElement().textContent = errorMessage;
       }
     });
