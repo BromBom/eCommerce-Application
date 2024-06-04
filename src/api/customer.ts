@@ -113,3 +113,38 @@ export const changeAddress = async (
 
   return response;
 };
+
+export const addAddress = async (
+  customerID: string,
+  customerVersion: number,
+  country: string,
+  postalCode: string,
+  city: string,
+  streetName: string,
+  apartment: string
+) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .withId({ ID: customerID })
+    .post({
+      body: {
+        version: customerVersion,
+        actions: [
+          {
+            action: 'addAddress',
+            address: {
+              country,
+              postalCode,
+              city,
+              streetName,
+              apartment,
+            },
+          },
+        ],
+      },
+    })
+    .execute();
+
+  return response;
+};
