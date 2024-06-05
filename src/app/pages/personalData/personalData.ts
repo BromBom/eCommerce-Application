@@ -146,14 +146,9 @@ export default class PersonalData {
     this.modalProfileBlock.inputDate.getElement().value = this.customer.dateOfBirth!;
     this.modalProfileBlock.massageErrorPassword.getElement().remove();
     this.modalProfileBlock.inputPassword.getElement().parentElement!.remove();
-    console.log('creat');
     const buttonSubmit = this.modalButtonSubmitProfile.getElement();
 
     modalForm.append(this.modalProfileBlock.getElement(), buttonSubmit);
-
-    console.log(modalForm.childElementCount);
-    console.log('isert');
-    console.log(buttonSubmit);
 
     const modal = this.modal.getHtmlElement();
     const modalContainer = modal.firstChild!.firstChild as HTMLElement;
@@ -273,7 +268,6 @@ export default class PersonalData {
 
     this.linkChangePassword.addListener('click', () => {
       modalContainer.append(modalForm);
-      console.log('8888888888888');
       Modal.openModal(modal);
     });
 

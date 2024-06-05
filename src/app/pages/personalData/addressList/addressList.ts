@@ -104,9 +104,7 @@ export default class AddressList {
         );
 
         const customerID = customerWithAddNewAddress.body.id;
-        console.log(customerWithAddNewAddress);
         const newAddress = customerWithAddNewAddress.body.addresses.at(-1)!;
-        console.log(newAddress);
         const newCustomer = await getCustomerByID(customerID);
         localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
         localStorage.setItem('userID', JSON.stringify(newCustomer));
