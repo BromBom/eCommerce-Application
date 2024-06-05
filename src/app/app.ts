@@ -23,8 +23,6 @@ export default class App {
 
   router: Router;
 
-  navbar: null | Navbar;
-
   modal: Modal;
 
   state: State;
@@ -34,7 +32,6 @@ export default class App {
   constructor() {
     this.header = null;
     this.main = null;
-    this.navbar = null;
     this.modal = new Modal(null);
     this.state = new State();
     const routes = this.createRoutes();
@@ -63,8 +60,7 @@ export default class App {
     App.createNavbarContainer();
 
     this.header = new Header(this.router, this.state, this.products);
-    this.main = new Main();
-    this.navbar = new Navbar();
+    this.main = new Main(this.router);
 
     const footer = new Footer();
 
@@ -76,8 +72,6 @@ export default class App {
       loadingOverlay,
       messageContainer
     );
-
-    Main.addFilterEventListeners();
   }
 
   createRoutes(): RouterParams[] {
@@ -87,7 +81,8 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            this.setContent(Pages.Product, this.products);
+            const navbar = new Navbar(this.router, this.products);
+            this.setContent(Pages.Product, this.products, navbar);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product page.');
@@ -102,8 +97,9 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
+            const navbar = new Navbar(this.router, this.products);
             const productsPage = this.products;
-            this.setContent(Pages.PRODUCT, productsPage);
+            this.setContent(Pages.PRODUCT, productsPage, navbar);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load products page.');
@@ -125,7 +121,7 @@ export default class App {
               throw new Error('No card ID found in localStorage');
             }
             const productDetailPage = new ProductDetail(cardID, this.modal);
-            await productDetailPage.init(); // Ensure init completes
+            await productDetailPage.init();
             mainContainer.innerHTML = '';
             mainContainer.append(productDetailPage.getElement()!);
           } catch (error) {
@@ -234,12 +230,19 @@ export default class App {
     this.main?.renderProducts(categoryId);
   }
 
-  setContent(page: string, view: Layout) {
+  setContent(page: string, view: Layout, navbar?: Navbar) {
     console.log('Setting content for page:', page, 'with view:', view);
     const isLoggedIn = this.state.loadState().size > 0;
 
     this.header?.setSelectedItem(page);
-    this.main?.setContent(view);
+    const mainContainer = this.main!.getHtmlElement();
+    mainContainer.innerHTML = '';
+
+    if (navbar) {
+      mainContainer.appendChild(navbar.getHtmlElement());
+    }
+
+    mainContainer.appendChild(view.getHtmlElement());
 
     if (isLoggedIn) {
       this.header?.configureView();

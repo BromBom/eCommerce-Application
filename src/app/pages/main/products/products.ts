@@ -27,9 +27,9 @@ export default class Products extends Layout {
     this.setTextContent(TEXT);
   }
 
-  async renderProducts() {
+  async renderProducts(categoryId?: string) {
     try {
-      const response = await queryProduct();
+      const response = await queryProduct(categoryId);
       const products: ProductProjection[] = response.body.results;
       this.updateProducts(products);
     } catch (error) {
@@ -59,6 +59,11 @@ export default class Products extends Layout {
             ? (product.masterVariant.prices[0].value.centAmount / 100).toFixed(2)
             : '0.00';
 
+        const discountedPrice =
+          product.masterVariant.prices && product.masterVariant.prices[0].discounted
+            ? (product.masterVariant.prices[0].discounted.value.centAmount / 100).toFixed(2)
+            : null;
+
         const description = product.description?.['en-US'] || 'No description';
 
         return `
@@ -77,9 +82,11 @@ export default class Products extends Layout {
               </div>
               <div class="product-buttons">
                 <button class="buynow btn btn-primary" data-id="${product.id}" data-name="${productName}" data-price="${price}" data-image="${imageUrl}" data-description="${description}">Buy Now</button>
-                <div class="product-price">
-                  $${price}
-                </div>
+                <div class="product-price ${discountedPrice ? 'discounted' : ''}">
+                $${price}
+              </div>
+                ${discountedPrice ? `<div class="product-discount">$${discountedPrice}</div>` : ''}
+              </div>
               </div>
             </div>
           </li>
@@ -103,6 +110,7 @@ export default class Products extends Layout {
         const productId = target.getAttribute('data-id');
         const productName = target.getAttribute('data-name');
         const productPrice = parseFloat(target.getAttribute('data-price') || '0');
+        const discountedPrice = parseFloat(target.getAttribute('data-discounted-price') || '0');
         const productImage = target.getAttribute('data-image');
         const productDescription = target.getAttribute('data-description');
 
@@ -111,7 +119,7 @@ export default class Products extends Layout {
             product: productId,
             name: productName,
             image: productImage,
-            price: productPrice,
+            price: discountedPrice || productPrice,
             quantityInStock: 10,
             qty: 1,
             description: productDescription,
