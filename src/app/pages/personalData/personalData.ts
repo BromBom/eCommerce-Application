@@ -1,12 +1,15 @@
 import { Customer } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../components/simpleComponent';
+import Input from '../../components/controls/input';
+import creatInputWithLabel from '../../utils/creatInputWithLabel';
+import checkInputValue from '../../utils/checkInputValue';
 import RegProfile from '../registration/form/profile/profile';
 import Button from '../../components/controls/button';
 import AddressBlock from './addressBlock/addressBlock';
 import AddressList from './addressList/addressList';
 import Modal from '../../components/modal/modal';
 import { handleError, showLoading, handleSucsess, hideLoading } from '../../utils/showmessage';
-import { getCustomerByID, updateProfile } from '../../../api/customer';
+import { getCustomerByID, updateProfile, changePassword } from '../../../api/customer';
 
 import './personalData.scss';
 
@@ -22,6 +25,10 @@ export default class PersonalData {
   dateOfBirth: SimpleComponent<HTMLSpanElement>;
 
   email: SimpleComponent<HTMLSpanElement>;
+
+  password: SimpleComponent<HTMLSpanElement>;
+
+  linkChangePassword: SimpleComponent<HTMLSpanElement>;
 
   modalProfileBlock: RegProfile;
 
@@ -40,6 +47,8 @@ export default class PersonalData {
       `${customer.dateOfBirth}`
     );
     this.email = new SimpleComponent<HTMLSpanElement>('span', ['profile__personalData'], `${customer.email}`);
+    this.password = new SimpleComponent<HTMLSpanElement>('span', ['profile__personalData'], `******`);
+    this.linkChangePassword = new SimpleComponent<HTMLSpanElement>('span', ['profile__edit-link'], '(change password)');
     this.modalProfileBlock = new RegProfile();
     this.modalButtonSubmit = Button(['registration__btn-submit'], 'Submit');
     this.element = this.init();
@@ -68,6 +77,7 @@ export default class PersonalData {
     const lastName = new SimpleComponent<HTMLLIElement>('li', ['profile__item']).getElement();
     const dateOfBirth = new SimpleComponent<HTMLLIElement>('li', ['profile__item']).getElement();
     const email = new SimpleComponent<HTMLLIElement>('li', ['profile__item']).getElement();
+    const password = new SimpleComponent<HTMLLIElement>('li', ['profile__item']).getElement();
 
     const labelFirstName = new SimpleComponent<HTMLSpanElement>(
       'span',
@@ -77,14 +87,16 @@ export default class PersonalData {
     const labelLastName = new SimpleComponent<HTMLSpanElement>('span', ['profile__label'], 'last name: ').getElement();
     const labelBirth = new SimpleComponent<HTMLSpanElement>('span', ['profile__label'], 'birth: ').getElement();
     const labelEmail = new SimpleComponent<HTMLSpanElement>('span', ['profile__label'], 'email: ').getElement();
+    const labelPassword = new SimpleComponent<HTMLSpanElement>('span', ['profile__label'], 'password: ').getElement();
 
     titleBox.append(titleProfile, this.linkEdit.getElement());
     firstName.append(labelFirstName, this.firstName.getElement());
     lastName.append(labelLastName, this.lastName.getElement());
     dateOfBirth.append(labelBirth, this.dateOfBirth.getElement());
     email.append(labelEmail, this.email.getElement());
+    password.append(labelPassword, this.password.getElement(), this.linkChangePassword.getElement());
 
-    profilList.append(titleBox, firstName, lastName, dateOfBirth, email);
+    profilList.append(titleBox, firstName, lastName, dateOfBirth, email, password);
     personalData.append(titlePersonalData, profileBox, addressesBox);
     profileBox.append(profilList);
 
@@ -104,6 +116,7 @@ export default class PersonalData {
 
     addressesBox.append(billingBlock.getElement(), shippingBlock.getElement(), titleAddresses, addressList);
     this.creatModalFormChangeProfile();
+    this.creatModalFormChangePassword();
 
     return personalData;
   }
@@ -176,6 +189,104 @@ export default class PersonalData {
       } catch (error) {
         console.error(`Failed to change address: ${error}`);
         handleError(new Error('Failed to change profile'), `Failed to change profile! ${error}`);
+      }
+    });
+  }
+
+  creatModalFormChangePassword() {
+    const modalForm = document.createElement('form');
+    modalForm.classList.add('address__modal-form');
+
+    const fieldset = document.createElement('fieldset');
+    fieldset.classList.add('registration__profile');
+    const legend = new SimpleComponent<HTMLLegendElement>('legend', [], 'Change password').getElement();
+    const inputCurrentPassword = Input(['registration__input-password']).getElement();
+    const inputNewPassword = Input(['registration__input-password']).getElement();
+
+    const labelCurrentPassword = creatInputWithLabel(inputCurrentPassword, 'Current password:', '', 'password');
+    const massageErrorCurrentPassword = new SimpleComponent<HTMLParagraphElement>(
+      'p',
+      ['registration__massage-error'],
+      ''
+    ).getElement();
+    const labelNewtPassword = creatInputWithLabel(inputNewPassword, 'New password:', '', 'password');
+    const massageErrorNewPassword = new SimpleComponent<HTMLParagraphElement>(
+      'p',
+      ['registration__massage-error'],
+      ''
+    ).getElement();
+
+    inputCurrentPassword.addEventListener('input', () =>
+      checkInputValue(
+        inputCurrentPassword,
+        massageErrorCurrentPassword,
+        1,
+        '(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}',
+        'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number'
+      )
+    );
+
+    inputNewPassword.addEventListener('input', () =>
+      checkInputValue(
+        inputNewPassword,
+        massageErrorNewPassword,
+        1,
+        '(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}',
+        'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number'
+      )
+    );
+
+    fieldset.append(
+      legend,
+      labelCurrentPassword,
+      massageErrorCurrentPassword,
+      labelNewtPassword,
+      massageErrorNewPassword
+    );
+
+    const buttonSubmit = this.modalButtonSubmit.getElement();
+    buttonSubmit.disabled = true;
+    modalForm.append(fieldset, buttonSubmit);
+
+    const modal = this.modal.getHtmlElement();
+    const modalContainer = modal.firstChild!.firstChild as HTMLElement;
+
+    this.linkChangePassword.addListener('click', () => {
+      modalContainer.append(modalForm);
+      console.log('8888888888888');
+      Modal.openModal(modal);
+    });
+
+    const checkButtonSubmit = (arrayInputs: Element[]) => {
+      buttonSubmit.disabled = arrayInputs.some((el) => !(el as HTMLInputElement).checkValidity());
+    };
+
+    const arrModalChangePasswordInputElements = [...fieldset.elements];
+    arrModalChangePasswordInputElements.forEach((input) => {
+      input.addEventListener('input', () => checkButtonSubmit(arrModalChangePasswordInputElements));
+    });
+
+    modalForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const currentPassword = inputCurrentPassword.value;
+      const newPassword = inputNewPassword.value;
+      try {
+        showLoading();
+        const customer = await getCustomerByID(this.customer.id);
+        await changePassword(customer.id, customer.version, currentPassword, newPassword);
+
+        const newCustomer = await getCustomerByID(customer.id);
+        localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+        localStorage.setItem('userID', JSON.stringify(newCustomer));
+        this.customer = newCustomer;
+
+        Modal.closeModal(modal);
+        hideLoading();
+        handleSucsess('The password change was successful!');
+      } catch (error) {
+        console.error(`Failed to change password: ${error}`);
+        handleError(new Error('Failed to change password'), `Failed to change password! ${error}`);
       }
     });
   }
