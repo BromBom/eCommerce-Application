@@ -242,6 +242,8 @@ export default class Header extends Layout {
           }
         } catch (error) {
           console.error('ERROR during search:', error);
+        } finally {
+          hideLoading();
         }
       });
 
