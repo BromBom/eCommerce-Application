@@ -5,7 +5,7 @@
   align-items: center;
   margin: auto;
   width: 60%;
-  background-color: #bbbbbb;
+  border: 1px solid #7a7a7a;
 }
 
 .registration__profile {
@@ -36,20 +36,21 @@
   input {
     width: 60%;
   }
+
+  input:valid {
+    background-color: #7bff82;
+  }
+
+  input:invalid {
+    background-color: #ffcbcbce;
+  }
 }
 
-.massage-error {
+.registration__massage-error {
   height: 20px;
   align-self: end;
   font-size: 12px;
-}
-
-input:valid {
-  background-color: #7bff82;
-}
-
-input:invalid {
-  background-color: #ffcbcbce;
+  color: #7a7a7a;
 }
 
 .registration__btn-submit {
@@ -84,4 +85,24 @@ input:invalid {
   color: #ffffff;
   pointer-events: none;
   user-select: none;
+}
+
+.registration__btn-add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  background-color: #dddddd;
+  border: 1px solid #7a7a7a;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #c6ff5d;
+  }
+
+  &:active {
+    background-color: #ffb95d;
+    box-shadow: 0px 5px 10px 2px #223c5033 inset;
+  }
 }

@@ -113,3 +113,122 @@ export const changeAddress = async (
 
   return response;
 };
+
+export const addAddress = async (
+  customerID: string,
+  customerVersion: number,
+  country: string,
+  postalCode: string,
+  city: string,
+  streetName: string,
+  apartment: string
+) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .withId({ ID: customerID })
+    .post({
+      body: {
+        version: customerVersion,
+        actions: [
+          {
+            action: 'addAddress',
+            address: {
+              country,
+              postalCode,
+              city,
+              streetName,
+              apartment,
+            },
+          },
+        ],
+      },
+    })
+    .execute();
+
+  return response;
+};
+
+export const removeAddress = async (customerID: string, customerVersion: number, addressId: string) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .withId({ ID: customerID })
+    .post({
+      body: {
+        version: customerVersion,
+        actions: [
+          {
+            action: 'removeAddress',
+            addressId,
+          },
+        ],
+      },
+    })
+    .execute();
+
+  return response;
+};
+
+export const updateProfile = async (
+  customerID: string,
+  customerVersion: number,
+  firstName: string,
+  lastName: string,
+  email: string,
+  dateOfBirth: string
+) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .withId({ ID: customerID })
+    .post({
+      body: {
+        version: customerVersion,
+        actions: [
+          {
+            action: 'setFirstName',
+            firstName,
+          },
+          {
+            action: 'setLastName',
+            lastName,
+          },
+          {
+            action: 'setDateOfBirth',
+            dateOfBirth,
+          },
+          {
+            action: 'changeEmail',
+            email,
+          },
+        ],
+      },
+    })
+    .execute();
+
+  return response;
+};
+
+export const changePassword = async (
+  customerID: string,
+  customerVersion: number,
+  currentPassword: string,
+  newPassword: string
+) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .password()
+    .post({
+      body: {
+        id: customerID,
+        version: customerVersion,
+        currentPassword,
+        newPassword,
+      },
+    })
+    .execute();
+
+  return response;
+};

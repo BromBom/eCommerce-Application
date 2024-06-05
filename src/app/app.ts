@@ -14,6 +14,7 @@ import { showLoading, hideLoading, handleError } from './utils/showmessage';
 import Navbar from './components/navbar/navbar';
 import Modal from './components/modal/modal';
 import Products from './pages/main/products/products';
+import { getCustomerByID } from '../api/customer';
 
 export default class App {
   header?: null | Header;
@@ -173,8 +174,11 @@ export default class App {
           showLoading();
           try {
             const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
+            const newCustomer = await getCustomerByID(customer.id);
+            localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+            localStorage.setItem('userID', JSON.stringify(newCustomer));
+            const personalData = new PersonalData(newCustomer, this.modal).getElement();
             const mainContainer = this.main!.getHtmlElement();
-            const personalData = new PersonalData(customer, this.modal).element;
             mainContainer.innerHTML = '';
             mainContainer.append(personalData);
           } catch (error) {
