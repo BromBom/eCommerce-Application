@@ -148,3 +148,66 @@ export const addAddress = async (
 
   return response;
 };
+
+export const updateProfile = async (
+  customerID: string,
+  customerVersion: number,
+  firstName: string,
+  lastName: string,
+  email: string,
+  dateOfBirth: string
+) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .withId({ ID: customerID })
+    .post({
+      body: {
+        version: customerVersion,
+        actions: [
+          {
+            action: 'setFirstName',
+            firstName: firstName,
+          },
+          {
+            action: 'setLastName',
+            lastName: lastName,
+          },
+          {
+            action: 'setDateOfBirth',
+            dateOfBirth: dateOfBirth,
+          },
+          {
+            action: 'changeEmail',
+            email: email,
+          },
+        ],
+      },
+    })
+    .execute();
+
+  return response;
+};
+
+export const changePassword = async (
+  customerID: string,
+  customerVersion: number,
+  currentPassword: string,
+  newPassword: string
+) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .password()
+    .post({
+      body: {
+        id: customerID,
+        version: customerVersion,
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      },
+    })
+    .execute();
+
+  return response;
+};

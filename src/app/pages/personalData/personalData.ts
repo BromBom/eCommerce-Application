@@ -1,5 +1,7 @@
 import { Customer } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../components/simpleComponent';
+import RegProfile from '../registration/form/profile/profile';
+import Button from '../../components/controls/button';
 import AddressBlock from './addressBlock/addressBlock';
 import AddressList from './addressList/addressList';
 import Modal from '../../components/modal/modal';
@@ -15,12 +17,16 @@ export default class PersonalData {
 
   lastName: SimpleComponent<HTMLSpanElement>;
 
-  email: SimpleComponent<HTMLSpanElement>;
-
   dateOfBirth: SimpleComponent<HTMLSpanElement>;
 
+  email: SimpleComponent<HTMLSpanElement>;
+
+  modalProfileBlock: RegProfile;
+
+  modalButtonSubmit: SimpleComponent<HTMLButtonElement>;
+
   constructor(
-    customer: Customer,
+    public customer: Customer,
     public modal: Modal
   ) {
     this.linkEdit = new SimpleComponent<HTMLSpanElement>('span', ['profile__edit-link'], 'Edit');
@@ -32,6 +38,8 @@ export default class PersonalData {
       `${customer.dateOfBirth}`
     );
     this.email = new SimpleComponent<HTMLSpanElement>('span', ['profile__personalData'], `${customer.email}`);
+    this.modalProfileBlock = new RegProfile();
+    this.modalButtonSubmit = Button(['registration__btn-submit'], 'Submit');
     this.element = this.init();
   }
 
@@ -94,7 +102,43 @@ export default class PersonalData {
 
     addressesBox.append(billingBlock.getElement(), shippingBlock.getElement(), titleAddresses, addressList);
 
+    this.creatModalFormChangeProfile();
+
     return personalData;
+  }
+
+  creatModalFormChangeProfile() { 
+    const modalForm = document.createElement('form');
+    modalForm.classList.add('address__modal-form');
+    this.modalProfileBlock.legend.getElement().textContent = 'Change profile';
+    this.modalProfileBlock.inputPassword.getElement().remove();
+    this.modalProfileBlock.massageErrorPassword.getElement().remove();
+    const buttonSubmit = this.modalButtonSubmit.getElement();
+    buttonSubmit.disabled = true;
+    modalForm.append(this.modalProfileBlock.getElement(), buttonSubmit);
+
+    const modal = this.modal.getHtmlElement();
+    const modalContainer = modal.firstChild!.firstChild as HTMLElement;
+
+    this.linkEdit.addListener('click', () => {
+      modalContainer.append(modalForm);
+      Modal.openModal(modal);
+    });
+
+    const checkButtonSubmit = (arrayInputs: Element[]) => {
+      buttonSubmit.disabled = arrayInputs.some((el) => !(el as HTMLInputElement).checkValidity());
+    };
+
+    const arrModalProfileBlockInputElements = [...this.modalProfileBlock.getElement().elements];
+    arrModalProfileBlockInputElements.forEach((input) => {
+      input.addEventListener('input', () => checkButtonSubmit(arrModalProfileBlockInputElements));
+    });
+
+    modalForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const addressID = this.address.id!;
+    });
   }
 
   getElement() {
