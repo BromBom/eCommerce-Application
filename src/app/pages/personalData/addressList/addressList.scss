@@ -30,11 +30,21 @@
         flex-direction: column;
         justify-content: center;
         align-items: start;
+        width: 100%;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         font-style: italic;
 
-        .profile__edit-link {
-          display: block;
+        .address__container-links {
+          display: flex;
+          flex-direction: row;
+          justify-content: start;
+          align-items: start;
+          width: 100%;
+        }
+
+        .profile__edit-link,
+        .profile__delete-link {
+          display: inline;
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
           font-style: italic;
           font-size: 16px;
@@ -45,6 +55,11 @@
           &:hover {
             color: #ff9900;
           }
+        }
+
+        .profile__delete-link {
+          color: #e60000;
+          margin-left: 15px;
         }
       }
 

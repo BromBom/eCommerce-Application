@@ -149,6 +149,31 @@ export const addAddress = async (
   return response;
 };
 
+export const removeAddress = async (
+  customerID: string,
+  customerVersion: number,
+  addressId: string,
+) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .withId({ ID: customerID })
+    .post({
+      body: {
+        version: customerVersion,
+        actions: [
+          {
+            action: 'removeAddress',
+            addressId,
+          },
+        ],
+      },
+    })
+    .execute();
+
+  return response;
+};
+
 export const updateProfile = async (
   customerID: string,
   customerVersion: number,

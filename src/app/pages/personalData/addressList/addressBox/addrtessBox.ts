@@ -25,6 +25,8 @@ export default class AddressBox {
 
   linkEdit: SimpleComponent<HTMLSpanElement>;
 
+  linkDelete: SimpleComponent<HTMLSpanElement>;
+
   setBillingButton: SimpleComponent<HTMLDivElement>;
 
   setShippingButton: SimpleComponent<HTMLDivElement>;
@@ -44,6 +46,7 @@ export default class AddressBox {
       `${address.country}, ${address.postalCode}, ${address.city}, ${address.streetName} - ${address.apartment}`
     );
     this.linkEdit = new SimpleComponent<HTMLSpanElement>('span', ['profile__edit-link'], 'Edit');
+    this.linkDelete = new SimpleComponent<HTMLSpanElement>('span', ['profile__delete-link'], 'Delete');
     this.setBillingButton = new SimpleComponent<HTMLDivElement>('div', ['address__setBilling-button'], 'Billing');
     this.setShippingButton = new SimpleComponent<HTMLDivElement>('div', ['address__setShipping-button'], 'Shipping');
     this.element = this.init();
@@ -59,11 +62,15 @@ export default class AddressBox {
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('address__container-buttons');
 
+    const linkContainer = document.createElement('div');
+    linkContainer.classList.add('address__container-links');
+    linkContainer.append(this.linkEdit.getElement(), this.linkDelete.getElement());
+
     const billingButton = this.setBillingButton.getElement();
     const shippingButton = this.setShippingButton.getElement();
 
     addressBox.append(addressContainer, buttonContainer);
-    addressContainer.append(this.stringAddress.getElement(), this.linkEdit.getElement());
+    addressContainer.append(this.stringAddress.getElement(), linkContainer);
     buttonContainer.append(billingButton, shippingButton);
 
     this.creatModalFormChangeAddress();
@@ -129,6 +136,21 @@ export default class AddressBox {
         handleError(
           new Error('Failed to set Default Shipping Address'),
           `Failed to set Default Shipping Address! ${error}`
+        );
+      }
+    });
+
+    this.linkDelete.getElement().addEventListener('click', async () => {
+      try {
+        showLoading();
+        const customer = await getCustomerByID(this.customer.id);
+
+        
+      } catch (error) {
+        console.error(`Failed to delete Address: ${error}`);
+        handleError(
+          new Error('Failed to delete Address'),
+          `Failed to delete Address! ${error}`
         );
       }
     });
