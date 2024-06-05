@@ -31,15 +31,15 @@ export default class RegProfile {
   constructor() {
     this.legend = new SimpleComponent<HTMLLegendElement>('legend', [], 'Profile');
     this.inputEmail = Input(['registration__input-email']);
-    this.massageErrorEmail = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorEmail = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputPassword = Input(['registration__input-password']);
-    this.massageErrorPassword = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorPassword = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputName = Input(['registration__input-name']);
-    this.massageErrorName = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorName = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputLastName = Input(['registration__input-lastname']);
-    this.massageErrorLastName = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorLastName = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputDate = Input(['registration__input-date']);
-    this.massageErrorDate = new SimpleComponent<HTMLParagraphElement>('p', ['massage-error'], '');
+    this.massageErrorDate = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.element = this.init();
   }
 
@@ -99,18 +99,14 @@ export default class RegProfile {
     const msgErrDate = this.massageErrorDate.getElement();
     this.inputDate.getElement().setAttribute('max', '2006-01-01');
     this.inputDate.getElement().setAttribute('min', '1900-01-01');
-    this.inputDate.getElement().setAttribute('autocomplete', 'on');
-    this.inputDate.addListener('input', () => {
+    this.inputDate.addListener('change', () => {
+      this.massageErrorDate.getElement().textContent = '';
       if (+this.inputDate.getElement().value.split('-')[0] < 1900) {
         const errorMessage = 'You are too old for it! Year must be 1900 or later.';
-        this.inputDate.getElement().setCustomValidity(errorMessage);
-        this.inputDate.getElement().reportValidity();
         this.massageErrorDate.getElement().textContent = errorMessage;
       }
       if (+this.inputDate.getElement().value.split('-')[0] > 2006) {
         const errorMessage = 'You must be at least 18 years old.';
-        this.inputDate.getElement().setCustomValidity(errorMessage);
-        this.inputDate.getElement().reportValidity();
         this.massageErrorDate.getElement().textContent = errorMessage;
       }
     });

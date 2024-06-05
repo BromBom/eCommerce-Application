@@ -113,11 +113,11 @@ export default class RegForm {
       };
 
       const shippingAddress: BaseAddress = {
-        streetName: this.address.inputStreet.getElement().value,
-        apartment: this.address.inputStreetNumber.getElement().value,
-        city: this.address.inputCity.getElement().value,
-        postalCode: this.address.inputPostalCode.getElement().value,
-        country: this.address.inputCountry.getElement().value,
+        streetName: this.addAddress.inputStreet.getElement().value,
+        apartment: this.addAddress.inputStreetNumber.getElement().value,
+        city: this.addAddress.inputCity.getElement().value,
+        postalCode: this.addAddress.inputPostalCode.getElement().value,
+        country: this.addAddress.inputCountry.getElement().value,
       };
 
       try {

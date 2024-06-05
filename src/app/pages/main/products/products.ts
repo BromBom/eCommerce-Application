@@ -38,17 +38,6 @@ export default class Products extends Layout {
     }
   }
 
-  async searchProducts(query: string) {
-    try {
-      const response = await queryProduct(query);
-      const products: ProductProjection[] = response.body.results;
-      this.updateProducts(products);
-    } catch (error) {
-      console.error(error);
-      this.setHTMLContent('<div class="error">Failed to load products</div>');
-    }
-  }
-
   updateProducts(products: ProductProjection[]) {
     const productElements = products
       .map((product: ProductProjection) => {
@@ -103,7 +92,6 @@ export default class Products extends Layout {
         ${productElements}
       </ul>
     `);
-
     this.addEventListeners();
   }
 

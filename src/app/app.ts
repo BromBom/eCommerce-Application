@@ -13,6 +13,8 @@ import LoginPageLayout from './layout/loginLayout';
 import { showLoading, hideLoading, handleError } from './utils/showmessage';
 import Navbar from './components/navbar/navbar';
 import Modal from './components/modal/modal';
+import Products from './pages/main/products/products';
+import { getCustomerByID } from '../api/customer';
 
 export default class App {
   header?: null | Header;
@@ -27,6 +29,8 @@ export default class App {
 
   state: State;
 
+  products: Products;
+
   constructor() {
     this.header = null;
     this.main = null;
@@ -35,6 +39,7 @@ export default class App {
     this.state = new State();
     const routes = this.createRoutes();
     this.router = new Router(routes);
+    this.products = new Products(this.router);
   }
 
   static createNavbarContainer() {
@@ -57,7 +62,7 @@ export default class App {
 
     App.createNavbarContainer();
 
-    this.header = new Header(this.router, this.state);
+    this.header = new Header(this.router, this.state, this.products);
     this.main = new Main();
     this.navbar = new Navbar();
 
@@ -82,8 +87,7 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            const { default: Products } = await import('./pages/main/products/products');
-            this.setContent(Pages.Product, new Products(this.router));
+            this.setContent(Pages.Product, this.products);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product page.');
@@ -98,8 +102,7 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            const { default: Products } = await import('./pages/main/products/products');
-            const productsPage = new Products(this.router);
+            const productsPage = this.products;
             this.setContent(Pages.PRODUCT, productsPage);
           } catch (error) {
             if (error instanceof Error) {
@@ -175,8 +178,11 @@ export default class App {
           showLoading();
           try {
             const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
+            const newCustomer = await getCustomerByID(customer.id);
+            localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+            localStorage.setItem('userID', JSON.stringify(newCustomer));
+            const personalData = new PersonalData(newCustomer, this.modal).getElement();
             const mainContainer = this.main!.getHtmlElement();
-            const personalData = new PersonalData(customer).element;
             mainContainer.innerHTML = '';
             mainContainer.append(personalData);
           } catch (error) {

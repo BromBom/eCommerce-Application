@@ -6,13 +6,16 @@ import './addressBlock.scss';
 export default class AddressBlock {
   element: HTMLDivElement;
 
-  stringAddress: string;
+  stringAddress: SimpleComponent<HTMLParagraphElement>;
 
   title: SimpleComponent<HTMLHeadingElement>;
 
-  constructor(titleName: string, address: Address) {
+  constructor(
+    titleName: string,
+    public address: Address | string
+  ) {
     this.title = new SimpleComponent<HTMLHeadingElement>('h3', ['address__title'], titleName);
-    this.stringAddress = `${address.country}, ${address.postalCode}, ${address.city}, ${address.streetName} - ${address.apartment}`;
+    this.stringAddress = new SimpleComponent<HTMLParagraphElement>('p', ['profile__address-string']);
     this.element = this.init();
   }
 
@@ -30,7 +33,13 @@ export default class AddressBlock {
     editButton.classList.add('address__edit-button');
 
     addressBlock.append(this.title.getElement(), addressBox);
-    addressBox.append(this.stringAddress, editButton);
+    addressBox.append(this.stringAddress.getElement(), editButton);
+
+    if (typeof this.address === 'string') {
+      this.stringAddress.getElement().textContent = this.address;
+    } else {
+      this.stringAddress.getElement().textContent = `${this.address.country}, ${this.address.postalCode}, ${this.address.streetName} - ${this.address.apartment}`;
+    }
 
     return addressBlock;
   }

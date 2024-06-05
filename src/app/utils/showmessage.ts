@@ -42,6 +42,16 @@ export const showMessage = (message: string, callback?: () => void): void => {
 };
 
 export function handleError(error: Error, message: string): void {
+  const messageContainer = document.getElementById('message-container')!;
+  messageContainer.classList.remove('sucsess');
+  showMessage(message, () => {
+    hideLoading();
+  });
+}
+
+export function handleSucsess(message: string): void {
+  const messageContainer = document.getElementById('message-container')!;
+  messageContainer.classList.add('sucsess');
   showMessage(message, () => {
     hideLoading();
   });

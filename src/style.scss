@@ -100,6 +100,16 @@ body {
   right: 20px;
 }
 
+#message-container.sucsess {
+  background-color: #ddf8d7;
+  color: #26721c;
+  border: 1px solid #ddf5c6;
+
+  .message-close-button {
+    color: #26721c;
+  }
+}
+
 .message-content {
   display: flex;
   justify-content: space-between;
