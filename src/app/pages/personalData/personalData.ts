@@ -32,7 +32,9 @@ export default class PersonalData {
 
   modalProfileBlock: RegProfile;
 
-  modalButtonSubmit: SimpleComponent<HTMLButtonElement>;
+  modalButtonSubmitPassword: SimpleComponent<HTMLButtonElement>;
+
+  modalButtonSubmitProfile: SimpleComponent<HTMLButtonElement>;
 
   constructor(
     public customer: Customer,
@@ -50,7 +52,8 @@ export default class PersonalData {
     this.password = new SimpleComponent<HTMLSpanElement>('span', ['profile__personalData'], `******`);
     this.linkChangePassword = new SimpleComponent<HTMLSpanElement>('span', ['profile__edit-link'], '(change password)');
     this.modalProfileBlock = new RegProfile();
-    this.modalButtonSubmit = Button(['registration__btn-submit'], 'Submit');
+    this.modalButtonSubmitPassword = Button(['registration__btn-submit'], 'Submit');
+    this.modalButtonSubmitProfile = Button(['registration__btn-submit'], 'Submit');
     this.element = this.init();
   }
 
@@ -103,18 +106,30 @@ export default class PersonalData {
     const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
     const addressBillingID = customer.defaultBillingAddressId;
     const addressShippingID = customer.defaultShippingAddressId;
-    const addressBilling = customer.addresses.find((address) => address.id === addressBillingID)!;
-    let addressShipping = addressBilling;
-    if (customer.addresses.length > 1) {
-      addressShipping = customer.addresses.find((address) => address.id === addressShippingID)!;
+
+    let billingBlock;
+    let shippingBlock;
+
+    if (addressBillingID) {
+      const addressBilling = customer.addresses.find((address) => address.id === addressBillingID)!;
+      billingBlock = new AddressBlock('Billing Address', addressBilling);
+    } else {
+      billingBlock = new AddressBlock('Billing Address', 'none');
     }
-    const billingBlock = new AddressBlock('Billing Address', addressBilling!);
-    const shippingBlock = new AddressBlock('Shipping Address', addressShipping);
+
+    if (addressShippingID) {
+      const addressShipping = customer.addresses.find((address) => address.id === addressShippingID)!;
+      shippingBlock = new AddressBlock('Shipping Address', addressShipping);
+    } else {
+      shippingBlock = new AddressBlock('Shipping Address', 'none');
+    }
+
     shippingBlock.getElement().classList.add('shipping');
 
     const addressList = new AddressList(customer.addresses, this.modal, billingBlock, shippingBlock).getElement();
 
     addressesBox.append(billingBlock.getElement(), shippingBlock.getElement(), titleAddresses, addressList);
+
     this.creatModalFormChangeProfile();
     this.creatModalFormChangePassword();
 
@@ -131,9 +146,14 @@ export default class PersonalData {
     this.modalProfileBlock.inputDate.getElement().value = this.customer.dateOfBirth!;
     this.modalProfileBlock.massageErrorPassword.getElement().remove();
     this.modalProfileBlock.inputPassword.getElement().parentElement!.remove();
+    console.log('creat');
+    const buttonSubmit = this.modalButtonSubmitProfile.getElement();
 
-    const buttonSubmit = this.modalButtonSubmit.getElement();
     modalForm.append(this.modalProfileBlock.getElement(), buttonSubmit);
+
+    console.log(modalForm.childElementCount);
+    console.log('isert');
+    console.log(buttonSubmit);
 
     const modal = this.modal.getHtmlElement();
     const modalContainer = modal.firstChild!.firstChild as HTMLElement;
@@ -244,7 +264,7 @@ export default class PersonalData {
       massageErrorNewPassword
     );
 
-    const buttonSubmit = this.modalButtonSubmit.getElement();
+    const buttonSubmit = this.modalButtonSubmitPassword.getElement();
     buttonSubmit.disabled = true;
     modalForm.append(fieldset, buttonSubmit);
 

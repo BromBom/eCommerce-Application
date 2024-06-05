@@ -5,6 +5,7 @@ import RegAddress from '../../../registration/form/address/address';
 import Button from '../../../../components/controls/button';
 import {
   changeAddress,
+  removeAddress,
   getCustomerByID,
   SetDefaultBillingAddress,
   SetDefaultShippingAddress,
@@ -144,14 +145,25 @@ export default class AddressBox {
       try {
         showLoading();
         const customer = await getCustomerByID(this.customer.id);
+        const customerRemoveAddress = await removeAddress(customer.id, customer.version, this.address.id!);
+        const newCustomer = customerRemoveAddress.body;
+        localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+        localStorage.setItem('userID', JSON.stringify(newCustomer));
+        this.customer = newCustomer;
 
-        
+        this.element.remove();
+        if (billingButton.classList.contains('clicked')) {
+          this.billingBlock.stringAddress.getElement().textContent = 'none';
+        }
+        if (shippingButton.classList.contains('clicked')) {
+          this.shippingBlock.stringAddress.getElement().textContent = 'none';
+        }
+
+        hideLoading();
+        handleSucsess('Remove address was successful!');
       } catch (error) {
         console.error(`Failed to delete Address: ${error}`);
-        handleError(
-          new Error('Failed to delete Address'),
-          `Failed to delete Address! ${error}`
-        );
+        handleError(new Error('Failed to delete Address'), `Failed to delete Address! ${error}`);
       }
     });
 

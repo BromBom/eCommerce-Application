@@ -149,11 +149,7 @@ export const addAddress = async (
   return response;
 };
 
-export const removeAddress = async (
-  customerID: string,
-  customerVersion: number,
-  addressId: string,
-) => {
+export const removeAddress = async (customerID: string, customerVersion: number, addressId: string) => {
   const response = await apiRoot
     .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
     .customers()
