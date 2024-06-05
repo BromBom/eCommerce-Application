@@ -13,6 +13,8 @@ interface FilterCriteria {
   types: string[];
   genders: string[];
   colors: string[];
+  currentColor: string;
+  currentIdTypes: string;
   discount: boolean;
 }
 
@@ -37,6 +39,8 @@ export default class Navbar extends Layout {
       types: [],
       genders: [],
       colors: [],
+      currentColor: '',
+      currentIdTypes: '',
       discount: false,
     };
 
@@ -135,14 +139,14 @@ export default class Navbar extends Layout {
         </div>
         <div class="filter-category">
           <h3>Color</h3>
-          <div class="color-box" style="background: black;"></div>
-          <div class="color-box" style="background: white;"></div>
-          <div class="color-box" style="background: grey;"></div>
-          <div class="color-box" style="background: blue;"></div>
-          <div class="color-box" style="background: purple;"></div>
-          <div class="color-box" style="background: pink;"></div>
-          <div class="color-box" style="background: green;"></div>
-          <div class="color-box" style="background: yellow;"></div>
+          <div class="color-box" style="background: black;" data-color="Black"></div>
+          <div class="color-box" style="background: white;" data-color="White"></div>
+          <div class="color-box" style="background: grey;" data-color="Grey"></div>
+          <div class="color-box" style="background: blue;" data-color="Blue"></div>
+          <div class="color-box" style="background: purple;" data-color="Purple"></div>
+          <div class="color-box" style="background: pink;" data-color="Pink"></div>
+          <div class="color-box" style="background: green;" data-color="Green"></div>
+          <div class="color-box" style="background: yellow;" data-color="Yellow"></div>
         </div>
         <div class="filter-category">
           <h3>Discount</h3>
@@ -182,6 +186,7 @@ export default class Navbar extends Layout {
             colorBoxes.forEach((box) => {
               box.addEventListener('click', () => {
                 box.classList.toggle('selected');
+                this.filters.currentColor = (box as HTMLDivElement).dataset.color!;
               });
             });
 
@@ -219,6 +224,8 @@ export default class Navbar extends Layout {
     const types: string[] = [];
     const genders: string[] = [];
     const colors: string[] = [];
+    const { currentColor } = this.filters;
+    const { currentIdTypes } = this.filters;
     let discount = false;
 
     const sizeSmall = document.getElementById('size-small') as HTMLInputElement;
@@ -258,6 +265,8 @@ export default class Navbar extends Layout {
       types,
       genders,
       colors,
+      currentColor,
+      currentIdTypes,
       discount,
     };
 
@@ -267,8 +276,9 @@ export default class Navbar extends Layout {
   async fetchFilteredProducts() {
     try {
       showLoading();
+      console.log('121212121212121', this.filters.currentColor);
       const colorResponse: ClientResponse<ProductProjectionPagedSearchResponse> = await filterProductListColor(
-        this.filters.colors
+        this.filters.currentColor
       );
       const products: ProductProjection[] = colorResponse.body.results;
 

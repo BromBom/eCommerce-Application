@@ -95,11 +95,11 @@ export const sortProductbyASC = async (): Promise<ClientResponse<ProductProjecti
 };
 
 export const filterProductListColor = async (
-  colors: string[]
+  color: string
 ): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
-  const colorFilters = colors.map((color) => `variants.attributes.colortype:"${color}"`);
+  const colorFilters = `variants.attributes.colortype:"${color}"`;
 
-  const filters = [`productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"`, ...colorFilters];
+  const filters = [`productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"`, colorFilters];
 
   return apiRoot
     .productProjections()

@@ -317,8 +317,6 @@ export default class Header extends Layout {
       const linkItem = this.headerLinkElements.get(namePage.toUpperCase());
       if (linkItem instanceof LinkView) {
         linkItem.setSelectedStatus();
-      } else {
-        console.error('Link item is not an instance of LinkView.');
       }
     }
   }
