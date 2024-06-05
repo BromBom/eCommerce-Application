@@ -167,19 +167,19 @@ export const updateProfile = async (
         actions: [
           {
             action: 'setFirstName',
-            firstName: firstName,
+            firstName,
           },
           {
             action: 'setLastName',
-            lastName: lastName,
+            lastName,
           },
           {
             action: 'setDateOfBirth',
-            dateOfBirth: dateOfBirth,
+            dateOfBirth,
           },
           {
             action: 'changeEmail',
-            email: email,
+            email,
           },
         ],
       },
@@ -203,8 +203,8 @@ export const changePassword = async (
       body: {
         id: customerID,
         version: customerVersion,
-        currentPassword: currentPassword,
-        newPassword: newPassword,
+        currentPassword,
+        newPassword,
       },
     })
     .execute();

@@ -100,6 +100,7 @@ export default class RegProfile {
     this.inputDate.getElement().setAttribute('max', '2006-01-01');
     this.inputDate.getElement().setAttribute('min', '1900-01-01');
     this.inputDate.addListener('change', () => {
+      this.massageErrorDate.getElement().textContent = '';
       if (+this.inputDate.getElement().value.split('-')[0] < 1900) {
         const errorMessage = 'You are too old for it! Year must be 1900 or later.';
         this.massageErrorDate.getElement().textContent = errorMessage;

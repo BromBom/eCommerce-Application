@@ -5,6 +5,8 @@ import Button from '../../components/controls/button';
 import AddressBlock from './addressBlock/addressBlock';
 import AddressList from './addressList/addressList';
 import Modal from '../../components/modal/modal';
+import { handleError, showLoading, handleSucsess, hideLoading } from '../../utils/showmessage';
+import { getCustomerByID, updateProfile } from '../../../api/customer';
 
 import './personalData.scss';
 
@@ -101,20 +103,23 @@ export default class PersonalData {
     const addressList = new AddressList(customer.addresses, this.modal, billingBlock, shippingBlock).getElement();
 
     addressesBox.append(billingBlock.getElement(), shippingBlock.getElement(), titleAddresses, addressList);
-
     this.creatModalFormChangeProfile();
 
     return personalData;
   }
 
-  creatModalFormChangeProfile() { 
+  creatModalFormChangeProfile() {
     const modalForm = document.createElement('form');
     modalForm.classList.add('address__modal-form');
     this.modalProfileBlock.legend.getElement().textContent = 'Change profile';
-    this.modalProfileBlock.inputPassword.getElement().remove();
+    this.modalProfileBlock.inputName.getElement().value = this.customer.firstName!;
+    this.modalProfileBlock.inputLastName.getElement().value = this.customer.lastName!;
+    this.modalProfileBlock.inputEmail.getElement().value = this.customer.email!;
+    this.modalProfileBlock.inputDate.getElement().value = this.customer.dateOfBirth!;
     this.modalProfileBlock.massageErrorPassword.getElement().remove();
+    this.modalProfileBlock.inputPassword.getElement().parentElement!.remove();
+
     const buttonSubmit = this.modalButtonSubmit.getElement();
-    buttonSubmit.disabled = true;
     modalForm.append(this.modalProfileBlock.getElement(), buttonSubmit);
 
     const modal = this.modal.getHtmlElement();
@@ -137,7 +142,41 @@ export default class PersonalData {
     modalForm.addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      const addressID = this.address.id!;
+      const firstName = this.modalProfileBlock.inputName.getElement().value;
+      const lastName = this.modalProfileBlock.inputLastName.getElement().value;
+      const email = this.modalProfileBlock.inputEmail.getElement().value;
+      const dateOfBirth = this.modalProfileBlock.inputDate.getElement().value;
+
+      try {
+        showLoading();
+        const customer = await getCustomerByID(this.customer.id);
+        const customerWithChangeProfile = await updateProfile(
+          customer.id,
+          customer.version,
+          firstName,
+          lastName,
+          email,
+          dateOfBirth
+        );
+
+        const customerID = customerWithChangeProfile.body.id;
+        const newCustomer = await getCustomerByID(customerID);
+        localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+        localStorage.setItem('userID', JSON.stringify(newCustomer));
+        this.customer = newCustomer;
+
+        this.firstName.getElement().textContent = firstName;
+        this.lastName.getElement().textContent = lastName;
+        this.dateOfBirth.getElement().textContent = dateOfBirth;
+        this.email.getElement().textContent = email;
+
+        Modal.closeModal(modal);
+        hideLoading();
+        handleSucsess('The profile change was successful!');
+      } catch (error) {
+        console.error(`Failed to change address: ${error}`);
+        handleError(new Error('Failed to change profile'), `Failed to change profile! ${error}`);
+      }
     });
   }
 
