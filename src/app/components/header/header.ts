@@ -8,6 +8,7 @@ import State, { KEY_USER_ID } from '../../state/state';
 import { searchProduct, sortProductClothing, sortProductShoes, sortProductAccessories } from '../../../api/project';
 import Products from '../../pages/main/products/products';
 import Navbar from '../navbar/navbar';
+import { showLoading, hideLoading, handleError } from '../../utils/showmessage';
 
 const NamePages: { [key: string]: string } = {
   LOGIN: 'Login',
@@ -117,7 +118,7 @@ export default class Header extends Layout {
     this.listenForStorageChanges();
   }
 
-  createAdditionalButtons(container: BaseComponent<HTMLElement>) {
+  async createAdditionalButtons(container: BaseComponent<HTMLElement>) {
     const buttonNames: { [key: string]: string } = {
       Clothing: '8da9d730-fdd3-4313-8814-20cd01dc7efd',
       Shoes: '292321b7-b3d4-42d5-b150-b1fecde7d470',
@@ -126,6 +127,7 @@ export default class Header extends Layout {
 
     const handleClick = async (categoryId: string) => {
       try {
+        showLoading();
         let sortResponse;
         switch (categoryId) {
           case '8da9d730-fdd3-4313-8814-20cd01dc7efd':
@@ -148,7 +150,7 @@ export default class Header extends Layout {
           const mainElement = document.querySelector('.main');
           if (mainElement) {
             mainElement.innerHTML = '';
-            const navbar = new Navbar(this.router);
+            const navbar = new Navbar(this.router, this.products);
             mainElement.appendChild(navbar.getHtmlElement());
             mainElement.appendChild(this.products.getHtmlElement());
           } else {
@@ -159,6 +161,9 @@ export default class Header extends Layout {
         }
       } catch (error) {
         console.error('ERROR during sorting:', error);
+        handleError(error as Error, 'Error during sorting');
+      } finally {
+        hideLoading();
       }
     };
 
@@ -216,6 +221,7 @@ export default class Header extends Layout {
         const query = this.searchInput.value || '';
         console.log('Search button clicked with query:', query);
         try {
+          showLoading();
           console.log('Starting search...');
           const searchData = await searchProduct(query);
           console.log('Product projection search result:', searchData);
@@ -225,7 +231,7 @@ export default class Header extends Layout {
             const mainElement = document.querySelector('.main');
             if (mainElement) {
               mainElement.innerHTML = '';
-              const navbar = new Navbar(this.router);
+              const navbar = new Navbar(this.router, this.products);
               mainElement.appendChild(navbar.getHtmlElement());
               mainElement.appendChild(this.products.getHtmlElement());
             } else {

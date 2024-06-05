@@ -80,7 +80,7 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            const navbar = new Navbar(this.router);
+            const navbar = new Navbar(this.router, this.products);
             this.setContent(Pages.Product, this.products, navbar);
           } catch (error) {
             if (error instanceof Error) {
@@ -96,7 +96,7 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            const navbar = new Navbar(this.router);
+            const navbar = new Navbar(this.router, this.products);
             const productsPage = this.products;
             this.setContent(Pages.PRODUCT, productsPage, navbar);
           } catch (error) {
@@ -120,7 +120,7 @@ export default class App {
               throw new Error('No card ID found in localStorage');
             }
             const productDetailPage = new ProductDetail(cardID, this.modal);
-            await productDetailPage.init(); // Ensure init completes
+            await productDetailPage.init();
             mainContainer.innerHTML = '';
             mainContainer.append(productDetailPage.getElement()!);
           } catch (error) {
