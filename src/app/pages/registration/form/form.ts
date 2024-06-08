@@ -113,11 +113,11 @@ export default class RegForm {
       };
 
       const shippingAddress: BaseAddress = {
-        streetName: this.address.inputStreet.getElement().value,
-        apartment: this.address.inputStreetNumber.getElement().value,
-        city: this.address.inputCity.getElement().value,
-        postalCode: this.address.inputPostalCode.getElement().value,
-        country: this.address.inputCountry.getElement().value,
+        streetName: this.addAddress.inputStreet.getElement().value,
+        apartment: this.addAddress.inputStreetNumber.getElement().value,
+        city: this.addAddress.inputCity.getElement().value,
+        postalCode: this.addAddress.inputPostalCode.getElement().value,
+        country: this.addAddress.inputCountry.getElement().value,
       };
 
       try {
@@ -139,7 +139,16 @@ export default class RegForm {
         } else {
           customerDraft.addresses!.push(billingAddress);
           const newCustomer = await createCustomer(customerDraft);
-          await SetDefaultBillingAddress(newCustomer.id, newCustomer.version, newCustomer.addresses[0].id);
+          const newCustomerWithBilling = await SetDefaultBillingAddress(
+            newCustomer.id,
+            newCustomer.version,
+            newCustomer.addresses[0].id
+          );
+          await SetDefaultShippingAddress(
+            newCustomer.id,
+            newCustomerWithBilling.body.version,
+            newCustomer.addresses[0].id
+          );
           customerID = newCustomer.id;
         }
 

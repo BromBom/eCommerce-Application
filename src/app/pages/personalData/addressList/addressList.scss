@@ -1,0 +1,158 @@
+.address__list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+
+  .address__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+
+    .address__box {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      width: 100%;
+      height: 80px;
+      border: 1px solid #a7a7a7;
+      border-radius: 5px;
+
+      .address__container-addresses {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: start;
+        width: 100%;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-style: italic;
+
+        .address__container-links {
+          display: flex;
+          flex-direction: row;
+          justify-content: start;
+          align-items: start;
+          width: 100%;
+        }
+
+        .profile__edit-link,
+        .profile__delete-link {
+          display: inline;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-style: italic;
+          font-size: 16px;
+          color: #0071e6;
+          user-select: none;
+          cursor: pointer;
+
+          &:hover {
+            color: #ff9900;
+          }
+        }
+
+        .profile__delete-link {
+          color: #e60000;
+          margin-left: 15px;
+        }
+      }
+
+      .address__container-buttons {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+
+        .address__setBilling-button,
+        .address__setShipping-button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 3px;
+          width: 90px;
+          height: 30px;
+          font-weight: 400;
+          font-size: 16px;
+          color: #686868;
+          text-transform: uppercase;
+          background-color: #e9e9e9;
+          border: 1px solid #a7a7a7;
+          border-radius: 5px;
+          user-select: none;
+          cursor: pointer;
+
+          &:hover {
+            color: #3f3f3f;
+            background-color: #cacaca;
+          }
+
+          &:active {
+            color: #686868;
+            background-color: #ececec;
+          }
+        }
+
+        .address__setBilling-button {
+          &:hover {
+              color: #02b875;
+              background-color: #d4fdee;
+              border: 2px dashed #02b875;
+            }
+        }
+
+        .address__setShipping-button {
+          &:hover {
+              color: #b88e02;
+              background-color: #fde6d4;
+              border: 2px dashed #b88e02;
+            }
+        }
+
+        .address__setBilling-button.clicked {
+          color: #3f3f3f;
+          background-color: #d4fdee;
+          border: 2px solid #02b875;
+        }
+
+        .address__setShipping-button.clicked {
+          color: #3f3f3f;
+          background-color: #fde6d4;
+          border: 2px solid #b88e02;
+        }
+      }
+    }
+  }
+
+  .address__add-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 80px;
+    color: #686868;
+    background-color: #ececec;
+    border: 1px dashed #d4d4d4;
+    border-radius: 5px;
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+      color: #3f3f3f;
+      background-color: #cacaca;
+      border: 1px solid #a7a7a7;
+    }
+
+    &:active {
+      color: #02b875;
+      background-color: #ebfff8a9;
+      border: 1px dashed #02b875;
+    }
+  }
+}

@@ -42,16 +42,17 @@ export const showMessage = (message: string, callback?: () => void): void => {
 };
 
 export function handleError(error: Error, message: string): void {
-  // console.error(error);
+  const messageContainer = document.getElementById('message-container')!;
+  messageContainer.classList.remove('sucsess');
   showMessage(message, () => {
     hideLoading();
   });
 }
 
-// export const redirectUser = (): void => {
-//   if (getCartItems().length !== 0) {
-//     document.location.hash = '/address';
-//   } else {
-//     document.location.hash = '/';
-//   }
-// };
+export function handleSucsess(message: string): void {
+  const messageContainer = document.getElementById('message-container')!;
+  messageContainer.classList.add('sucsess');
+  showMessage(message, () => {
+    hideLoading();
+  });
+}

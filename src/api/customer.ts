@@ -37,10 +37,6 @@ export const SetDefaultBillingAddress = async (
     .execute();
 
   return response;
-  // } catch (error) {
-  //   if (error instanceof Error) handleError(error, error.message);
-  //   throw new Error(`Failed to set Default Billing Address: ${error}`);
-  // }
 };
 
 export const SetDefaultShippingAddress = async (
@@ -66,10 +62,6 @@ export const SetDefaultShippingAddress = async (
     .execute();
 
   return response;
-  // } catch (error) {
-  //   if (error instanceof Error) handleError(error, error.message);
-  //   throw new Error(`Failed to set Default Shipping Address: ${error}`);
-  // }
 };
 
 export const getCustomerByID = async (customerID: string) => {
@@ -83,8 +75,160 @@ export const getCustomerByID = async (customerID: string) => {
   const customer = response.body;
 
   return customer;
-  // } catch (error) {
-  //   if (error instanceof Error) handleError(error, error.message);
-  //   throw error;
-  // }
+};
+
+export const changeAddress = async (
+  customerID: string,
+  customerVersion: number,
+  addressId: string,
+  country: string,
+  postalCode: string,
+  city: string,
+  streetName: string,
+  apartment: string
+) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .withId({ ID: customerID })
+    .post({
+      body: {
+        version: customerVersion,
+        actions: [
+          {
+            action: 'changeAddress',
+            addressId,
+            address: {
+              country,
+              postalCode,
+              city,
+              streetName,
+              apartment,
+            },
+          },
+        ],
+      },
+    })
+    .execute();
+
+  return response;
+};
+
+export const addAddress = async (
+  customerID: string,
+  customerVersion: number,
+  country: string,
+  postalCode: string,
+  city: string,
+  streetName: string,
+  apartment: string
+) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .withId({ ID: customerID })
+    .post({
+      body: {
+        version: customerVersion,
+        actions: [
+          {
+            action: 'addAddress',
+            address: {
+              country,
+              postalCode,
+              city,
+              streetName,
+              apartment,
+            },
+          },
+        ],
+      },
+    })
+    .execute();
+
+  return response;
+};
+
+export const removeAddress = async (customerID: string, customerVersion: number, addressId: string) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .withId({ ID: customerID })
+    .post({
+      body: {
+        version: customerVersion,
+        actions: [
+          {
+            action: 'removeAddress',
+            addressId,
+          },
+        ],
+      },
+    })
+    .execute();
+
+  return response;
+};
+
+export const updateProfile = async (
+  customerID: string,
+  customerVersion: number,
+  firstName: string,
+  lastName: string,
+  email: string,
+  dateOfBirth: string
+) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .withId({ ID: customerID })
+    .post({
+      body: {
+        version: customerVersion,
+        actions: [
+          {
+            action: 'setFirstName',
+            firstName,
+          },
+          {
+            action: 'setLastName',
+            lastName,
+          },
+          {
+            action: 'setDateOfBirth',
+            dateOfBirth,
+          },
+          {
+            action: 'changeEmail',
+            email,
+          },
+        ],
+      },
+    })
+    .execute();
+
+  return response;
+};
+
+export const changePassword = async (
+  customerID: string,
+  customerVersion: number,
+  currentPassword: string,
+  newPassword: string
+) => {
+  const response = await apiRoot
+    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
+    .customers()
+    .password()
+    .post({
+      body: {
+        id: customerID,
+        version: customerVersion,
+        currentPassword,
+        newPassword,
+      },
+    })
+    .execute();
+
+  return response;
 };

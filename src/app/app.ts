@@ -1,14 +1,20 @@
+import { Customer } from '@commercetools/platform-sdk';
 import Footer from './components/footer/footer';
 import Header from './components/header/header';
 import Layout from './layout/layout';
 import Main from './pages/main/main';
 import NotFound from './pages/not-found/not-found';
 import Registration from './pages/registration/registration';
+import PersonalData from './pages/personalData/personalData';
 import { Pages } from './router/pages';
 import Router, { RouterParams } from './router/router';
 import State from './state/state';
 import LoginPageLayout from './layout/loginLayout';
 import { showLoading, hideLoading, handleError } from './utils/showmessage';
+import Navbar from './components/navbar/navbar';
+import Modal from './components/modal/modal';
+import Products from './pages/main/products/products';
+import { getCustomerByID } from '../api/customer';
 
 export default class App {
   header?: null | Header;
@@ -17,18 +23,26 @@ export default class App {
 
   router: Router;
 
+  modal: Modal;
+
   state: State;
+
+  products: Products;
 
   constructor() {
     this.header = null;
-
     this.main = null;
-
+    this.modal = new Modal(null);
     this.state = new State();
-
-    const routes = this.createRoutes(this.state);
-
+    const routes = this.createRoutes();
     this.router = new Router(routes);
+    this.products = new Products(this.router);
+  }
+
+  static createNavbarContainer() {
+    const container = document.createElement('div');
+    container.className = 'navbar';
+    document.body.appendChild(container);
   }
 
   createView() {
@@ -43,29 +57,32 @@ export default class App {
     const messageContainer = document.createElement('div');
     messageContainer.id = 'message-container';
 
-    this.header = new Header(this.router, this.state);
-    this.main = new Main();
+    App.createNavbarContainer();
+
+    this.header = new Header(this.router, this.state, this.products);
+    this.main = new Main(this.router);
+
     const footer = new Footer();
 
     document.body.append(
       this.header.getHtmlElement(),
       this.main.getHtmlElement(),
       footer.getHtmlElement(),
+      this.modal.getHtmlElement(),
       loadingOverlay,
       messageContainer
     );
   }
 
-  createRoutes(state: State): RouterParams[] {
-    console.log(state);
+  createRoutes(): RouterParams[] {
     return [
       {
         path: '',
         callback: async () => {
           showLoading();
           try {
-            const { default: Products } = await import('./pages/main/products/products');
-            this.setContent(Pages.Product, new Products());
+            const navbar = new Navbar(this.router, this.products);
+            this.setContent(Pages.Product, this.products, navbar);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product page.');
@@ -80,11 +97,36 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            const { default: Products } = await import('./pages/main/products/products');
-            this.setContent(Pages.Product, new Products());
+            const navbar = new Navbar(this.router, this.products);
+            const productsPage = this.products;
+            this.setContent(Pages.PRODUCT, productsPage, navbar);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load products page.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
+        path: `${Pages.DETAILS}`,
+        callback: async () => {
+          showLoading();
+          try {
+            const { default: ProductDetail } = await import('./pages/main/products/productDetail/productDetail');
+            const mainContainer = this.main!.getHtmlElement();
+            const cardID = localStorage.getItem('cardId');
+            if (!cardID) {
+              throw new Error('No card ID found in localStorage');
+            }
+            const productDetailPage = new ProductDetail(cardID, this.modal);
+            await productDetailPage.init();
+            mainContainer.innerHTML = '';
+            mainContainer.append(productDetailPage.getElement()!);
+          } catch (error) {
+            if (error instanceof Error) {
+              handleError(error, 'Failed to load product detail page.');
             }
           } finally {
             hideLoading();
@@ -127,6 +169,45 @@ export default class App {
         },
       },
       {
+        path: `${Pages.PROFILE}`,
+        callback: async () => {
+          showLoading();
+          try {
+            const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
+            const newCustomer = await getCustomerByID(customer.id);
+            localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
+            localStorage.setItem('userID', JSON.stringify(newCustomer));
+            const personalData = new PersonalData(newCustomer, this.modal).getElement();
+            const mainContainer = this.main!.getHtmlElement();
+            mainContainer.innerHTML = '';
+            mainContainer.append(personalData);
+          } catch (error) {
+            if (error instanceof Error) {
+              console.log(error);
+              handleError(error, 'Page not found.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
+        path: `${Pages.CART}`,
+        callback: async () => {
+          showLoading();
+          try {
+            const { default: CartScreen } = await import('./pages/main/cart/cart');
+            this.setContent(Pages.CART, new CartScreen(this.router));
+          } catch (error) {
+            if (error instanceof Error) {
+              handleError(error, 'Failed to load product page.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
         path: `${Pages.NOT_FOUND}`,
         callback: async () => {
           showLoading();
@@ -144,11 +225,24 @@ export default class App {
     ];
   }
 
-  setContent(page: string, view: Layout) {
+  updateMainContent(categoryId: string) {
+    console.log('Updating main content with categoryId:', categoryId);
+    this.main?.renderProducts(categoryId);
+  }
+
+  setContent(page: string, view: Layout, navbar?: Navbar) {
+    console.log('Setting content for page:', page, 'with view:', view);
     const isLoggedIn = this.state.loadState().size > 0;
 
     this.header?.setSelectedItem(page);
-    this.main?.setContent(view);
+    const mainContainer = this.main!.getHtmlElement();
+    mainContainer.innerHTML = '';
+
+    if (navbar) {
+      mainContainer.appendChild(navbar.getHtmlElement());
+    }
+
+    mainContainer.appendChild(view.getHtmlElement());
 
     if (isLoggedIn) {
       this.header?.configureView();
