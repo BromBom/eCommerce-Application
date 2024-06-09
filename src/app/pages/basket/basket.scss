@@ -1,0 +1,40 @@
+.basket__root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1 0 auto;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.basket__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 90%;
+  border-radius: 15px;
+  box-shadow: 0 4px 24px 0 #565b7326;
+}
+
+.basket__title {
+  padding: 50px;
+  font-size: 2.5rem;
+
+}
+
+.basket__link {
+  padding: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-style: italic;
+  font-size: 22px;
+  color: #0071e6;
+  user-select: none;
+  cursor: pointer;
+
+  &:hover {
+    color: #ff9900;
+  }
+}
