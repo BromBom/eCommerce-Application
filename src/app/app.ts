@@ -197,11 +197,11 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            const productsInBasket = JSON.parse(localStorage.getItem('newCustomer')!) as ProductProjection[];
-            const personalData = new Basket(this.router, productsInBasket).getElement();
+            const productsInBasket = (JSON.parse(localStorage.getItem('newCustomer')!) as ProductProjection[]) || [];
+            const basket = new Basket(this.router, productsInBasket).getElement();
             const mainContainer = this.main!.getHtmlElement();
             mainContainer.innerHTML = '';
-            mainContainer.append(personalData);
+            mainContainer.append(basket);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product page.');
