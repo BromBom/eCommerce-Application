@@ -73,7 +73,6 @@ const loginPage = {
           try {
             console.log('Sending request to commercetools API...');
             const response = await apiRoot
-              .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
               .login()
               .post({
                 body: {

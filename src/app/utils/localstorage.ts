@@ -1,3 +1,5 @@
+import { apiRoot } from '../../api/BuildClient';
+import { getOrCreateAnonymousCart } from '../../api/cart';
 import { CartItem } from '../types/types';
 
 interface UserInfo {
@@ -52,7 +54,7 @@ export const setCartItems = (cartItems: CartItem[]): void => {
   localStorage.setItem('cartItems', JSON.stringify(cartItems));
 };
 
-const addToCart = (item: CartItem, forceUpdate = false): void => {
+const addToCart = async (item: CartItem, forceUpdate = false): Promise<void> => {
   const cartItems = getCartItems();
   const existItemIndex = cartItems.findIndex((x: CartItem) => x.product === item.product);
   if (existItemIndex !== -1) {
@@ -63,10 +65,78 @@ const addToCart = (item: CartItem, forceUpdate = false): void => {
     cartItems.push(item);
   }
   setCartItems(cartItems);
+
+  // Обновление анонимной корзины на сервере
+  try {
+    const anonymousCart = await getOrCreateAnonymousCart();
+    const foundLineItem = anonymousCart.lineItems.find((lineItem) => lineItem.productId === item.product);
+    if (foundLineItem) {
+      await apiRoot
+        .carts()
+        .withId({ ID: anonymousCart.id })
+        .post({
+          body: {
+            version: anonymousCart.version,
+            actions: [
+              {
+                action: 'changeLineItemQuantity',
+                lineItemId: foundLineItem.id,
+                quantity: item.quantityInStock,
+              },
+            ],
+          },
+        })
+        .execute();
+    } else {
+      await apiRoot
+        .carts()
+        .withId({ ID: anonymousCart.id })
+        .post({
+          body: {
+            version: anonymousCart.version,
+            actions: [
+              {
+                action: 'addLineItem',
+                productId: item.product,
+                quantity: item.quantityInStock,
+              },
+            ],
+          },
+        })
+        .execute();
+    }
+  } catch (error) {
+    console.error('Error adding item to anonymous cart:', error);
+  }
 };
 
-const removeFromCart = (id: string): void => {
+const removeFromCart = async (id: string): Promise<void> => {
   setCartItems(getCartItems().filter((x: CartItem) => x.product !== id));
+
+  // Обновление анонимной корзины на сервере
+  try {
+    const anonymousCart = await getOrCreateAnonymousCart();
+    const foundLineItem = anonymousCart.lineItems.find((lineItem) => lineItem.productId === id);
+    if (foundLineItem) {
+      await apiRoot
+        .carts()
+        .withId({ ID: anonymousCart.id })
+        .post({
+          body: {
+            version: anonymousCart.version,
+            actions: [
+              {
+                action: 'removeLineItem',
+                lineItemId: foundLineItem.id,
+              },
+            ],
+          },
+        })
+        .execute();
+    }
+  } catch (error) {
+    console.error('Error removing item from anonymous cart:', error);
+  }
 };
 
 export { addToCart, removeFromCart };

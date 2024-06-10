@@ -101,18 +101,18 @@
 
         .address__setBilling-button {
           &:hover {
-              color: #02b875;
-              background-color: #d4fdee;
-              border: 2px dashed #02b875;
-            }
+            color: #02b875;
+            background-color: #d4fdee;
+            border: 2px dashed #02b875;
+          }
         }
 
         .address__setShipping-button {
           &:hover {
-              color: #b88e02;
-              background-color: #fde6d4;
-              border: 2px dashed #b88e02;
-            }
+            color: #b88e02;
+            background-color: #fde6d4;
+            border: 2px dashed #b88e02;
+          }
         }
 
         .address__setBilling-button.clicked {
