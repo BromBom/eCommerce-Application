@@ -91,16 +91,27 @@ export default class Header extends Layout {
       callback: () => {
         console.log('Logo clicked');
         this.router.navigate(Pages.PRODUCT);
-        this.clearSelectedItems();
       },
     };
-
     const logoCreator = new BaseComponent<HTMLElement>(logoParams);
     logoCreator.getElement()?.addEventListener('click', () => {
       this.router.navigate(Pages.PRODUCT);
-      this.clearSelectedItems();
     });
     topContainer.addInnerElement(logoCreator);
+
+    const aboutUsParams = {
+      tag: 'a' as keyof HTMLElementTagNameMap,
+      classNames: ['about-us'],
+      text: 'About us',
+      callback: () => {
+        this.router.navigate(Pages.ABOUT_US);
+      },
+    };
+    const aboutUsInstance = new BaseComponent<HTMLElement>(aboutUsParams);
+    aboutUsInstance.getElement()?.addEventListener('click', () => {
+      this.router.navigate(Pages.ABOUT_US);
+    });
+    topContainer.addInnerElement(aboutUsInstance);
 
     const navParams = {
       tag: 'nav' as keyof HTMLElementTagNameMap,

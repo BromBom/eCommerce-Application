@@ -15,6 +15,7 @@ import Navbar from './components/navbar/navbar';
 import Modal from './components/modal/modal';
 import Products from './pages/main/products/products';
 import { getCustomerByID } from '../api/customer';
+import AboutUs from './pages/about-us/aboutUs';
 
 export default class App {
   header?: null | Header;
@@ -201,6 +202,21 @@ export default class App {
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product page.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
+        path: `${Pages.ABOUT_US}`,
+        callback: async () => {
+          showLoading();
+          try {
+            this.setContent(Pages.ABOUT_US, new AboutUs(this.router));
+          } catch (error) {
+            if (error instanceof Error) {
+              handleError(error, 'Page not found.');
             }
           } finally {
             hideLoading();
