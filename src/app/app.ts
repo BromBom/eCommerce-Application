@@ -1,4 +1,4 @@
-import { Customer } from '@commercetools/platform-sdk';
+import { Customer, ProductProjection } from '@commercetools/platform-sdk';
 import Footer from './components/footer/footer';
 import Header from './components/header/header';
 import Layout from './layout/layout';
@@ -6,6 +6,7 @@ import Main from './pages/main/main';
 import NotFound from './pages/not-found/not-found';
 import Registration from './pages/registration/registration';
 import PersonalData from './pages/personalData/personalData';
+import Basket from './pages/basket/basket';
 import { Pages } from './router/pages';
 import Router, { RouterParams } from './router/router';
 import State from './state/state';
@@ -196,8 +197,11 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            const { default: CartScreen } = await import('./pages/main/cart/cart');
-            this.setContent(Pages.CART, new CartScreen(this.router));
+            const productsInBasket = (JSON.parse(localStorage.getItem('newCustomer')!) as ProductProjection[]) || [];
+            const basket = new Basket(this.router, productsInBasket).getElement();
+            const mainContainer = this.main!.getHtmlElement();
+            mainContainer.innerHTML = '';
+            mainContainer.append(basket);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product page.');

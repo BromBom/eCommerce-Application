@@ -116,4 +116,6 @@ export const ctpClient = new ClientBuilder()
   .withLoggerMiddleware()
   .build();
 
-export const apiRoot = createApiBuilderFromCtpClient(ctpClient);
+export const apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({
+  projectKey: process.env.CTP_PROJECT_KEY || '',
+});
