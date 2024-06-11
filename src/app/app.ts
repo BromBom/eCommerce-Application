@@ -16,6 +16,7 @@ import Navbar from './components/navbar/navbar';
 import Modal from './components/modal/modal';
 import Products from './pages/main/products/products';
 import { getCustomerByID } from '../api/customer';
+import { queryProduct } from '../api/project';
 
 export default class App {
   header?: null | Header;
@@ -197,7 +198,8 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            const productsInBasket = (JSON.parse(localStorage.getItem('newCustomer')!) as ProductProjection[]) || [];
+            const response = await queryProduct();
+            const productsInBasket: ProductProjection[] = response.body.results;
             const basket = new Basket(this.router, productsInBasket).getElement();
             const mainContainer = this.main!.getHtmlElement();
             mainContainer.innerHTML = '';

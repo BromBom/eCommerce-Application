@@ -1,5 +1,6 @@
 import { ProductProjection } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../components/simpleComponent';
+import BasketProductBox from './basketProductBox/basketProductBox';
 import Router from '../../router/router';
 import { Pages } from '../../router/pages';
 
@@ -8,7 +9,7 @@ import './basket.scss';
 export default class PersonalData {
   element: HTMLDivElement;
 
-  titleBasket: SimpleComponent<HTMLHeadingElement>;
+  titleBasketEmpty: SimpleComponent<HTMLHeadingElement>;
 
   linkToMain: SimpleComponent<HTMLHeadingElement>;
 
@@ -16,7 +17,11 @@ export default class PersonalData {
     public router: Router,
     public products: ProductProjection[] = []
   ) {
-    this.titleBasket = new SimpleComponent<HTMLHeadingElement>('h3', ['basket__title'], 'Cart is empty');
+    this.titleBasketEmpty = new SimpleComponent<HTMLHeadingElement>(
+      'h3',
+      ['basket__title-empty-cart'],
+      'Cart is empty'
+    );
     this.linkToMain = new SimpleComponent<HTMLHeadingElement>('h4', ['basket__link-main'], 'Go to main');
     this.element = this.init();
   }
@@ -28,10 +33,10 @@ export default class PersonalData {
     basketContainer.classList.add('basket__container');
     basketPage.append(basketContainer);
 
-    const titleBasketEmpty = this.titleBasket.getElement();
+    const titleBasketEmpty = this.titleBasketEmpty.getElement();
     const linkToMain = this.linkToMain.getElement();
 
-    if (this.products.length !== 0) {
+    if (this.products.length === 0) {
       basketContainer.append(titleBasketEmpty, linkToMain);
     } else {
       const basketHeader = document.createElement('div');
@@ -58,14 +63,28 @@ export default class PersonalData {
       basketHeader.append(titleBox, linkClear);
       titleBox.append(titleBasketWithProducts, productsCounter);
 
+      // start products list-----------------------------------------------------------------------------------------------
+
       const productsContainer = document.createElement('div');
-      basketHeader.classList.add('basket__products-container');
+      productsContainer.classList.add('basket__products-container');
+      let totalPrice = 0;
+      this.products.forEach((product) => {
+        totalPrice += product.masterVariant.prices![0].value.centAmount;
+        const basketProductBox = new BasketProductBox(product).getElement();
+        productsContainer.append(basketProductBox);
+      });
+
+      // end products list-------------------------------------------------------------------------------------------------
 
       const totalContainer = document.createElement('div');
       totalContainer.classList.add('basket__total-container');
 
       const titleTotal = new SimpleComponent<HTMLParagraphElement>('p', ['basket__total'], 'Total:').getElement();
-      const titlePrice = new SimpleComponent<HTMLParagraphElement>('p', ['basket__price'], '0.00 $').getElement();
+      const titlePrice = new SimpleComponent<HTMLParagraphElement>(
+        'p',
+        ['basket__price'],
+        `${(totalPrice / 100).toFixed(2)} $`
+      ).getElement();
 
       totalContainer.append(titleTotal, titlePrice);
 
