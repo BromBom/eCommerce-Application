@@ -62,7 +62,10 @@ export default class BasketProductBox {
     counterProducts.value = '1';
     priceBox.append(priceAllProducts, counterProducts);
 
-    basketProductBox.append(imgBox, infoBox, priceBox);
+    const deleteIcon = document.createElement('div');
+    deleteIcon.classList.add('basket__product-box__icon-delete');
+
+    basketProductBox.append(deleteIcon, imgBox, infoBox, priceBox);
 
     return basketProductBox;
   }
