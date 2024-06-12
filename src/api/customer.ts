@@ -3,7 +3,6 @@ import { apiRoot } from './BuildClient';
 
 export const createCustomer = async (customerData: CustomerDraft) => {
   const response = await apiRoot
-    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
     .customers()
     .post({
       body: customerData,
@@ -20,7 +19,6 @@ export const SetDefaultBillingAddress = async (
   addressId: string | undefined
 ) => {
   const response = await apiRoot
-    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
     .customers()
     .withId({ ID: customerID })
     .post({
@@ -45,7 +43,6 @@ export const SetDefaultShippingAddress = async (
   addressId: string | undefined
 ) => {
   const response = await apiRoot
-    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
     .customers()
     .withId({ ID: customerID })
     .post({
@@ -65,12 +62,7 @@ export const SetDefaultShippingAddress = async (
 };
 
 export const getCustomerByID = async (customerID: string) => {
-  const response = await apiRoot
-    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
-    .customers()
-    .withId({ ID: customerID })
-    .get()
-    .execute();
+  const response = await apiRoot.customers().withId({ ID: customerID }).get().execute();
 
   const customer = response.body;
 
@@ -88,7 +80,6 @@ export const changeAddress = async (
   apartment: string
 ) => {
   const response = await apiRoot
-    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
     .customers()
     .withId({ ID: customerID })
     .post({
@@ -124,7 +115,6 @@ export const addAddress = async (
   apartment: string
 ) => {
   const response = await apiRoot
-    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
     .customers()
     .withId({ ID: customerID })
     .post({
@@ -151,7 +141,6 @@ export const addAddress = async (
 
 export const removeAddress = async (customerID: string, customerVersion: number, addressId: string) => {
   const response = await apiRoot
-    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
     .customers()
     .withId({ ID: customerID })
     .post({
@@ -179,7 +168,6 @@ export const updateProfile = async (
   dateOfBirth: string
 ) => {
   const response = await apiRoot
-    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
     .customers()
     .withId({ ID: customerID })
     .post({
@@ -217,7 +205,6 @@ export const changePassword = async (
   newPassword: string
 ) => {
   const response = await apiRoot
-    .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
     .customers()
     .password()
     .post({
