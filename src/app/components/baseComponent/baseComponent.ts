@@ -2,6 +2,7 @@ export interface Params {
   tag: keyof HTMLElementTagNameMap;
   classNames: string[];
   text?: string;
+  attributes?: Record<string, string>;
   callback: (event: MouseEvent) => Promise<void> | void | null;
 }
 
@@ -9,11 +10,17 @@ export default class BaseComponent<T extends HTMLElement> {
   element: T | null;
 
   constructor(params: Params) {
-    const { tag, classNames, text = '' } = params;
+    const { tag, classNames, text = '', attributes } = params;
     this.element = document.createElement(tag) as T;
     this.element.classList.add(...classNames);
     if (text) {
       this.element.textContent = text;
+    }
+
+    if (attributes) {
+      Object.entries(attributes).forEach(([key, value]) => {
+        this.element?.setAttribute(key, value);
+      });
     }
   }
 

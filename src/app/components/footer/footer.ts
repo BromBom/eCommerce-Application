@@ -1,4 +1,5 @@
 import Layout from '../../layout/layout';
+import './footer.scss';
 
 const TEXT = 'Footer';
 

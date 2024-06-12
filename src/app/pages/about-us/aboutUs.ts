@@ -1,7 +1,9 @@
+import { team } from '../../../data/team';
 import BaseComponent from '../../components/baseComponent/baseComponent';
 import Layout from '../../layout/layout';
 import Router from '../../router/router';
 import './aboutUs.scss';
+import ProfileCard from './profileCard/profileCard';
 
 export default class AboutUs extends Layout {
   router: Router;
@@ -46,7 +48,46 @@ export default class AboutUs extends Layout {
     });
 
     this.viewElementCreator.addInnerElement(logoContainer);
-
     this.viewElementCreator.addInnerElement(mainContainer);
+
+    const titleWrapper = new BaseComponent<HTMLElement>({
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['title-wrapper'],
+      text: '',
+      callback: () => null,
+    });
+    mainContainer.addInnerElement(titleWrapper);
+
+    const teamPic = new BaseComponent<HTMLElement>({
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['team-pic'],
+      text: '',
+      callback: () => null,
+    });
+
+    titleWrapper.addInnerElement(teamPic);
+
+    const title = new BaseComponent<HTMLElement>({
+      tag: 'h1' as keyof HTMLElementTagNameMap,
+      classNames: ['about-us-title'],
+      text: 'OUR TEAM',
+      callback: () => null,
+    });
+    titleWrapper.addInnerElement(title);
+
+    const profileCards = AboutUs.addProfilesToView();
+
+    profileCards.forEach((card) => {
+      mainContainer.addInnerElement(card.getHtmlElement());
+    });
+  }
+
+  static addProfilesToView(): ProfileCard[] {
+    const profileCards: ProfileCard[] = [];
+    team.forEach((card) => {
+      const cardComponent = new ProfileCard(card);
+      profileCards.push(cardComponent);
+    });
+    return profileCards;
   }
 }
