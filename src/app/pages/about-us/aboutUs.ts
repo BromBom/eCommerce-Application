@@ -1,7 +1,7 @@
+import BaseComponent from '../../components/baseComponent/baseComponent';
 import Layout from '../../layout/layout';
 import Router from '../../router/router';
-
-const TEXT = 'ABOUT US';
+import './aboutUs.scss';
 
 export default class AboutUs extends Layout {
   router: Router;
@@ -19,6 +19,34 @@ export default class AboutUs extends Layout {
   }
 
   configureView() {
-    this.viewElementCreator.setTextContent(TEXT);
+    const logoParams = {
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['rs-logo'],
+      text: '',
+      callback: () => null,
+    };
+    const logoCreator = new BaseComponent<HTMLElement>(logoParams);
+    logoCreator.getElement()?.addEventListener('click', () => {
+      window.location.href = 'https://rs.school/';
+    });
+
+    const logoContainer = new BaseComponent<HTMLElement>({
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['logo-container'],
+      text: '',
+      callback: () => null,
+    });
+    logoContainer.addInnerElement(logoCreator);
+
+    const mainContainer = new BaseComponent<HTMLElement>({
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['main-container'],
+      text: '',
+      callback: () => null,
+    });
+
+    this.viewElementCreator.addInnerElement(logoContainer);
+
+    this.viewElementCreator.addInnerElement(mainContainer);
   }
 }

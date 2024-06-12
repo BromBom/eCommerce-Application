@@ -101,7 +101,7 @@ export default class Header extends Layout {
 
     const aboutUsParams = {
       tag: 'a' as keyof HTMLElementTagNameMap,
-      classNames: ['about-us'],
+      classNames: ['about-us_link'],
       text: 'About us',
       callback: () => {
         this.router.navigate(Pages.ABOUT_US);
