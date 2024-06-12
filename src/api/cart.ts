@@ -2,6 +2,7 @@ import { apiRoot } from './BuildClient';
 
 interface LineItem {
   id: string;
+  productId: string;
   variant: {
     sku?: string;
   };
@@ -11,16 +12,17 @@ interface LineItem {
 interface Cart {
   id: string;
   version: number;
+  lineItems: LineItem[];
 }
 
-export const getOrCreateAnonymousCart = async () => {
+export const getOrCreateAnonymousCart = async (): Promise<Cart> => {
   const existingCartId = localStorage.getItem('anonymousCartId');
   if (existingCartId) {
     try {
       const response = await apiRoot.carts().withId({ ID: existingCartId }).get().execute();
       if (response.body) {
         console.log('Existing Anonymous Cart:', response.body);
-        return response.body;
+        return response.body as Cart;
       }
     } catch (error) {
       console.error('Error fetching existing anonymous cart:', error);
@@ -40,7 +42,7 @@ export const getOrCreateAnonymousCart = async () => {
 
     console.log('New Anonymous Cart created:', response.body);
     localStorage.setItem('anonymousCartId', response.body.id);
-    return response.body;
+    return response.body as Cart;
   } catch (error) {
     console.error('Error creating anonymous cart:', error);
     throw error;
@@ -96,8 +98,7 @@ export const mergeCarts = async (anonymousCartId: string, customerId: string) =>
     const anonymousCartResponse = await apiRoot.carts().withId({ ID: anonymousCartId }).get().execute();
     const anonymousCart = anonymousCartResponse.body;
 
-    const customerCartResponse = await createCustomerCart(customerId);
-    const customerCart = customerCartResponse;
+    const customerCart = await createCustomerCart(customerId);
 
     await addLineItemsToCustomerCart(customerCart, anonymousCart.lineItems);
 
