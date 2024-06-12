@@ -1,32 +1,7 @@
+import { Cart, LineItem } from '@commercetools/platform-sdk';
 import { apiRoot } from './BuildClient';
 
-interface LineItem {
-  id: string;
-  variant: {
-    sku?: string;
-  };
-  quantity: number;
-}
-
-interface Cart {
-  id: string;
-  version: number;
-}
-
-export const getOrCreateAnonymousCart = async () => {
-  const existingCartId = localStorage.getItem('anonymousCartId');
-  if (existingCartId) {
-    try {
-      const response = await apiRoot.carts().withId({ ID: existingCartId }).get().execute();
-      if (response.body) {
-        console.log('Existing Anonymous Cart:', response.body);
-        return response.body;
-      }
-    } catch (error) {
-      console.error('Error fetching existing anonymous cart:', error);
-      localStorage.removeItem('anonymousCartId');
-    }
-  }
+export const createAnonymousCart = async () => {
   try {
     const response = await apiRoot
       .carts()
@@ -47,7 +22,18 @@ export const getOrCreateAnonymousCart = async () => {
   }
 };
 
-export const createCustomerCart = async (customerId: string): Promise<Cart> => {
+export const getAnonymousCart = async (anonymousCartId: string) => {
+  try {
+    const response = await apiRoot.carts().withId({ ID: anonymousCartId }).get().execute();
+    console.log('Existing Anonymous Cart:', response.body);
+    return response.body;
+  } catch (error) {
+    console.error('Error getting anonymous cart:', error);
+    throw error;
+  }
+};
+
+export const createCustomerCart = async (customerId: string) => {
   try {
     const response = await apiRoot
       .carts()

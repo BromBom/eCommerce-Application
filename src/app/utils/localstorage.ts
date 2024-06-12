@@ -1,5 +1,5 @@
 import { apiRoot } from '../../api/BuildClient';
-import { getOrCreateAnonymousCart } from '../../api/cart';
+import { getAnonymousCart } from '../../api/cart';
 import { CartItem } from '../types/types';
 
 interface UserInfo {
@@ -68,7 +68,8 @@ const addToCart = async (item: CartItem, forceUpdate = false): Promise<void> => 
 
   // Обновление анонимной корзины на сервере
   try {
-    const anonymousCart = await getOrCreateAnonymousCart();
+    const anonymousCartId = localStorage.getItem('anonymousCartId');
+    const anonymousCart = await getAnonymousCart(anonymousCartId!);
     const foundLineItem = anonymousCart.lineItems.find((lineItem) => lineItem.productId === item.product);
     if (foundLineItem) {
       await apiRoot
@@ -115,7 +116,8 @@ const removeFromCart = async (id: string): Promise<void> => {
 
   // Обновление анонимной корзины на сервере
   try {
-    const anonymousCart = await getOrCreateAnonymousCart();
+    const anonymousCartId = localStorage.getItem('anonymousCartId');
+    const anonymousCart = await getAnonymousCart(anonymousCartId!);
     const foundLineItem = anonymousCart.lineItems.find((lineItem) => lineItem.productId === id);
     if (foundLineItem) {
       await apiRoot
