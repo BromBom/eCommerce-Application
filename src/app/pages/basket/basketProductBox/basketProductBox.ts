@@ -1,4 +1,4 @@
-import { ProductProjection } from '@commercetools/platform-sdk';
+import { LineItem } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../../components/simpleComponent';
 
 import './basketProductBox.scss';
@@ -12,10 +12,13 @@ export default class BasketProductBox {
 
   price: string;
 
-  constructor(public product: ProductProjection) {
-    this.image = product.masterVariant.images![0].url;
+  quantity: number;
+
+  constructor(public product: LineItem) {
+    this.image = product.variant.images![0].url;
     this.name = product.name['en-US'];
-    this.price = `${(product.masterVariant.prices![0].value.centAmount / 100).toFixed(2)} $`;
+    this.price = `${(product.price.value.centAmount / 100).toFixed(2)} $`;
+    this.quantity = product.quantity;
     this.element = this.init();
   }
 
@@ -59,7 +62,7 @@ export default class BasketProductBox {
       '1'
     ).getElement();
     counterProducts.setAttribute('type', 'number');
-    counterProducts.value = '1';
+    counterProducts.value = `${this.quantity}`;
     priceBox.append(priceAllProducts, counterProducts);
 
     const deleteIcon = document.createElement('div');

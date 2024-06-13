@@ -1,4 +1,4 @@
-import { ProductProjection } from '@commercetools/platform-sdk';
+import { Cart } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../components/simpleComponent';
 import BasketProductBox from './basketProductBox/basketProductBox';
 import Router from '../../router/router';
@@ -15,7 +15,7 @@ export default class PersonalData {
 
   constructor(
     public router: Router,
-    public products: ProductProjection[] = []
+    public cart: Cart
   ) {
     this.titleBasketEmpty = new SimpleComponent<HTMLHeadingElement>(
       'h3',
@@ -36,7 +36,7 @@ export default class PersonalData {
     const titleBasketEmpty = this.titleBasketEmpty.getElement();
     const linkToMain = this.linkToMain.getElement();
 
-    if (this.products.length === 0) {
+    if (this.cart.lineItems.length === 0) {
       basketContainer.append(titleBasketEmpty, linkToMain);
     } else {
       const basketHeader = document.createElement('div');
@@ -51,7 +51,7 @@ export default class PersonalData {
       const countProducts = new SimpleComponent<HTMLSpanElement>(
         'span',
         ['basket__count'],
-        `${this.products.length}`
+        `${this.cart.lineItems.length}`
       ).getElement();
       const itemsSpan = new SimpleComponent<HTMLSpanElement>('span', ['basket__span'], `items`).getElement();
       const productsCounter = document.createElement('div');
@@ -67,9 +67,7 @@ export default class PersonalData {
 
       const productsContainer = document.createElement('div');
       productsContainer.classList.add('basket__products-container');
-      let totalPrice = 0;
-      this.products.forEach((product) => {
-        totalPrice += product.masterVariant.prices![0].value.centAmount;
+      this.cart.lineItems.forEach((product) => {
         const basketProductBox = new BasketProductBox(product).getElement();
         productsContainer.append(basketProductBox);
       });
@@ -83,7 +81,7 @@ export default class PersonalData {
       const titlePrice = new SimpleComponent<HTMLParagraphElement>(
         'p',
         ['basket__price'],
-        `${(totalPrice / 100).toFixed(2)} $`
+        `${(this.cart.totalPrice.centAmount / 100).toFixed(2)} $`
       ).getElement();
 
       totalContainer.append(titleTotal, titlePrice);

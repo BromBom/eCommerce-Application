@@ -14,7 +14,6 @@ export const createAnonymousCart = async () => {
       .execute();
 
     console.log('New Anonymous Cart created:', response.body);
-    localStorage.setItem('anonymousCartId', response.body.id);
     return response.body;
   } catch (error) {
     console.error('Error creating anonymous cart:', error);
@@ -22,10 +21,10 @@ export const createAnonymousCart = async () => {
   }
 };
 
-export const getAnonymousCart = async (anonymousCartId: string) => {
+export const getCartByID = async (cartId: string) => {
   try {
-    const response = await apiRoot.carts().withId({ ID: anonymousCartId }).get().execute();
-    console.log('Existing Anonymous Cart:', response.body);
+    const response = await apiRoot.carts().withId({ ID: cartId }).get().execute();
+    console.log('Existing Cart by ID:', response.body);
     return response.body;
   } catch (error) {
     console.error('Error getting anonymous cart:', error);

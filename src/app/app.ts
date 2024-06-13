@@ -1,4 +1,4 @@
-import { Customer, ProductProjection } from '@commercetools/platform-sdk';
+import { Customer, Cart } from '@commercetools/platform-sdk';
 import Footer from './components/footer/footer';
 import Header from './components/header/header';
 import Layout from './layout/layout';
@@ -16,7 +16,7 @@ import Navbar from './components/navbar/navbar';
 import Modal from './components/modal/modal';
 import Products from './pages/main/products/products';
 import { getCustomerByID } from '../api/customer';
-import { queryProduct } from '../api/project';
+import { createAnonymousCart, createCustomerCart, getCartByID } from '../api/cart';
 
 export default class App {
   header?: null | Header;
@@ -47,7 +47,7 @@ export default class App {
     document.body.appendChild(container);
   }
 
-  createView() {
+  async createView() {
     const loadingOverlay = document.createElement('div');
     loadingOverlay.id = 'loading-overlay';
     loadingOverlay.classList.add('loading-overlay');
@@ -74,6 +74,19 @@ export default class App {
       loadingOverlay,
       messageContainer
     );
+
+    const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
+    let currentBasket: Cart;
+
+    if (customer) {
+      const customerID = customer.id;
+      currentBasket = (await getCartByID(customerID)) || (await createCustomerCart(customerID));
+      localStorage.setItem('CurrentCartId', currentBasket.id);
+    } else {
+      const cartID = localStorage.getItem('CurrentCartId');
+      currentBasket = cartID ? await getCartByID(cartID!) : await createAnonymousCart();
+      localStorage.setItem('CurrentCartId', currentBasket.id);
+    }
   }
 
   createRoutes(): RouterParams[] {
@@ -198,9 +211,10 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            const response = await queryProduct();
-            const productsInBasket: ProductProjection[] = response.body.results;
-            const basket = new Basket(this.router, productsInBasket).getElement();
+            const cartID = localStorage.getItem('CurrentCartId');
+            const cart = await getCartByID(cartID!);
+            // const productsInCart: LineItem[] = cart.lineItems;
+            const basket = new Basket(this.router, cart).getElement();
             const mainContainer = this.main!.getHtmlElement();
             mainContainer.innerHTML = '';
             mainContainer.append(basket);
