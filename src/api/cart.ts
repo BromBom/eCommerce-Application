@@ -72,6 +72,7 @@ export const addProductToCart = async (cart: Cart, productId: string) => {
       .execute();
 
     console.log('Product added in cart:', response.body);
+
     return response.body;
   } catch (error) {
     console.error('Error adding product in cart:', error);
