@@ -1,17 +1,39 @@
 .profile-card {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  height: 200px;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
   width: 100%;
   box-sizing: border-box;
   padding: 10px;
-  border: 1px solid;
+  background-color: #ffffff;
+  border-radius: 20px;
 }
 
 .profile-pic {
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
+}
+
+.profile-pic-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+}
+
+.profile-description-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  gap: 7px;
+}
+
+span p {
+  font-weight: bold;
 }

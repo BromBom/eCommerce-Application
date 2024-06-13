@@ -22,15 +22,19 @@ export default class AboutUs extends Layout {
 
   configureView() {
     const logoParams = {
-      tag: 'div' as keyof HTMLElementTagNameMap,
+      tag: 'a' as keyof HTMLElementTagNameMap,
       classNames: ['rs-logo'],
       text: '',
+      attributes: {
+        target: '_blank',
+        href: 'https://rs.school/',
+      },
       callback: () => null,
     };
     const logoCreator = new BaseComponent<HTMLElement>(logoParams);
-    logoCreator.getElement()?.addEventListener('click', () => {
-      window.location.href = 'https://rs.school/';
-    });
+    // logoCreator.getElement()?.addEventListener('click', () => {
+    //   window.location.href = 'https://rs.school/';
+    // });
 
     const logoContainer = new BaseComponent<HTMLElement>({
       tag: 'div' as keyof HTMLElementTagNameMap,

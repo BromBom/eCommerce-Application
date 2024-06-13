@@ -26,47 +26,64 @@ export default class ProfileCard extends Layout {
     });
     this.viewElementCreator.addInnerElement(profileCard);
 
+    const profilePicWrapper = new BaseComponent<HTMLElement>({
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['profile-pic-wrapper'],
+      text: '',
+      callback: () => null,
+    });
+
+    const profileDescriptionWrapper = new BaseComponent<HTMLElement>({
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['profile-description-wrapper'],
+      text: '',
+      callback: () => null,
+    });
+
+    profileCard.addInnerElement(profilePicWrapper);
+    profileCard.addInnerElement(profileDescriptionWrapper);
+
     //  name
     const nameLabelParams = {
-      tag: 'label' as keyof HTMLElementTagNameMap,
+      tag: 'p' as keyof HTMLElementTagNameMap,
       classNames: ['name'],
-      text: this.profileCard.name,
+      text: `name: ${this.profileCard.name}`,
       callback: () => null,
     };
     const nameLabel = new BaseComponent(nameLabelParams);
-    profileCard.addInnerElement(nameLabel);
+    profileDescriptionWrapper.addInnerElement(nameLabel);
 
     //  role
     const roleLabelParams = {
       tag: 'p' as keyof HTMLElementTagNameMap,
       classNames: ['role'],
-      text: this.profileCard.role,
+      text: `role: ${this.profileCard.role}`,
       callback: () => null,
     };
     const roleLabel = new BaseComponent(roleLabelParams);
-    profileCard.addInnerElement(roleLabel);
+    profileDescriptionWrapper.addInnerElement(roleLabel);
 
     //  contribution
     const descriptionLabelParams = {
       tag: 'p' as keyof HTMLElementTagNameMap,
       classNames: ['contribution'],
-      text: this.profileCard.contribution,
+      text: `contribution: ${this.profileCard.contribution}`,
       callback: () => null,
     };
     const descriptionLabel = new BaseComponent(descriptionLabelParams);
-    profileCard.addInnerElement(descriptionLabel);
+    profileDescriptionWrapper.addInnerElement(descriptionLabel);
 
     // bio
     const bioLabelParams = {
       tag: 'p' as keyof HTMLElementTagNameMap,
       classNames: ['bio'],
-      text: this.profileCard.bio,
+      text: `bio: ${this.profileCard.bio}`,
       callback: () => null,
     };
     const bioLabel = new BaseComponent(bioLabelParams);
-    profileCard.addInnerElement(bioLabel);
+    profileDescriptionWrapper.addInnerElement(bioLabel);
 
-    // image
+    // pic
     const imgParams = {
       tag: 'img' as keyof HTMLElementTagNameMap,
       classNames: ['profile-pic'],
@@ -77,6 +94,20 @@ export default class ProfileCard extends Layout {
       callback: () => null,
     };
     const img = new BaseComponent(imgParams);
-    profileCard.addInnerElement(img);
+    profilePicWrapper.addInnerElement(img);
+
+    // link
+    const githubParams = {
+      tag: 'a' as keyof HTMLElementTagNameMap,
+      classNames: ['github'],
+      attributes: {
+        href: this.profileCard.github,
+        target: '_blank',
+      },
+      text: `github: ${this.profileCard.github}`,
+      callback: () => null,
+    };
+    const github = new BaseComponent(githubParams);
+    profileDescriptionWrapper.addInnerElement(github);
   }
 }

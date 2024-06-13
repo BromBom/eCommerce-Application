@@ -29,12 +29,14 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  width: 100vw;
-  padding: 20px 10px;
+  width: 100%;
+  padding: 0 0 10px 0;
 }
 
 .about-us {
   width: 100%;
+  background-color: cornsilk;
+  padding: 20px 10px;
 }
 
 .main-container {
