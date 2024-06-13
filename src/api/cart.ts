@@ -27,7 +27,7 @@ export const getCartByID = async (cartId: string) => {
     console.log('Existing Cart by ID:', response.body);
     return response.body;
   } catch (error) {
-    console.error('Error getting anonymous cart:', error);
+    console.error('Error getting cart by ID:', error);
     throw error;
   }
 };
@@ -48,6 +48,33 @@ export const createCustomerCart = async (customerId: string) => {
     return response.body;
   } catch (error) {
     console.error('Error creating customer cart:', error);
+    throw error;
+  }
+};
+
+export const addProductToCart = async (cart: Cart, productId: string) => {
+  try {
+    const response = await apiRoot
+      .carts()
+      .withId({ ID: cart.id })
+      .post({
+        body: {
+          version: cart.version,
+          actions: [
+            {
+              action: 'addLineItem',
+              productId,
+              quantity: 1,
+            },
+          ],
+        },
+      })
+      .execute();
+
+    console.log('Product added in cart:', response.body);
+    return response.body;
+  } catch (error) {
+    console.error('Error adding product in cart:', error);
     throw error;
   }
 };
