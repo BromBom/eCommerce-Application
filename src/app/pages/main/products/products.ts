@@ -3,7 +3,7 @@ import Layout from '../../../layout/layout';
 import { queryProduct } from '../../../../api/project';
 import { addProductToCart, getCartByID } from '../../../../api/cart';
 import Rating from '../../../components/rating';
-import { CartItem } from '../../../types/types';
+// import { CartItem } from '../../../types/types';
 import { Pages } from '../../../router/pages';
 import Router from '../../../router/router';
 
@@ -125,13 +125,13 @@ export default class Products extends Layout {
         //     description: productDescription,
         //   };
 
-          // addToCart(cartItem, true);
+        // addToCart(cartItem, true);
         // }
 
         const cartID = localStorage.getItem('CurrentCartId');
         const cart = await getCartByID(cartID!);
-        addProductToCart(cart, productId!);
-        //! Переименовать кнопку Есть в корзине! 
+        await addProductToCart(cart, productId!);
+        //! Переименовать кнопку Есть в корзине!
       });
     });
 
