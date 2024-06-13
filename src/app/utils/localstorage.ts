@@ -1,6 +1,6 @@
 import { CartAddLineItemAction } from '@commercetools/platform-sdk';
 import { apiRoot } from '../../api/BuildClient';
-import { getOrCreateAnonymousCart } from '../../api/cart';
+import { getOrCreateAnonymousCart, addDiscountCodeToCart } from '../../api/cart';
 import { CartItem } from '../types/types';
 
 interface UserInfo {
@@ -26,7 +26,6 @@ interface Cart {
 
 export const parseRequestUrl = () => {
   const address = document.location.hash.slice(1).split('?')[0];
-
   const queryString =
     document.location.hash.slice(1).split('?').length === 2 ? document.location.hash.slice(1).split('?')[1] : '';
 
@@ -153,6 +152,12 @@ const addToCart = async (item: CartItem, forceUpdate = false): Promise<void> => 
     }
   }
 };
+
+export async function applyDiscountCode() {
+  const discountCode = 'ADIDASFORUS';
+  const cart = await getOrCreateAnonymousCart();
+  await addDiscountCodeToCart(cart, discountCode);
+}
 
 const removeFromCart = async (id: string): Promise<void> => {
   setCartItems(getCartItems().filter((x: CartItem) => x.product !== id));

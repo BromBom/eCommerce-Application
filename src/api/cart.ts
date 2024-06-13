@@ -1,3 +1,4 @@
+import { CartAddDiscountCodeAction } from '@commercetools/platform-sdk';
 import { apiRoot } from './BuildClient';
 
 interface LineItem {
@@ -116,5 +117,30 @@ export const mergeCarts = async (anonymousCartId: string, customerId: string) =>
   } catch (error) {
     console.error('Error merging carts:', error);
     throw error;
+  }
+};
+
+export const addDiscountCodeToCart = async (cart: Cart, discountCode: string): Promise<void> => {
+  try {
+    const addDiscountCodeAction: CartAddDiscountCodeAction = {
+      action: 'addDiscountCode',
+      code: discountCode,
+    };
+
+    const response = await apiRoot
+      .carts()
+      .withId({ ID: cart.id })
+      .post({
+        body: {
+          version: cart.version,
+          actions: [addDiscountCodeAction],
+        },
+      })
+      .execute();
+
+    const updatedCart = response.body;
+    console.log('Discount code added successfully:', updatedCart);
+  } catch (error) {
+    console.error('Error adding discount code to cart:', error);
   }
 };
