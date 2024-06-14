@@ -101,7 +101,7 @@ export default class App {
             this.setContent(Pages.Product, productsPage, navbar);
           } catch (error) {
             if (error instanceof Error) {
-              handleError(error, 'Failed to load product page.');
+              handleError(error, 'Failed to load / page.');
             }
           } finally {
             hideLoading();
@@ -118,7 +118,7 @@ export default class App {
             this.setContent(Pages.PRODUCT, productsPage, navbar);
           } catch (error) {
             if (error instanceof Error) {
-              handleError(error, 'Failed to load products page.');
+              handleError(error, 'Failed to load /products page.');
             }
           } finally {
             hideLoading();
@@ -220,7 +220,8 @@ export default class App {
             mainContainer.append(basket);
           } catch (error) {
             if (error instanceof Error) {
-              handleError(error, 'Failed to load product page.');
+              handleError(error, 'Failed to load cart page.');
+              throw Error(error.message);
             }
           } finally {
             hideLoading();

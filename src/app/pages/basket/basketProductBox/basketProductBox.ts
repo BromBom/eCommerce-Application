@@ -14,6 +14,8 @@ export default class BasketProductBox {
 
   price: string;
 
+  discountedPrice: string;
+
   quantity: number;
 
   constructor(public product: LineItem) {
@@ -21,6 +23,9 @@ export default class BasketProductBox {
     this.image = product.variant.images![0].url;
     this.name = product.name['en-US'];
     this.price = `${(product.price.value.centAmount / 100).toFixed(2)} $`;
+    this.discountedPrice = product.price.discounted
+      ? `${(product.price.discounted!.value.centAmount / 100).toFixed(2)} $`
+      : '';
     this.quantity = product.quantity;
     this.element = this.init();
   }
@@ -52,12 +57,28 @@ export default class BasketProductBox {
       ['basket__product-box__price-per-one'],
       this.price
     ).getElement();
+
     infoBox.append(nameProduct, priceProduct);
+
+    if (this.discountedPrice) {
+      const discountedPriceProduct = new SimpleComponent<HTMLParagraphElement>(
+        'p',
+        ['basket__product-box__price-per-one', 'basket__product-box__discounted-price'],
+        this.discountedPrice
+      ).getElement();
+      infoBox.append(discountedPriceProduct);
+      priceProduct.classList.add('cross');
+    }
+
+    const currentPrice = (
+      ((this.product.price.discounted?.value.centAmount || this.product.price.value.centAmount) * this.quantity) /
+      100
+    ).toFixed(2);
 
     const priceAllProducts = new SimpleComponent<HTMLParagraphElement>(
       'p',
       ['basket__product-box__price-all'],
-      this.price
+      currentPrice
     ).getElement();
     const counterProducts = new SimpleComponent<HTMLInputElement>(
       'input',

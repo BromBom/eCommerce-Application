@@ -116,7 +116,7 @@ export default class PersonalData {
       });
 
       // end products list-------------------------------------------------------------------------------------------------
-
+      console.log(3);
       const totalContainer = document.createElement('div');
       totalContainer.classList.add('basket__total-container');
 
