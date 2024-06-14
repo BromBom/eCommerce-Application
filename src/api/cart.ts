@@ -79,7 +79,7 @@ export const addProductToCart = async (cart: Cart, productId: string) => {
   }
 };
 
-export const removeProductToCart = async (cart: Cart, lineItemId: string) => {
+export const removeProductFromCart = async (cart: Cart, lineItemId: string) => {
   try {
     const response = await apiRoot
       .carts()
@@ -93,6 +93,26 @@ export const removeProductToCart = async (cart: Cart, lineItemId: string) => {
               lineItemId,
             },
           ],
+        },
+      })
+      .execute();
+
+    console.log('Product added in cart:', response.body);
+    return response.body;
+  } catch (error) {
+    console.error('Error adding product in cart:', error);
+    throw error;
+  }
+};
+
+export const removeCart = async (cart: Cart) => {
+  try {
+    const response = await apiRoot
+      .carts()
+      .withId({ ID: cart.id })
+      .delete({
+        queryArgs: {
+          version: cart.version,
         },
       })
       .execute();

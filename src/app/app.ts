@@ -97,7 +97,8 @@ export default class App {
           showLoading();
           try {
             const navbar = new Navbar(this.router, this.products);
-            this.setContent(Pages.Product, this.products, navbar);
+            const productsPage = new Products(this.router);
+            this.setContent(Pages.Product, productsPage, navbar);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product page.');
@@ -113,7 +114,7 @@ export default class App {
           showLoading();
           try {
             const navbar = new Navbar(this.router, this.products);
-            const productsPage = this.products;
+            const productsPage = new Products(this.router);
             this.setContent(Pages.PRODUCT, productsPage, navbar);
           } catch (error) {
             if (error instanceof Error) {
