@@ -6,6 +6,8 @@ import './basketProductBox.scss';
 export default class BasketProductBox {
   element: HTMLDivElement;
 
+  deleteIcon: HTMLDivElement;
+
   image: string;
 
   name: string;
@@ -15,6 +17,7 @@ export default class BasketProductBox {
   quantity: number;
 
   constructor(public product: LineItem) {
+    this.deleteIcon = document.createElement('div');
     this.image = product.variant.images![0].url;
     this.name = product.name['en-US'];
     this.price = `${(product.price.value.centAmount / 100).toFixed(2)} $`;
@@ -65,7 +68,7 @@ export default class BasketProductBox {
     counterProducts.value = `${this.quantity}`;
     priceBox.append(priceAllProducts, counterProducts);
 
-    const deleteIcon = document.createElement('div');
+    const { deleteIcon } = this;
     deleteIcon.classList.add('basket__product-box__icon-delete');
 
     basketProductBox.append(deleteIcon, imgBox, infoBox, priceBox);

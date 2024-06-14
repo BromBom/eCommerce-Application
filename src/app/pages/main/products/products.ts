@@ -5,6 +5,7 @@ import { addProductToCart, getCartByID } from '../../../../api/cart';
 import Rating from '../../../components/rating';
 import { Pages } from '../../../router/pages';
 import Router from '../../../router/router';
+import { handleError, showLoading, handleSucsess, hideLoading } from '../../../utils/showmessage';
 
 const TEXT = 'PRODUCTS PAGE';
 
@@ -117,10 +118,17 @@ export default class Products extends Layout {
         const target = e.target as HTMLButtonElement;
         const productId = target.getAttribute('data-id');
 
-        const cartID = localStorage.getItem('CurrentCartId');
-        const cart = await getCartByID(cartID!);
-        await addProductToCart(cart, productId!);
-
+        try {
+          showLoading();
+          const cartID = localStorage.getItem('CurrentCartId');
+          const cart = await getCartByID(cartID!);
+          await addProductToCart(cart, productId!);
+          hideLoading();
+          handleSucsess('Adding product to cart was successful!!');
+        } catch (error) {
+          console.error(`Failed to click button "buy now": ${error}`);
+          handleError(new Error('Failed to click button "buy now"'), `Failed to click button "buy now"! ${error}`);
+        }
         target.textContent = 'Already in cart';
       });
     });

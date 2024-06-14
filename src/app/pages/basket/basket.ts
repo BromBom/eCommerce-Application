@@ -3,6 +3,8 @@ import SimpleComponent from '../../components/simpleComponent';
 import BasketProductBox from './basketProductBox/basketProductBox';
 import Router from '../../router/router';
 import { Pages } from '../../router/pages';
+import { handleError, showLoading, handleSucsess, hideLoading } from '../../utils/showmessage';
+import { getCartByID, removeProductToCart } from '../../../api/cart';
 
 import './basket.scss';
 
@@ -12,6 +14,8 @@ export default class PersonalData {
   titleBasketEmpty: SimpleComponent<HTMLHeadingElement>;
 
   linkToMain: SimpleComponent<HTMLHeadingElement>;
+
+  titlePrice: SimpleComponent<HTMLParagraphElement>;
 
   constructor(
     public router: Router,
@@ -23,6 +27,11 @@ export default class PersonalData {
       'Cart is empty'
     );
     this.linkToMain = new SimpleComponent<HTMLHeadingElement>('h4', ['basket__link-main'], 'Go to main');
+    this.titlePrice = new SimpleComponent<HTMLParagraphElement>(
+      'p',
+      ['basket__price'],
+      `${(this.cart.totalPrice.centAmount / 100).toFixed(2)} $`
+    );
     this.element = this.init();
   }
 
@@ -68,8 +77,29 @@ export default class PersonalData {
       const productsContainer = document.createElement('div');
       productsContainer.classList.add('basket__products-container');
       this.cart.lineItems.forEach((product) => {
-        const basketProductBox = new BasketProductBox(product).getElement();
-        productsContainer.append(basketProductBox);
+        const basketProductBox = new BasketProductBox(product);
+        productsContainer.append(basketProductBox.getElement());
+
+        basketProductBox.deleteIcon.addEventListener('click', async () => {
+          try {
+            showLoading();
+            const cartID = localStorage.getItem('CurrentCartId');
+            const cart = await getCartByID(cartID!);
+            const productInCart = cart.lineItems.find((lineItem) => lineItem.id === basketProductBox.product.id);
+            const newCart = await removeProductToCart(cart, productInCart!.id);
+            basketProductBox.element.remove();
+            countProducts.textContent = `${newCart.lineItems.length}`;
+            this.titlePrice.getElement().textContent = `${(newCart.totalPrice.centAmount / 100).toFixed(2)} $`;
+            hideLoading();
+            handleSucsess('Removing product from the cart was successful!');
+          } catch (error) {
+            console.error(`Failed to delete product: ${error}`);
+            handleError(
+              new Error('Failed to delete product from the cart'),
+              `Failed to delete product from the cart! ${error}`
+            );
+          }
+        });
       });
 
       // end products list-------------------------------------------------------------------------------------------------
@@ -78,11 +108,7 @@ export default class PersonalData {
       totalContainer.classList.add('basket__total-container');
 
       const titleTotal = new SimpleComponent<HTMLParagraphElement>('p', ['basket__total'], 'Total:').getElement();
-      const titlePrice = new SimpleComponent<HTMLParagraphElement>(
-        'p',
-        ['basket__price'],
-        `${(this.cart.totalPrice.centAmount / 100).toFixed(2)} $`
-      ).getElement();
+      const titlePrice = this.titlePrice.getElement();
 
       totalContainer.append(titleTotal, titlePrice);
 
