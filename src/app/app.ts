@@ -63,7 +63,7 @@ export default class App {
     App.createNavbarContainer();
 
     this.header = new Header(this.router, this.state, this.products);
-    this.main = new Main(this.router);
+    this.main = new Main(this.router, this.products);
 
     const footer = new Footer();
 

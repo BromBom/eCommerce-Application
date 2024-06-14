@@ -1,4 +1,3 @@
-import { CartAddLineItemAction } from '@commercetools/platform-sdk';
 import { apiRoot } from '../../api/BuildClient';
 import { getCartByID, addDiscountCodeToCart } from '../../api/cart';
 import { CartItem } from '../types/types';
@@ -10,18 +9,6 @@ interface UserInfo {
   password: string;
   token: string;
   isAdmin: boolean;
-}
-
-interface LineItem {
-  id: string;
-  productId: string;
-  quantity: number;
-}
-
-interface Cart {
-  id: string;
-  version: number;
-  lineItems: LineItem[];
 }
 
 export const parseRequestUrl = () => {
@@ -194,12 +181,12 @@ export const getUserInfo = (): UserInfo => {
   const userInfo: UserInfo = userInfoString
     ? JSON.parse(userInfoString)
     : {
-      _id: '',
-      name: '',
-      email: '',
-      password: '',
-      token: '',
-      isAdmin: false,
-    };
+        _id: '',
+        name: '',
+        email: '',
+        password: '',
+        token: '',
+        isAdmin: false,
+      };
   return userInfo;
 };
