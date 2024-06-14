@@ -19,7 +19,6 @@ export default class Products extends Layout {
     super(params);
     this.router = router;
     this.configureView();
-    console.log('1111111111111111111111111111111111111111111111111111111111111111111111');
     this.renderProducts();
   }
 
@@ -113,7 +112,6 @@ export default class Products extends Layout {
 
   addEventListeners() {
     const buyNowButtons = document.getElementsByClassName('buynow');
-    console.log('000000000000000000000000000000000000 - ', buyNowButtons);
     Array.from(buyNowButtons).forEach((btn) => {
       btn.addEventListener('click', async (e: Event) => {
         const target = e.target as HTMLButtonElement;
