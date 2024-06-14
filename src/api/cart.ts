@@ -1,35 +1,7 @@
-import { CartAddDiscountCodeAction } from '@commercetools/platform-sdk';
+import { Cart, LineItem, CartAddDiscountCodeAction } from '@commercetools/platform-sdk';
 import { apiRoot } from './BuildClient';
 
-interface LineItem {
-  id: string;
-  productId: string;
-  variant: {
-    sku?: string;
-  };
-  quantity: number;
-}
-
-interface Cart {
-  id: string;
-  version: number;
-  lineItems: LineItem[];
-}
-
-export const getOrCreateAnonymousCart = async (): Promise<Cart> => {
-  const existingCartId = localStorage.getItem('anonymousCartId');
-  if (existingCartId) {
-    try {
-      const response = await apiRoot.carts().withId({ ID: existingCartId }).get().execute();
-      if (response.body) {
-        console.log('Existing Anonymous Cart:', response.body);
-        return response.body as Cart;
-      }
-    } catch (error) {
-      console.error('Error fetching existing anonymous cart:', error);
-      localStorage.removeItem('anonymousCartId');
-    }
-  }
+export const createAnonymousCart = async () => {
   try {
     const response = await apiRoot
       .carts()
@@ -42,15 +14,25 @@ export const getOrCreateAnonymousCart = async (): Promise<Cart> => {
       .execute();
 
     console.log('New Anonymous Cart created:', response.body);
-    localStorage.setItem('anonymousCartId', response.body.id);
-    return response.body as Cart;
+    return response.body;
   } catch (error) {
     console.error('Error creating anonymous cart:', error);
     throw error;
   }
 };
 
-export const createCustomerCart = async (customerId: string): Promise<Cart> => {
+export const getCartByID = async (cartId: string) => {
+  try {
+    const response = await apiRoot.carts().withId({ ID: cartId }).get().execute();
+    console.log('Existing Cart by ID:', response.body);
+    return response.body;
+  } catch (error) {
+    console.error('Error getting cart by ID:', error);
+    throw error;
+  }
+};
+
+export const createCustomerCart = async (customerId: string) => {
   try {
     const response = await apiRoot
       .carts()
@@ -66,6 +48,33 @@ export const createCustomerCart = async (customerId: string): Promise<Cart> => {
     return response.body;
   } catch (error) {
     console.error('Error creating customer cart:', error);
+    throw error;
+  }
+};
+
+export const addProductToCart = async (cart: Cart, productId: string) => {
+  try {
+    const response = await apiRoot
+      .carts()
+      .withId({ ID: cart.id })
+      .post({
+        body: {
+          version: cart.version,
+          actions: [
+            {
+              action: 'addLineItem',
+              productId,
+              quantity: 1,
+            },
+          ],
+        },
+      })
+      .execute();
+
+    console.log('Product added in cart:', response.body);
+    return response.body;
+  } catch (error) {
+    console.error('Error adding product in cart:', error);
     throw error;
   }
 };

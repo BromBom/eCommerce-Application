@@ -16,7 +16,8 @@ import Navbar from './components/navbar/navbar';
 import Modal from './components/modal/modal';
 import Products from './pages/main/products/products';
 import { getCustomerByID } from '../api/customer';
-import { getOrCreateAnonymousCart } from '../api/cart';
+import AboutUs from './pages/about-us/aboutUs';
+import { createAnonymousCart, createCustomerCart, getCartByID } from '../api/cart';
 
 export default class App {
   header?: null | Header;
@@ -47,7 +48,7 @@ export default class App {
     document.body.appendChild(container);
   }
 
-  createView() {
+  async createView() {
     const loadingOverlay = document.createElement('div');
     loadingOverlay.id = 'loading-overlay';
     loadingOverlay.classList.add('loading-overlay');
@@ -74,6 +75,19 @@ export default class App {
       loadingOverlay,
       messageContainer
     );
+
+    const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
+    let currentBasket: Cart;
+
+    if (customer) {
+      const customerID = customer.id;
+      currentBasket = (await getCartByID(customerID)) || (await createCustomerCart(customerID));
+      localStorage.setItem('CurrentCartId', currentBasket.id);
+    } else {
+      const cartID = localStorage.getItem('CurrentCartId');
+      currentBasket = cartID ? await getCartByID(cartID!) : await createAnonymousCart();
+      localStorage.setItem('CurrentCartId', currentBasket.id);
+    }
   }
 
   createRoutes(): RouterParams[] {
@@ -198,15 +212,31 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            const cart = await getOrCreateAnonymousCart();
+            const cartID = localStorage.getItem('CurrentCartId');
+            const cart = await getCartByID(cartID!);
             // const productsInCart: LineItem[] = cart.lineItems;
-            const basket = new Basket(this.router, cart as Cart).getElement();
+            const basket = new Basket(this.router, cart).getElement();
             const mainContainer = this.main!.getHtmlElement();
             mainContainer.innerHTML = '';
             mainContainer.append(basket);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load product page.');
+            }
+          } finally {
+            hideLoading();
+          }
+        },
+      },
+      {
+        path: `${Pages.ABOUT_US}`,
+        callback: async () => {
+          showLoading();
+          try {
+            this.setContent(Pages.ABOUT_US, new AboutUs(this.router));
+          } catch (error) {
+            if (error instanceof Error) {
+              handleError(error, 'Page not found.');
             }
           } finally {
             hideLoading();

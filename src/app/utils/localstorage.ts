@@ -1,6 +1,6 @@
 import { CartAddLineItemAction } from '@commercetools/platform-sdk';
 import { apiRoot } from '../../api/BuildClient';
-import { getOrCreateAnonymousCart, addDiscountCodeToCart } from '../../api/cart';
+import { getCartByID, addDiscountCodeToCart } from '../../api/cart';
 import { CartItem } from '../types/types';
 
 interface UserInfo {
@@ -81,90 +81,58 @@ const addToCart = async (item: CartItem, forceUpdate = false): Promise<void> => 
   }
   setCartItems(cartItems);
 
-  const updateCart = async (anonymousCart: Cart, retryCount = 0, maxRetries = 5): Promise<void> => {
-    if (retryCount >= maxRetries) {
-      console.error('Failed to update cart after multiple attempts due to concurrent modification.');
-      return;
-    }
-
-    try {
-      const foundLineItem = anonymousCart.lineItems.find((lineItem) => lineItem.productId === item.product);
-      let updatedCart;
-
-      if (foundLineItem) {
-        const response = await apiRoot
-          .carts()
-          .withId({ ID: anonymousCart.id })
-          .post({
-            body: {
-              version: anonymousCart.version,
-              actions: [
-                {
-                  action: 'changeLineItemQuantity',
-                  lineItemId: foundLineItem.id,
-                  quantity: item.quantityInStock,
-                },
-              ],
-            },
-          })
-          .execute();
-        updatedCart = response.body;
-      } else {
-        const addAction: CartAddLineItemAction = {
-          action: 'addLineItem',
-          productId: item.product,
-          quantity: item.quantityInStock,
-        };
-        const response = await apiRoot
-          .carts()
-          .withId({ ID: anonymousCart.id })
-          .post({
-            body: {
-              version: anonymousCart.version,
-              actions: [addAction],
-            },
-          })
-          .execute();
-        updatedCart = response.body;
-      }
-
-      localStorage.setItem('anonymousCartId', updatedCart.id);
-      localStorage.setItem('anonymousCartVersion', String(updatedCart.version));
-    } catch (error: unknown) {
-      if (error instanceof Error && error.message.includes('ConcurrentModification')) {
-        console.warn('Concurrent modification detected. Retrying with latest version.');
-        const newAnonymousCart = await getOrCreateAnonymousCart();
-        await updateCart(newAnonymousCart, retryCount + 1, maxRetries);
-      } else {
-        throw error;
-      }
-    }
-  };
-
+  // Обновление анонимной корзины на сервере
   try {
-    const anonymousCart = await getOrCreateAnonymousCart();
-    await updateCart(anonymousCart);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error('Error adding item to anonymous cart:', error.message);
+    const anonymousCartId = localStorage.getItem('anonymousCartId');
+    const anonymousCart = await getCartByID(anonymousCartId!);
+    const foundLineItem = anonymousCart.lineItems.find((lineItem) => lineItem.productId === item.product);
+    if (foundLineItem) {
+      await apiRoot
+        .carts()
+        .withId({ ID: anonymousCart.id })
+        .post({
+          body: {
+            version: anonymousCart.version,
+            actions: [
+              {
+                action: 'changeLineItemQuantity',
+                lineItemId: foundLineItem.id,
+                quantity: item.quantityInStock,
+              },
+            ],
+          },
+        })
+        .execute();
     } else {
-      console.error('Unknown error adding item to anonymous cart');
+      await apiRoot
+        .carts()
+        .withId({ ID: anonymousCart.id })
+        .post({
+          body: {
+            version: anonymousCart.version,
+            actions: [
+              {
+                action: 'addLineItem',
+                productId: item.product,
+                quantity: item.quantityInStock,
+              },
+            ],
+          },
+        })
+        .execute();
     }
+  } catch (error) {
+    console.error('Error adding item to anonymous cart:', error);
   }
 };
-
-export async function applyDiscountCode() {
-  const discountCode = 'ADIDASFORUS';
-  const cart = await getOrCreateAnonymousCart();
-  await addDiscountCodeToCart(cart, discountCode);
-}
 
 const removeFromCart = async (id: string): Promise<void> => {
   setCartItems(getCartItems().filter((x: CartItem) => x.product !== id));
 
   // Обновление анонимной корзины на сервере
   try {
-    const anonymousCart = await getOrCreateAnonymousCart();
+    const anonymousCartId = localStorage.getItem('anonymousCartId');
+    const anonymousCart = await getCartByID(anonymousCartId!);
     const foundLineItem = anonymousCart.lineItems.find((lineItem) => lineItem.productId === id);
     if (foundLineItem) {
       await apiRoot
@@ -187,6 +155,12 @@ const removeFromCart = async (id: string): Promise<void> => {
     console.error('Error removing item from anonymous cart:', error);
   }
 };
+
+export async function applyDiscountCode() {
+  const discountCode = 'ADIDASFORUS';
+  const cart = await getCartByID('anonymousCartId');
+  await addDiscountCodeToCart(cart, discountCode);
+}
 
 export { addToCart, removeFromCart };
 
@@ -220,12 +194,12 @@ export const getUserInfo = (): UserInfo => {
   const userInfo: UserInfo = userInfoString
     ? JSON.parse(userInfoString)
     : {
-        _id: '',
-        name: '',
-        email: '',
-        password: '',
-        token: '',
-        isAdmin: false,
-      };
+      _id: '',
+      name: '',
+      email: '',
+      password: '',
+      token: '',
+      isAdmin: false,
+    };
   return userInfo;
 };

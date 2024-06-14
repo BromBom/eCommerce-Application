@@ -1,9 +1,9 @@
 import { ProductProjection } from '@commercetools/platform-sdk';
 import Layout from '../../../layout/layout';
 import { queryProduct } from '../../../../api/project';
-import { addToCart, applyDiscountCode } from '../../../utils/localstorage';
+import { addProductToCart, getCartByID } from '../../../../api/cart';
 import Rating from '../../../components/rating';
-import { CartItem } from '../../../types/types';
+// import { CartItem } from '../../../types/types';
 import { Pages } from '../../../router/pages';
 import Router from '../../../router/router';
 
@@ -117,27 +117,30 @@ export default class Products extends Layout {
       button.addEventListener('click', async (e: Event) => {
         const target = e.target as HTMLButtonElement;
         const productId = target.getAttribute('data-id');
-        const productName = target.getAttribute('data-name');
-        const productPrice = parseFloat(target.getAttribute('data-price') || '0');
-        const discountedPrice = parseFloat(target.getAttribute('data-discountedprice') || '0');
-        const productImage = target.getAttribute('data-image');
-        const productDescription = target.getAttribute('data-description');
+        // const productName = target.getAttribute('data-name');
+        // const productPrice = parseFloat(target.getAttribute('data-price') || '0');
+        // const discountedPrice = parseFloat(target.getAttribute('data-discounted-price') || '0');
+        // const productImage = target.getAttribute('data-image');
+        // const productDescription = target.getAttribute('data-description');
 
-        if (productId && productName && productImage && productDescription) {
-          const cartItem: CartItem = {
-            product: productId,
-            name: productName,
-            image: productImage,
-            price: discountedPrice || productPrice,
-            quantityInStock: 10,
-            qty: 1,
-            description: productDescription,
-          };
+        // if (productId && productName && productImage && productDescription) {
+        //   const cartItem: CartItem = {
+        //     product: productId,
+        //     name: productName,
+        //     image: productImage,
+        //     price: discountedPrice || productPrice,
+        //     quantityInStock: 10,
+        //     qty: 1,
+        //     description: productDescription,
+        //   };
 
-          addToCart(cartItem, true);
+        // addToCart(cartItem, true);
+        // }
 
-          await applyDiscountCode();
-        }
+        const cartID = localStorage.getItem('CurrentCartId');
+        const cart = await getCartByID(cartID!);
+        await addProductToCart(cart, productId!);
+        //! Переименовать кнопку Есть в корзине!
       });
     });
 
