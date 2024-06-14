@@ -79,6 +79,33 @@ export const addProductToCart = async (cart: Cart, productId: string) => {
   }
 };
 
+export const changeQuantityProductsInCart = async (cart: Cart, lineItemId: string, quantity: number) => {
+  try {
+    const response = await apiRoot
+      .carts()
+      .withId({ ID: cart.id })
+      .post({
+        body: {
+          version: cart.version,
+          actions: [
+            {
+              action: 'changeLineItemQuantity',
+              lineItemId,
+              quantity,
+            },
+          ],
+        },
+      })
+      .execute();
+
+    console.log('Quantity changed in cart:', response.body);
+    return response.body;
+  } catch (error) {
+    console.error('Error changing quantity in cart:', error);
+    throw error;
+  }
+};
+
 export const removeProductFromCart = async (cart: Cart, lineItemId: string) => {
   try {
     const response = await apiRoot

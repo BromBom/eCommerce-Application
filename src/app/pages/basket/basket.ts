@@ -10,6 +10,7 @@ import {
   createAnonymousCart,
   removeProductFromCart,
   removeCart,
+  changeQuantityProductsInCart,
 } from '../../../api/cart';
 
 import './basket.scss';
@@ -113,10 +114,67 @@ export default class PersonalData {
             );
           }
         });
+
+        basketProductBox.inputCounter.getElement().addEventListener('change', async () => {
+          try {
+            showLoading();
+            const cartID = localStorage.getItem('CurrentCartId');
+            const cart = await getCartByID(cartID!);
+            const currentLineItem = cart.lineItems.find((lineItem) => lineItem.id === product.id);
+
+            const inputValue = parseInt(basketProductBox.inputCounter.getElement().value, 10);
+            if (
+              Number.isNaN(inputValue) ||
+              inputValue < 1 ||
+              inputValue > 30 ||
+              inputValue === currentLineItem!.quantity
+            ) {
+              basketProductBox.inputCounter.getElement().value = `${currentLineItem!.quantity}`;
+              hideLoading();
+              handleSucsess('Wrong quantity! Must be less then 30 pcs');
+            } else {
+              basketProductBox.inputCounter.getElement().value = `${inputValue}`;
+              const newCart = await changeQuantityProductsInCart(cart, product.id, inputValue);
+
+              const currentPrice = (
+                ((product.price.discounted?.value.centAmount || product.price.value.centAmount) * inputValue) /
+                100
+              ).toFixed(2);
+              basketProductBox.priceLineItem.getElement().textContent = `${currentPrice} $`;
+              this.titlePrice.getElement().textContent = `${(newCart.totalPrice.centAmount / 100).toFixed(2)} $`;
+
+              hideLoading();
+              handleSucsess('Changing quantity was successful!');
+            }
+          } catch (error) {
+            console.error(`Failed to change quantity: ${error}`);
+            handleError(new Error('Failed to change quantity'), `Failed to change quantity! ${error}`);
+          }
+        });
+
+        // basketProductBox.buttonMines.getElement().addEventListener('click', async () => {
+        //   if
+        //   const inputValue = +basketProductBox.inputCounter.getElement().value;
+        //   if (inputValue)
+        //   basketProductBox.inputCounter.getElement().value = +basketProductBox.inputCounter.getElement().value - 1;
+        //   const quality = +basketProductBox.inputCounter.getElement().value;
+        //   try {
+        //     showLoading();
+        //     const cartID = localStorage.getItem('CurrentCartId');
+        //     const cart = await getCartByID(cartID!);
+        //     const newCart = await changeQuantityProductsInCart(cart, product.id, quality);
+
+        //     hideLoading();
+        //     handleSucsess('Changing quantity was successful!');
+        //   } catch (error) {
+        //     console.error(`Failed to change quantity: ${error}`);
+        //     handleError(new Error('Failed to change quantity'), `Failed to change quantity! ${error}`);
+        //   }
+        // });
       });
 
       // end products list-------------------------------------------------------------------------------------------------
-      console.log(3);
+
       const totalContainer = document.createElement('div');
       totalContainer.classList.add('basket__total-container');
 

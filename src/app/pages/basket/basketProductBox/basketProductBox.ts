@@ -1,5 +1,6 @@
 import { LineItem } from '@commercetools/platform-sdk';
 import SimpleComponent from '../../../components/simpleComponent';
+import Button from '../../../components/controls/button';
 
 import './basketProductBox.scss';
 
@@ -18,6 +19,14 @@ export default class BasketProductBox {
 
   quantity: number;
 
+  inputCounter: SimpleComponent<HTMLInputElement>;
+
+  buttonMines: SimpleComponent<HTMLButtonElement>;
+
+  buttonPlus: SimpleComponent<HTMLButtonElement>;
+
+  priceLineItem: SimpleComponent<HTMLParagraphElement>;
+
   constructor(public product: LineItem) {
     this.deleteIcon = document.createElement('div');
     this.image = product.variant.images![0].url;
@@ -27,6 +36,10 @@ export default class BasketProductBox {
       ? `${(product.price.discounted!.value.centAmount / 100).toFixed(2)} $`
       : '';
     this.quantity = product.quantity;
+    this.inputCounter = new SimpleComponent<HTMLInputElement>('input', ['basket__product-box__counter'], '1');
+    this.buttonMines = Button(['basket__product-box__product-counter-button'], '-');
+    this.buttonPlus = Button(['basket__product-box__product-counter-button'], '+');
+    this.priceLineItem = new SimpleComponent<HTMLParagraphElement>('p', ['basket__product-box__price-all']);
     this.element = this.init();
   }
 
@@ -75,19 +88,12 @@ export default class BasketProductBox {
       100
     ).toFixed(2);
 
-    const priceAllProducts = new SimpleComponent<HTMLParagraphElement>(
-      'p',
-      ['basket__product-box__price-all'],
-      currentPrice
-    ).getElement();
-    const counterProducts = new SimpleComponent<HTMLInputElement>(
-      'input',
-      ['basket__product-box__counter'],
-      '1'
-    ).getElement();
-    counterProducts.setAttribute('type', 'number');
-    counterProducts.value = `${this.quantity}`;
-    priceBox.append(priceAllProducts, counterProducts);
+    const priceAllProducts = this.priceLineItem.getElement();
+    priceAllProducts.textContent = `${currentPrice} $`;
+
+    const productsCounter = this.creatProductCounter();
+
+    priceBox.append(priceAllProducts, productsCounter);
 
     const { deleteIcon } = this;
     deleteIcon.classList.add('basket__product-box__icon-delete');
@@ -95,6 +101,20 @@ export default class BasketProductBox {
     basketProductBox.append(deleteIcon, imgBox, infoBox, priceBox);
 
     return basketProductBox;
+  }
+
+  creatProductCounter() {
+    const productsCounterBox = document.createElement('div');
+    productsCounterBox.classList.add('basket__product-box__product-counter-box');
+
+    const buttonMines = this.buttonMines.getElement();
+    const buttonPlus = this.buttonPlus.getElement();
+    const inputCounter = this.inputCounter.getElement();
+    inputCounter.value = `${this.quantity}`;
+
+    productsCounterBox.append(buttonMines, inputCounter, buttonPlus);
+
+    return productsCounterBox;
   }
 
   getElement() {
