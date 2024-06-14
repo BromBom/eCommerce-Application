@@ -37,3 +37,24 @@
 span p {
   font-weight: bold;
 }
+.text-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: center;
+  gap: 5px;
+}
+
+p {
+  display: inline-block;
+  width: 100%;
+  text-align: left;
+}
+
+.label-tag {
+  font-weight: 700;
+}
+
+.bio {
+  font-style: italic;
+}

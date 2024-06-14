@@ -32,9 +32,6 @@ export default class AboutUs extends Layout {
       callback: () => null,
     };
     const logoCreator = new BaseComponent<HTMLElement>(logoParams);
-    // logoCreator.getElement()?.addEventListener('click', () => {
-    //   window.location.href = 'https://rs.school/';
-    // });
 
     const logoContainer = new BaseComponent<HTMLElement>({
       tag: 'div' as keyof HTMLElementTagNameMap,

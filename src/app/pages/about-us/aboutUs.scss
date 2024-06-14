@@ -12,8 +12,8 @@
 }
 
 .team-pic {
-  height: 120px;
-  width: 120px;
+  height: 150px;
+  width: 150px;
   background-image: url('/dist/team.jfif');
   background-size: contain;
   background-repeat: no-repeat;
@@ -35,12 +35,12 @@
 
 .about-us {
   width: 100%;
-  background-color: cornsilk;
+  background-color: lightblue;
   padding: 20px 10px;
 }
 
 .main-container {
-  margin-bottom: 10px;
+  margin-bottom: 100px;
   padding: 10px;
   display: grid;
   grid-template-columns: 1fr;

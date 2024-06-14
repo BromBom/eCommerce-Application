@@ -44,44 +44,131 @@ export default class ProfileCard extends Layout {
     profileCard.addInnerElement(profileDescriptionWrapper);
 
     //  name
-    const nameLabelParams = {
-      tag: 'p' as keyof HTMLElementTagNameMap,
-      classNames: ['name'],
-      text: `name: ${this.profileCard.name}`,
+    const labelTagParams = {
+      tag: 'span' as keyof HTMLElementTagNameMap,
+      classNames: ['label-tag'],
+      text: '',
       callback: () => null,
     };
+
+    const nameLabelParams = {
+      ...labelTagParams,
+      text: 'name:',
+    };
     const nameLabel = new BaseComponent(nameLabelParams);
-    profileDescriptionWrapper.addInnerElement(nameLabel);
+
+    const nameParams = {
+      tag: 'span' as keyof HTMLElementTagNameMap,
+      classNames: ['name'],
+      text: `${this.profileCard.name}`,
+      callback: () => null,
+    };
+    const name = new BaseComponent(nameParams);
+
+    const textWrapper = new BaseComponent<HTMLElement>({
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['text-wrapper'],
+      text: '',
+      callback: () => null,
+    });
+
+    profileDescriptionWrapper.addInnerElement(textWrapper);
+    textWrapper.addInnerElement(nameLabel);
+    textWrapper.addInnerElement(name);
 
     //  role
     const roleLabelParams = {
+      tag: 'span' as keyof HTMLElementTagNameMap,
+      classNames: ['label-tag'],
+      text: '',
+      callback: () => null,
+    };
+
+    const roleLabel = {
+      ...roleLabelParams,
+      text: 'role:',
+    };
+    const role = new BaseComponent(roleLabel);
+
+    const roleTextParams = {
       tag: 'p' as keyof HTMLElementTagNameMap,
       classNames: ['role'],
-      text: `role: ${this.profileCard.role}`,
+      text: `${this.profileCard.role}`,
       callback: () => null,
     };
-    const roleLabel = new BaseComponent(roleLabelParams);
-    profileDescriptionWrapper.addInnerElement(roleLabel);
+    const roleText = new BaseComponent(roleTextParams);
+
+    const roleTextWrapper = new BaseComponent<HTMLElement>({
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['text-wrapper'],
+      text: '',
+      callback: () => null,
+    });
+    profileDescriptionWrapper.addInnerElement(roleTextWrapper);
+    roleTextWrapper.addInnerElement(role);
+    roleTextWrapper.addInnerElement(roleText);
 
     //  contribution
-    const descriptionLabelParams = {
-      tag: 'p' as keyof HTMLElementTagNameMap,
-      classNames: ['contribution'],
-      text: `contribution: ${this.profileCard.contribution}`,
+    const contributionLabelParams = {
+      tag: 'span' as keyof HTMLElementTagNameMap,
+      classNames: ['label-tag'],
+      text: '',
       callback: () => null,
     };
-    const descriptionLabel = new BaseComponent(descriptionLabelParams);
-    profileDescriptionWrapper.addInnerElement(descriptionLabel);
+
+    const contributionLabel = {
+      ...contributionLabelParams,
+      text: 'contribution:',
+    };
+    const contribution = new BaseComponent(contributionLabel);
+
+    const descriptionTextParams = {
+      tag: 'p' as keyof HTMLElementTagNameMap,
+      classNames: ['contribution'],
+      text: `${this.profileCard.contribution}`,
+      callback: () => null,
+    };
+    const descriptionTextWrapper = new BaseComponent<HTMLElement>({
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['text-wrapper'],
+      text: '',
+      callback: () => null,
+    });
+    const descriptionText = new BaseComponent(descriptionTextParams);
+    profileDescriptionWrapper.addInnerElement(descriptionTextWrapper);
+    descriptionTextWrapper.addInnerElement(contribution);
+    descriptionTextWrapper.addInnerElement(descriptionText);
 
     // bio
     const bioLabelParams = {
-      tag: 'p' as keyof HTMLElementTagNameMap,
-      classNames: ['bio'],
-      text: `bio: ${this.profileCard.bio}`,
+      tag: 'span' as keyof HTMLElementTagNameMap,
+      classNames: ['label-tag'],
+      text: '',
       callback: () => null,
     };
-    const bioLabel = new BaseComponent(bioLabelParams);
-    profileDescriptionWrapper.addInnerElement(bioLabel);
+
+    const bioLabel = {
+      ...bioLabelParams,
+      text: 'bio:',
+    };
+    const bio = new BaseComponent(bioLabel);
+
+    const bioTextParams = {
+      tag: 'p' as keyof HTMLElementTagNameMap,
+      classNames: ['bio'],
+      text: `${this.profileCard.bio}`,
+      callback: () => null,
+    };
+    const bioTextWrapper = new BaseComponent<HTMLElement>({
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['text-wrapper'],
+      text: '',
+      callback: () => null,
+    });
+    const bioText = new BaseComponent(bioTextParams);
+    profileDescriptionWrapper.addInnerElement(bioTextWrapper);
+    bioTextWrapper.addInnerElement(bio);
+    bioTextWrapper.addInnerElement(bioText);
 
     // pic
     const imgParams = {
@@ -104,7 +191,7 @@ export default class ProfileCard extends Layout {
         href: this.profileCard.github,
         target: '_blank',
       },
-      text: `github: ${this.profileCard.github}`,
+      text: `${this.profileCard.github}`,
       callback: () => null,
     };
     const github = new BaseComponent(githubParams);
