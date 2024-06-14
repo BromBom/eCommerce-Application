@@ -62,7 +62,7 @@ export default class App {
     App.createNavbarContainer();
 
     this.header = new Header(this.router, this.state, this.products);
-    this.main = new Main(this.router);
+    this.main = new Main(this.router, this.products);
 
     const footer = new Footer();
 
@@ -213,7 +213,6 @@ export default class App {
           try {
             const cartID = localStorage.getItem('CurrentCartId');
             const cart = await getCartByID(cartID!);
-            // const productsInCart: LineItem[] = cart.lineItems;
             const basket = new Basket(this.router, cart).getElement();
             const mainContainer = this.main!.getHtmlElement();
             mainContainer.innerHTML = '';

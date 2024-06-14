@@ -276,7 +276,6 @@ export default class Navbar extends Layout {
   async fetchFilteredProducts() {
     try {
       showLoading();
-      console.log('121212121212121', this.filters.currentColor);
       const colorResponse: ClientResponse<ProductProjectionPagedSearchResponse> = await filterProductListColor(
         this.filters.currentColor
       );
