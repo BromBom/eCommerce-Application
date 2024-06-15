@@ -3,6 +3,7 @@ import SimpleComponent from '../../components/simpleComponent';
 import BasketProductBox from './basketProductBox/basketProductBox';
 import Router from '../../router/router';
 import { Pages } from '../../router/pages';
+import Button from '../../components/controls/button';
 import { handleError, showLoading, handleSucsess, hideLoading } from '../../utils/showmessage';
 import {
   getCartByID,
@@ -18,6 +19,10 @@ import './basket.scss';
 export default class PersonalData {
   element: HTMLDivElement;
 
+  promoInput: SimpleComponent<HTMLInputElement>;
+
+  promoButton: SimpleComponent<HTMLButtonElement>;
+
   titleBasketEmpty: SimpleComponent<HTMLHeadingElement>;
 
   linkToMain: SimpleComponent<HTMLHeadingElement>;
@@ -30,6 +35,8 @@ export default class PersonalData {
     public router: Router,
     public cart: Cart
   ) {
+    this.promoInput = new SimpleComponent<HTMLInputElement>('input', ['basket__promo-input']);
+    this.promoButton = Button(['basket__promo-button'], 'Accept');
     this.titleBasketEmpty = new SimpleComponent<HTMLHeadingElement>(
       'h3',
       ['basket__title-empty-cart'],
@@ -80,11 +87,18 @@ export default class PersonalData {
       const productsCounter = document.createElement('div');
       productsCounter.classList.add('basket__counter');
 
+      const promoBox = document.createElement('div');
+      promoBox.classList.add('basket__promo-box');
+      const promoInput = this.promoInput.getElement();
+      promoInput.setAttribute('placeholder', 'Enter promocode');
+      const promoButton = this.promoButton.getElement();
+      promoBox.append(promoInput, promoButton);
+
       const linkClear = this.linkClear.getElement();
 
       productsCounter.append(countProducts, itemsSpan);
-      basketHeader.append(titleBox, linkClear);
       titleBox.append(titleBasketWithProducts, productsCounter);
+      basketHeader.append(titleBox, promoBox, linkClear);
 
       // start products list-----------------------------------------------------------------------------------------------
 
