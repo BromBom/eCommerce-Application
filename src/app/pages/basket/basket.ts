@@ -101,9 +101,11 @@ export default class PersonalData {
             const cart = await getCartByID(cartID!);
             const productInCart = cart.lineItems.find((lineItem) => lineItem.id === basketProductBox.product.id);
             const newCart = await removeProductFromCart(cart, productInCart!.id);
+
             basketProductBox.element.remove();
             countProducts.textContent = `${newCart.lineItems.length}`;
             this.titlePrice.getElement().textContent = `${(newCart.totalPrice.centAmount / 100).toFixed(2)} $`;
+
             hideLoading();
             handleSucsess('Removing product from the cart was successful!');
           } catch (error) {
@@ -131,11 +133,11 @@ export default class PersonalData {
             ) {
               basketProductBox.inputCounter.getElement().value = `${currentLineItem!.quantity}`;
               hideLoading();
-              handleSucsess('Wrong quantity! Must be less then 30 pcs');
+              handleError(new Error('Wrong quantity!y'), `Wrong quantity! From 1 to 30 pcs`);
             } else {
-              basketProductBox.inputCounter.getElement().value = `${inputValue}`;
               const newCart = await changeQuantityProductsInCart(cart, product.id, inputValue);
 
+              basketProductBox.inputCounter.getElement().value = `${inputValue}`;
               const currentPrice = (
                 ((product.price.discounted?.value.centAmount || product.price.value.centAmount) * inputValue) /
                 100
@@ -152,25 +154,55 @@ export default class PersonalData {
           }
         });
 
-        // basketProductBox.buttonMines.getElement().addEventListener('click', async () => {
-        //   if
-        //   const inputValue = +basketProductBox.inputCounter.getElement().value;
-        //   if (inputValue)
-        //   basketProductBox.inputCounter.getElement().value = +basketProductBox.inputCounter.getElement().value - 1;
-        //   const quality = +basketProductBox.inputCounter.getElement().value;
-        //   try {
-        //     showLoading();
-        //     const cartID = localStorage.getItem('CurrentCartId');
-        //     const cart = await getCartByID(cartID!);
-        //     const newCart = await changeQuantityProductsInCart(cart, product.id, quality);
+        basketProductBox.buttonMines.getElement().addEventListener('click', async () => {
+          const quantity = +basketProductBox.inputCounter.getElement().value - 1;
+          if (quantity < 1) return;
+          try {
+            showLoading();
+            const cartID = localStorage.getItem('CurrentCartId');
+            const cart = await getCartByID(cartID!);
+            const newCart = await changeQuantityProductsInCart(cart, product.id, quantity);
 
-        //     hideLoading();
-        //     handleSucsess('Changing quantity was successful!');
-        //   } catch (error) {
-        //     console.error(`Failed to change quantity: ${error}`);
-        //     handleError(new Error('Failed to change quantity'), `Failed to change quantity! ${error}`);
-        //   }
-        // });
+            basketProductBox.inputCounter.getElement().value = `${quantity}`;
+            const currentPrice = (
+              ((product.price.discounted?.value.centAmount || product.price.value.centAmount) * quantity) /
+              100
+            ).toFixed(2);
+            basketProductBox.priceLineItem.getElement().textContent = `${currentPrice} $`;
+            this.titlePrice.getElement().textContent = `${(newCart.totalPrice.centAmount / 100).toFixed(2)} $`;
+
+            hideLoading();
+            handleSucsess('Changing quantity was successful!');
+          } catch (error) {
+            console.error(`Failed to change quantity: ${error}`);
+            handleError(new Error('Failed to change quantity'), `Failed to change quantity! ${error}`);
+          }
+        });
+
+        basketProductBox.buttonPlus.getElement().addEventListener('click', async () => {
+          const quantity = +basketProductBox.inputCounter.getElement().value + 1;
+          if (quantity > 30) return;
+          try {
+            showLoading();
+            const cartID = localStorage.getItem('CurrentCartId');
+            const cart = await getCartByID(cartID!);
+            const newCart = await changeQuantityProductsInCart(cart, product.id, quantity);
+
+            basketProductBox.inputCounter.getElement().value = `${quantity}`;
+            const currentPrice = (
+              ((product.price.discounted?.value.centAmount || product.price.value.centAmount) * quantity) /
+              100
+            ).toFixed(2);
+            basketProductBox.priceLineItem.getElement().textContent = `${currentPrice} $`;
+            this.titlePrice.getElement().textContent = `${(newCart.totalPrice.centAmount / 100).toFixed(2)} $`;
+
+            hideLoading();
+            handleSucsess('Changing quantity was successful!');
+          } catch (error) {
+            console.error(`Failed to change quantity: ${error}`);
+            handleError(new Error('Failed to change quantity'), `Failed to change quantity! ${error}`);
+          }
+        });
       });
 
       // end products list-------------------------------------------------------------------------------------------------

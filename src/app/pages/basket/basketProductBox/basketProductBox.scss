@@ -98,7 +98,16 @@
     .basket__product-box__product-counter-button {
       width: 20px;
       height: 20px;
-      border: 1px solid #dddddd;;
+      border: 1px solid #dddddd;
+      border-radius: 5px;
+
+      &:hover {
+        background-color: #e7e7e7;
+      }
+      
+      &:active {
+        background-color: #fff3cb;
+      }
     }
   }
 }
