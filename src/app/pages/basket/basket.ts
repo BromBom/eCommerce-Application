@@ -3,7 +3,7 @@ import SimpleComponent from '../../components/simpleComponent';
 import BasketProductBox from './basketProductBox/basketProductBox';
 import Router from '../../router/router';
 import { Pages } from '../../router/pages';
-
+import { addDiscountCodeToCart } from '../../../api/cart';
 import './basket.scss';
 
 export default class PersonalData {
@@ -12,6 +12,10 @@ export default class PersonalData {
   titleBasketEmpty: SimpleComponent<HTMLHeadingElement>;
 
   linkToMain: SimpleComponent<HTMLHeadingElement>;
+
+  discountInput: HTMLInputElement;
+
+  applyDiscountButton: HTMLButtonElement;
 
   constructor(
     public router: Router,
@@ -23,6 +27,15 @@ export default class PersonalData {
       'Cart is empty'
     );
     this.linkToMain = new SimpleComponent<HTMLHeadingElement>('h4', ['basket__link-main'], 'Go to main');
+    this.discountInput = document.createElement('input');
+    this.discountInput.type = 'text';
+    this.discountInput.placeholder = 'Enter discount code';
+    this.discountInput.classList.add('basket__discount-input');
+    this.applyDiscountButton = new SimpleComponent<HTMLButtonElement>(
+      'button',
+      ['basket__apply-discount'],
+      'Apply'
+    ).getElement();
     this.element = this.init();
   }
 
@@ -86,14 +99,37 @@ export default class PersonalData {
 
       totalContainer.append(titleTotal, titlePrice);
 
-      basketContainer.append(basketHeader, productsContainer, totalContainer);
+      // Add discount code input and button
+      const discountContainer = document.createElement('div');
+      discountContainer.classList.add('basket__discount-container');
+      discountContainer.append(this.discountInput, this.applyDiscountButton);
+
+      basketContainer.append(basketHeader, productsContainer, totalContainer, discountContainer);
     }
 
     linkToMain.addEventListener('click', () => {
       this.router.navigate(Pages.PRODUCT);
     });
 
+    this.applyDiscountButton.addEventListener('click', this.applyDiscountCode.bind(this));
+
     return basketPage;
+  }
+
+  private async applyDiscountCode() {
+    const discountCode = this.discountInput.value;
+    if (!discountCode) {
+      console.log('Please enter a discount code');
+      return;
+    }
+
+    try {
+      await addDiscountCodeToCart(this.cart, discountCode);
+      console.log('Discount code applied successfully!');
+    } catch (error) {
+      console.error('Error applying discount code:', error);
+      console.log('Failed to apply discount code. Please try again.');
+    }
   }
 
   getElement() {
