@@ -1,4 +1,31 @@
-.card__full {
-  height: 300px;
-  width: 600px;
+.detail__cart-buttons__container {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.detail__cart-buttons__btn-in,
+.detail__cart-buttons__btn-remove {
+  padding: 5px 10px;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:disabled {
+    background-color: #c7c7c7;
+    color: #ffffff;
+    pointer-events: none;
+    user-select: none;
+  }
+}
+
+.detail__cart-buttons__btn-in {
+  background-color: #009700;
+}
+
+.detail__cart-buttons__btn-remove {
+  background-color: #ff0000;
 }

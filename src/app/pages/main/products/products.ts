@@ -41,6 +41,7 @@ export default class Products extends Layout {
   async updateProducts(products: ProductProjection[]) {
     const cartID = localStorage.getItem('CurrentCartId');
     const cart = await getCartByID(cartID!);
+    localStorage.setItem('CurrentCart', JSON.stringify(cart));
     const productsInCart = cart.lineItems;
     const productElements = products
       .map((product: ProductProjection) => {
@@ -90,7 +91,7 @@ export default class Products extends Layout {
                 ${Rating.render({ value: rating, text: `${numReviews} reviews` })}
               </div>
               <div class="product-buttons">
-                <div class="buynow btn btn-primary" data-id="${product.id}" data-name="${productName}" data-price="${price}" data-image="${imageUrl}" data-description="${description}">${buttonInnerText}</div>
+                <button class="buynow btn btn-primary" data-id="${product.id}" data-name="${productName}" data-price="${price}" data-image="${imageUrl}" data-description="${description}">${buttonInnerText}</button>
                 <div class="product-price ${discountedPrice ? 'discounted' : ''}">
                 $${price}
               </div>
@@ -122,6 +123,7 @@ export default class Products extends Layout {
           showLoading();
           const cartID = localStorage.getItem('CurrentCartId');
           const cart = await getCartByID(cartID!);
+          localStorage.setItem('CurrentCart', JSON.stringify(cart));
           await addProductToCart(cart, productId!);
           hideLoading();
           handleSucsess('Adding product to cart was successful!!');
