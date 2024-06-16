@@ -119,6 +119,14 @@ export default class PersonalData {
             basketProductBox.element.remove();
             countProducts.textContent = `${newCart.lineItems.length}`;
             this.titlePrice.getElement().textContent = `${(newCart.totalPrice.centAmount / 100).toFixed(2)} $`;
+            if (newCart.totalPrice.centAmount === 0) {
+              basketContainer.innerHTML = '';
+              basketContainer.append(titleBasketEmpty, linkToMain);
+
+              linkToMain.addEventListener('click', () => {
+                this.router.navigate(Pages.PRODUCT);
+              });
+            }
 
             hideLoading();
             handleSucsess('Removing product from the cart was successful!');
