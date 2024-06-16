@@ -110,6 +110,7 @@ export default class Products extends Layout {
       </ul>
     `);
     this.addEventListeners();
+    Products.lazyLoadProductCards();
   }
 
   addEventListeners() {

@@ -3,10 +3,9 @@ import SimpleComponent from '../../components/simpleComponent';
 import BasketProductBox from './basketProductBox/basketProductBox';
 import Router from '../../router/router';
 import { Pages } from '../../router/pages';
-import Button from '../../components/controls/button';
-import { addDiscountCodeToCart } from '../../../api/cart';
-import { handleError, showLoading, handleSucsess, hideLoading } from '../../utils/showmessage';
 import { CustomError } from '../../types/types';
+import Button from '../../components/controls/button';
+import { handleError, showLoading, handleSucsess, hideLoading } from '../../utils/showmessage';
 import {
   getCartByID,
   createCustomerCart,
@@ -14,7 +13,9 @@ import {
   removeProductFromCart,
   removeCart,
   changeQuantityProductsInCart,
+  addDiscountCodeToCart,
 } from '../../../api/cart';
+
 import './basket.scss';
 
 export default class PersonalData {
@@ -93,6 +94,7 @@ export default class PersonalData {
       const promoInput = this.promoInput.getElement();
       promoInput.setAttribute('placeholder', 'Enter promocode');
       const promoButton = this.promoButton.getElement();
+      promoButton.addEventListener('click', this.applyDiscountCode.bind(this));
       promoBox.append(promoInput, promoButton);
 
       const linkClear = this.linkClear.getElement();
@@ -156,7 +158,7 @@ export default class PersonalData {
             ) {
               basketProductBox.inputCounter.getElement().value = `${currentLineItem!.quantity}`;
               hideLoading();
-              handleError(new Error('Wrong quantity!y'), `Wrong quantity! From 1 to 30 pcs`);
+              handleError(new Error('Wrong quantity!'), `Wrong quantity! From 1 to 30 pcs`);
             } else {
               const newCart = await changeQuantityProductsInCart(cart, product.id, inputValue);
 
@@ -279,21 +281,26 @@ export default class PersonalData {
       });
     }
 
-    this.applyDiscountButton.addEventListener('click', this.applyDiscountCode.bind(this));
-
     return basketPage;
   }
 
   private async applyDiscountCode() {
-    const discountCode = this.discountInput.value;
+    const discountCode = this.promoInput.getElement().value;
     if (!discountCode) {
       handleSucsess('Please enter a discount code.');
       return;
     }
 
     try {
+      showLoading();
       await addDiscountCodeToCart(this.cart, discountCode);
       handleSucsess('Discount code applied successfully!');
+
+      this.promoButton.getElement().textContent = 'Your promocode applied';
+      this.promoInput.getElement().value = '';
+
+      this.promoButton.getElement().disabled = true;
+      this.promoInput.getElement().disabled = true;
     } catch (error) {
       console.error('Caught error:', error);
       const customError = error as CustomError;
