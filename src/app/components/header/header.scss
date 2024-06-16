@@ -99,13 +99,6 @@ img {
   border-color: transparent;
 }
 
-.cart {
-  // position: absolute;
-  // top: 40px;
-  // right: 250px;
-  // transform: translate(-50%, -50%);
-}
-
 .search_container {
   display: flex;
   align-items: center;
@@ -158,4 +151,12 @@ img {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+}
+
+a {
+  cursor: pointer;
+}
+
+a:hover {
+  color: #ff0000;
 }
