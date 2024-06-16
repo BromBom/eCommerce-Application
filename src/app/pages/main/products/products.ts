@@ -3,9 +3,9 @@ import Layout from '../../../layout/layout';
 import { queryProduct } from '../../../../api/project';
 import { addProductToCart, getCartByID } from '../../../../api/cart';
 import Rating from '../../../components/rating';
-// import { CartItem } from '../../../types/types';
 import { Pages } from '../../../router/pages';
 import Router from '../../../router/router';
+import { handleError, showLoading, handleSucsess, hideLoading } from '../../../utils/showmessage';
 
 const TEXT = 'PRODUCTS PAGE';
 
@@ -38,109 +38,100 @@ export default class Products extends Layout {
     }
   }
 
-  updateProducts(products: ProductProjection[]) {
-    this.setHTMLContent('<ul class="products"></ul>');
-    products.forEach((product) => {
-      Products.appendProductCard(product);
-    });
+  async updateProducts(products: ProductProjection[]) {
+    const cartID = localStorage.getItem('CurrentCartId');
+    const cart = await getCartByID(cartID!);
+    localStorage.setItem('CurrentCart', JSON.stringify(cart));
+    const productsInCart = cart.lineItems;
+    const productElements = products
+      .map((product: ProductProjection) => {
+        const imageUrl =
+          product.masterVariant.images && product.masterVariant.images.length > 0
+            ? product.masterVariant.images[0].url
+            : 'default-image-url.jpg';
+
+        const productName = product.name['en-US'] || 'No name';
+
+        const ratingAttribute = product.masterVariant.attributes?.find((attr) => attr.name === 'rating');
+        const rating = ratingAttribute ? ratingAttribute.value : '0';
+
+        const numReviewsAttribute = product.masterVariant.attributes?.find((attr) => attr.name === 'numReviews');
+        const numReviews = numReviewsAttribute ? numReviewsAttribute.value : '0';
+
+        const price =
+          product.masterVariant.prices && product.masterVariant.prices.length > 0
+            ? (product.masterVariant.prices[0].value.centAmount / 100).toFixed(2)
+            : '0.00';
+
+        const discountedPrice =
+          product.masterVariant.prices && product.masterVariant.prices[0].discounted
+            ? (product.masterVariant.prices[0].discounted.value.centAmount / 100).toFixed(2)
+            : null;
+
+        const description = product.description?.['en-US'] || 'No description';
+
+        let buttonInnerText = 'Buy Now';
+
+        if (productsInCart.find((lineItem) => lineItem.productId === product.id)) {
+          buttonInnerText = 'Already in cart';
+        }
+
+        return `
+          <li>
+            <div class="product">
+              <div class="product-container" data-cardid="${product.id}">
+                <div class="product-link">
+                  <img class="product-image" src="${imageUrl}" alt="${productName}" data-tilt>
+                </div>
+                <div class="product-name">
+                  <p>${productName}</p>
+                </div>
+              </div>
+              <div class="product-rating">
+                ${Rating.render({ value: rating, text: `${numReviews} reviews` })}
+              </div>
+              <div class="product-buttons">
+                <button class="buynow btn btn-primary" data-id="${product.id}" data-name="${productName}" data-price="${price}" data-image="${imageUrl}" data-description="${description}">${buttonInnerText}</button>
+                <div class="product-price ${discountedPrice ? 'discounted' : ''}">
+                $${price}
+              </div>
+                ${discountedPrice ? `<div class="product-discount">$${discountedPrice}</div>` : ''}
+              </div>
+              </div>
+            </div>
+          </li>
+        `;
+      })
+      .join('\n');
+
+    this.setHTMLContent(`
+      <ul class="products">
+        ${productElements}
+      </ul>
+    `);
     this.addEventListeners();
-    Products.lazyLoadProductCards();
-  }
-
-  static appendProductCard(product: ProductProjection) {
-    const productList = document.querySelector('.products');
-    if (!productList) return;
-
-    const imageUrl =
-      product.masterVariant.images && product.masterVariant.images.length > 0
-        ? product.masterVariant.images[0].url
-        : 'default-image-url.jpg';
-
-    const productName = product.name['en-US'] || 'No name';
-
-    const ratingAttribute = product.masterVariant.attributes?.find((attr) => attr.name === 'rating');
-    const rating = ratingAttribute ? ratingAttribute.value : '0';
-
-    const numReviewsAttribute = product.masterVariant.attributes?.find((attr) => attr.name === 'numReviews');
-    const numReviews = numReviewsAttribute ? numReviewsAttribute.value : '0';
-
-    const price =
-      product.masterVariant.prices && product.masterVariant.prices.length > 0
-        ? (product.masterVariant.prices[0].value.centAmount / 100).toFixed(2)
-        : '0.00';
-
-    const discountedPrice =
-      product.masterVariant.prices && product.masterVariant.prices[0].discounted
-        ? (product.masterVariant.prices[0].discounted.value.centAmount / 100).toFixed(2)
-        : '';
-
-    const description = product.description?.['en-US'] || 'No description';
-
-    const productCard = document.createElement('li');
-    productCard.className = 'product-card';
-    productCard.dataset.src = imageUrl;
-    productCard.dataset.name = productName;
-    productCard.dataset.rating = rating;
-    productCard.dataset.numreviews = numReviews;
-    productCard.dataset.price = price;
-    productCard.dataset.discountedprice = discountedPrice;
-
-    productCard.innerHTML = `
-      <div class="product">
-        <div class="product-container" data-cardid="${product.id}">
-          <div class="product-link">
-            <img class="product-image lazy" data-src="${imageUrl}" alt="${productName}" data-tilt>
-          </div>
-          <div class="product-name">
-            <p>${productName}</p>
-          </div>
-        </div>
-        <div class="product-rating">
-          ${Rating.render({ value: parseFloat(rating), text: `${numReviews} reviews` })}
-        </div>
-        <div class="product-buttons">
-          <button class="buynow btn btn-primary" data-id="${product.id}" data-name="${productName}" data-price="${price}" data-image="${imageUrl}" data-description="${description}">Buy Now</button>
-          <div class="product-price ${discountedPrice ? 'discounted' : ''}">
-            $${price}
-          </div>
-          ${discountedPrice ? `<div class="product-discount">$${discountedPrice}</div>` : ''}
-        </div>
-      </div>
-    `;
-
-    productList.appendChild(productCard);
   }
 
   addEventListeners() {
     const buyNowButtons = document.getElementsByClassName('buynow');
-    Array.from(buyNowButtons).forEach((button) => {
-      button.addEventListener('click', async (e: Event) => {
+    Array.from(buyNowButtons).forEach((btn) => {
+      btn.addEventListener('click', async (e: Event) => {
         const target = e.target as HTMLButtonElement;
         const productId = target.getAttribute('data-id');
-        // const productName = target.getAttribute('data-name');
-        // const productPrice = parseFloat(target.getAttribute('data-price') || '0');
-        // const discountedPrice = parseFloat(target.getAttribute('data-discounted-price') || '0');
-        // const productImage = target.getAttribute('data-image');
-        // const productDescription = target.getAttribute('data-description');
 
-        // if (productId && productName && productImage && productDescription) {
-        //   const cartItem: CartItem = {
-        //     product: productId,
-        //     name: productName,
-        //     image: productImage,
-        //     price: discountedPrice || productPrice,
-        //     quantityInStock: 10,
-        //     qty: 1,
-        //     description: productDescription,
-        //   };
-
-        // addToCart(cartItem, true);
-        // }
-
-        const cartID = localStorage.getItem('CurrentCartId');
-        const cart = await getCartByID(cartID!);
-        await addProductToCart(cart, productId!);
-        //! Переименовать кнопку Есть в корзине!
+        try {
+          showLoading();
+          const cartID = localStorage.getItem('CurrentCartId');
+          const cart = await getCartByID(cartID!);
+          localStorage.setItem('CurrentCart', JSON.stringify(cart));
+          await addProductToCart(cart, productId!);
+          hideLoading();
+          handleSucsess('Adding product to cart was successful!!');
+        } catch (error) {
+          console.error(`Failed to click button "buy now": ${error}`);
+          handleError(new Error('Failed to click button "buy now"'), `Failed to click button "buy now"! ${error}`);
+        }
+        target.textContent = 'Already in cart';
       });
     });
 

@@ -10,7 +10,7 @@ export interface IProfile {
 export const team: IProfile[] = [
   {
     name: 'Igor',
-    pic: 'igor.jpg',
+    pic: '../img/igor.jpg',
     role: 'Team Leader, Main Motivator',
     contribution:
       'Created project task board and distributed tasks among team members. Developed Registration page. Developed User Profile Page.',
@@ -19,7 +19,7 @@ export const team: IProfile[] = [
   },
   {
     name: 'Vitaly',
-    pic: 'vitali.jpg',
+    pic: '../img/vitali.jpg',
     role: 'Team Member, Main Contributor and A Hard Worker',
     contribution:
       'Developed product list page. Added product filtering, sorting and searching. Added interactive to product cards. Developed Product Details Page and Navigation to it.',
@@ -28,7 +28,7 @@ export const team: IProfile[] = [
   },
   {
     name: 'Irina',
-    pic: 'ira.jfif',
+    pic: '../img/ira.jfif',
     role: 'Team Member, Loves Beautiful Code',
     contribution:
       'Added routing, navigation between login, registration, main page. Added logout, back/forward navigation. Added About Us page. Developed modal template.',

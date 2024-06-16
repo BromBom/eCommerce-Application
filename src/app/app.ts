@@ -98,10 +98,11 @@ export default class App {
           showLoading();
           try {
             const navbar = new Navbar(this.router, this.products);
-            this.setContent(Pages.Product, this.products, navbar);
+            const productsPage = new Products(this.router);
+            this.setContent(Pages.Product, productsPage, navbar);
           } catch (error) {
             if (error instanceof Error) {
-              handleError(error, 'Failed to load product page.');
+              handleError(error, 'Failed to load / page.');
             }
           } finally {
             hideLoading();
@@ -114,11 +115,11 @@ export default class App {
           showLoading();
           try {
             const navbar = new Navbar(this.router, this.products);
-            const productsPage = this.products;
+            const productsPage = new Products(this.router);
             this.setContent(Pages.PRODUCT, productsPage, navbar);
           } catch (error) {
             if (error instanceof Error) {
-              handleError(error, 'Failed to load products page.');
+              handleError(error, 'Failed to load /products page.');
             }
           } finally {
             hideLoading();
@@ -214,14 +215,14 @@ export default class App {
           try {
             const cartID = localStorage.getItem('CurrentCartId');
             const cart = await getCartByID(cartID!);
-            // const productsInCart: LineItem[] = cart.lineItems;
             const basket = new Basket(this.router, cart).getElement();
             const mainContainer = this.main!.getHtmlElement();
             mainContainer.innerHTML = '';
             mainContainer.append(basket);
           } catch (error) {
             if (error instanceof Error) {
-              handleError(error, 'Failed to load product page.');
+              handleError(error, 'Failed to load cart page.');
+              throw Error(error.message);
             }
           } finally {
             hideLoading();

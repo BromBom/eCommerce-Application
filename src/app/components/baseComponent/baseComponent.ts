@@ -1,3 +1,5 @@
+// import '../../../assets/img/igor.jpg';
+
 export interface Params {
   tag: keyof HTMLElementTagNameMap;
   classNames: string[];
