@@ -1,8 +1,13 @@
-import { ProductProjection } from '@commercetools/platform-sdk';
+import { ProductProjection, Cart } from '@commercetools/platform-sdk';
 import Layout from '../../../../layout/layout';
 import { ICard } from '../../../../data/cards';
 import { searchProductbyID } from '../../../../../api/project';
 import Modal from '../../../../components/modal/modal';
+import Button from '../../../../components/controls/button';
+import { handleError, showLoading, handleSucsess, hideLoading } from '../../../../utils/showmessage';
+import { getCartByID, addProductToCart, removeProductFromCart } from '../../../../../api/cart';
+
+import './style.scss';
 
 export default class ProductDetail extends Layout {
   product: ProductProjection | null;
@@ -129,12 +134,77 @@ export default class ProductDetail extends Layout {
     const stockElement = document.createElement('p');
     stockElement.textContent = `In stock: ${this.card.stock}`;
 
-    containerCardDetail.append(nameElement, imageElement, descriptionElement, priceElement);
+    const buttonsCart = this.creatContainerButtonsCart();
+
+    containerCardDetail.append(nameElement, imageElement, buttonsCart, descriptionElement, priceElement);
     if (this.card.discountedPrice !== null) {
       containerCardDetail.appendChild(discountedPriceElement);
     }
     containerCardDetail.append(stockElement);
     this.element = containerCardDetail;
+  }
+
+  creatContainerButtonsCart() {
+    const containerButtonsCart = document.createElement('div');
+    containerButtonsCart.classList.add('detail__cart-buttons__container');
+
+    const buttonInCart = Button(['detail__cart-buttons__btn-in'], 'Add to Cart').getElement();
+    const buttonRemoveFromCart = Button(['detail__cart-buttons__btn-remove'], 'Remove from cart').getElement();
+
+    containerButtonsCart.append(buttonInCart, buttonRemoveFromCart);
+
+    const currentCart = JSON.parse(localStorage.getItem('CurrentCart')!) as Cart;
+
+    const itemInCart = currentCart.lineItems.find((lineItem) => lineItem.productId === this.id);
+    if (itemInCart) {
+      buttonInCart.disabled = true;
+      buttonRemoveFromCart.disabled = !buttonInCart.disabled;
+    } else {
+      buttonRemoveFromCart.disabled = true;
+      buttonInCart.disabled = !buttonRemoveFromCart.disabled;
+    }
+
+    buttonInCart.addEventListener('click', async () => {
+      buttonInCart.disabled = true;
+      buttonRemoveFromCart.disabled = false;
+      try {
+        showLoading();
+        const cartID = localStorage.getItem('CurrentCartId');
+        const cart = await getCartByID(cartID!);
+        const newCart = await addProductToCart(cart, this.id!);
+        localStorage.setItem('CurrentCart', JSON.stringify(newCart));
+
+        hideLoading();
+        handleSucsess('Adding product to cart was successful!!');
+      } catch (error) {
+        console.error(`Failed to click button "buy now": ${error}`);
+        handleError(new Error('Failed to click button "buy now"'), `Failed to click button "buy now"! ${error}`);
+      }
+    });
+
+    buttonRemoveFromCart.addEventListener('click', async () => {
+      buttonRemoveFromCart.disabled = true;
+      buttonInCart.disabled = false;
+      try {
+        showLoading();
+        const cartID = localStorage.getItem('CurrentCartId');
+        const cart = await getCartByID(cartID!);
+        const productInCart = cart.lineItems.find((lineItem) => lineItem.productId === this.id);
+        const newCart = await removeProductFromCart(cart, productInCart!.id);
+        localStorage.setItem('CurrentCart', JSON.stringify(newCart));
+
+        hideLoading();
+        handleSucsess('Removing product from the cart was successful!');
+      } catch (error) {
+        console.error(`Failed to delete product: ${error}`);
+        handleError(
+          new Error('Failed to delete product from the cart'),
+          `Failed to delete product from the cart! ${error}`
+        );
+      }
+    });
+
+    return containerButtonsCart;
   }
 
   getElement() {

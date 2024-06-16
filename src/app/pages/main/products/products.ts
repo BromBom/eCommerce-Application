@@ -3,9 +3,9 @@ import Layout from '../../../layout/layout';
 import { queryProduct } from '../../../../api/project';
 import { addProductToCart, getCartByID } from '../../../../api/cart';
 import Rating from '../../../components/rating';
-// import { CartItem } from '../../../types/types';
 import { Pages } from '../../../router/pages';
 import Router from '../../../router/router';
+import { handleError, showLoading, handleSucsess, hideLoading } from '../../../utils/showmessage';
 
 const TEXT = 'PRODUCTS PAGE';
 
@@ -38,7 +38,11 @@ export default class Products extends Layout {
     }
   }
 
-  updateProducts(products: ProductProjection[]) {
+  async updateProducts(products: ProductProjection[]) {
+    const cartID = localStorage.getItem('CurrentCartId');
+    const cart = await getCartByID(cartID!);
+    localStorage.setItem('CurrentCart', JSON.stringify(cart));
+    const productsInCart = cart.lineItems;
     const productElements = products
       .map((product: ProductProjection) => {
         const imageUrl =
@@ -66,6 +70,12 @@ export default class Products extends Layout {
 
         const description = product.description?.['en-US'] || 'No description';
 
+        let buttonInnerText = 'Buy Now';
+
+        if (productsInCart.find((lineItem) => lineItem.productId === product.id)) {
+          buttonInnerText = 'Already in cart';
+        }
+
         return `
           <li>
             <div class="product">
@@ -81,7 +91,7 @@ export default class Products extends Layout {
                 ${Rating.render({ value: rating, text: `${numReviews} reviews` })}
               </div>
               <div class="product-buttons">
-                <button class="buynow btn btn-primary" data-id="${product.id}" data-name="${productName}" data-price="${price}" data-image="${imageUrl}" data-description="${description}">Buy Now</button>
+                <button class="buynow btn btn-primary" data-id="${product.id}" data-name="${productName}" data-price="${price}" data-image="${imageUrl}" data-description="${description}">${buttonInnerText}</button>
                 <div class="product-price ${discountedPrice ? 'discounted' : ''}">
                 $${price}
               </div>
@@ -104,34 +114,24 @@ export default class Products extends Layout {
 
   addEventListeners() {
     const buyNowButtons = document.getElementsByClassName('buynow');
-    Array.from(buyNowButtons).forEach((button) => {
-      button.addEventListener('click', async (e: Event) => {
+    Array.from(buyNowButtons).forEach((btn) => {
+      btn.addEventListener('click', async (e: Event) => {
         const target = e.target as HTMLButtonElement;
         const productId = target.getAttribute('data-id');
-        // const productName = target.getAttribute('data-name');
-        // const productPrice = parseFloat(target.getAttribute('data-price') || '0');
-        // const discountedPrice = parseFloat(target.getAttribute('data-discounted-price') || '0');
-        // const productImage = target.getAttribute('data-image');
-        // const productDescription = target.getAttribute('data-description');
 
-        // if (productId && productName && productImage && productDescription) {
-        //   const cartItem: CartItem = {
-        //     product: productId,
-        //     name: productName,
-        //     image: productImage,
-        //     price: discountedPrice || productPrice,
-        //     quantityInStock: 10,
-        //     qty: 1,
-        //     description: productDescription,
-        //   };
-
-        // addToCart(cartItem, true);
-        // }
-
-        const cartID = localStorage.getItem('CurrentCartId');
-        const cart = await getCartByID(cartID!);
-        await addProductToCart(cart, productId!);
-        //! Переименовать кнопку Есть в корзине!
+        try {
+          showLoading();
+          const cartID = localStorage.getItem('CurrentCartId');
+          const cart = await getCartByID(cartID!);
+          localStorage.setItem('CurrentCart', JSON.stringify(cart));
+          await addProductToCart(cart, productId!);
+          hideLoading();
+          handleSucsess('Adding product to cart was successful!!');
+        } catch (error) {
+          console.error(`Failed to click button "buy now": ${error}`);
+          handleError(new Error('Failed to click button "buy now"'), `Failed to click button "buy now"! ${error}`);
+        }
+        target.textContent = 'Already in cart';
       });
     });
 
