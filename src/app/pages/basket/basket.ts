@@ -12,6 +12,8 @@ import {
   removeProductFromCart,
   removeCart,
   changeQuantityProductsInCart,
+  // getCartByCustomerID,
+  // mergeCartByCustomerID,
 } from '../../../api/cart';
 
 import './basket.scss';
@@ -93,6 +95,31 @@ export default class PersonalData {
       promoInput.setAttribute('placeholder', 'Enter promocode');
       const promoButton = this.promoButton.getElement();
       promoBox.append(promoInput, promoButton);
+
+      // promoBox.addEventListener('click', async () => {
+      //   try {
+      //     showLoading();
+      //     const anonCartID = localStorage.getItem('CurrentCartId');
+
+      //     const anonCart = await getCartByID(anonCartID!);
+      //     console.log('anon', anonCart);
+
+      //     const customerCart = await getCartByCustomerID('be13f1ef-ea1e-4e14-bdcb-951a5a77cb1f');
+      //     console.log('customer', customerCart);
+
+      //     const mergedCart = await mergeCartByCustomerID(anonCart, 'be13f1ef-ea1e-4e14-bdcb-951a5a77cb1f');
+      //     console.log('merge', mergedCart);
+
+      //     const newcustomerCart = await getCartByCustomerID('be13f1ef-ea1e-4e14-bdcb-951a5a77cb1f');
+      //     console.log('NEWcustomer', newcustomerCart);
+
+      //     hideLoading();
+      //     handleSucsess('Changing quantity was successful!');
+      //   } catch (error) {
+      //     console.error(`Nope: ${error}`);
+      //     handleError(new Error('Nope'), `Nope! ${error}`);
+      //   }
+      // });
 
       const linkClear = this.linkClear.getElement();
 

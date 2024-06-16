@@ -152,6 +152,43 @@ export const removeCart = async (cart: Cart) => {
   }
 };
 
+export const mergeCartByCustomerID = async (cart: Cart, customerId: string) => {
+  try {
+    const response = await apiRoot
+      .carts()
+      .withId({ ID: cart.id })
+      .post({
+        body: {
+          version: cart.version,
+          actions: [
+            {
+              action: 'setCustomerId',
+              customerId,
+            },
+          ],
+        },
+      })
+      .execute();
+
+    console.log('Product added in cart:', response.body);
+    return response.body;
+  } catch (error) {
+    console.error('Error adding product in cart:', error);
+    throw error;
+  }
+};
+
+export const getCartByCustomerID = async (customerId: string) => {
+  try {
+    const response = await apiRoot.carts().withCustomerId({ customerId }).get().execute();
+    console.log('Existing Cart by ID:', response.body);
+    return response.body;
+  } catch (error) {
+    console.error('Error getting cart by ID:', error);
+    throw error;
+  }
+};
+
 // const addLineItemsToCustomerCart = async (customerCart: Cart, lineItems: LineItem[]) => {
 //   const addLineItemPromises = lineItems.map(async (lineItem) => {
 //     const sku = lineItem.variant?.sku || '';
