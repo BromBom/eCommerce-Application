@@ -81,3 +81,9 @@ export interface CartItem {
   qty: number;
   description: string;
 }
+
+export interface CustomError extends Error {
+  body?: {
+    message?: string;
+  };
+}

@@ -31,7 +31,6 @@ export const showMessage = (message: string, callback?: () => void): void => {
         if (callback) {
           callback();
         }
-        hideLoading();
       };
 
       closeButton.addEventListener('click', closeOverlay);
@@ -42,11 +41,10 @@ export const showMessage = (message: string, callback?: () => void): void => {
 };
 
 export function handleError(error: Error, message: string): void {
+  console.error('Handling error:', error);
   const messageContainer = document.getElementById('message-container')!;
-  messageContainer.classList.remove('sucsess');
-  showMessage(message, () => {
-    hideLoading();
-  });
+  messageContainer.classList.remove('success');
+  showMessage(message);
 }
 
 export function handleSucsess(message: string): void {

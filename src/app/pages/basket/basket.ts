@@ -4,6 +4,8 @@ import BasketProductBox from './basketProductBox/basketProductBox';
 import Router from '../../router/router';
 import { Pages } from '../../router/pages';
 import { addDiscountCodeToCart } from '../../../api/cart';
+import { handleError, handleSucsess, hideLoading } from '../../utils/showmessage';
+import { CustomError } from '../../types/types';
 import './basket.scss';
 
 export default class PersonalData {
@@ -119,16 +121,21 @@ export default class PersonalData {
   private async applyDiscountCode() {
     const discountCode = this.discountInput.value;
     if (!discountCode) {
-      console.log('Please enter a discount code');
+      handleSucsess('Please enter a discount code.');
       return;
     }
 
     try {
       await addDiscountCodeToCart(this.cart, discountCode);
-      console.log('Discount code applied successfully!');
+      handleSucsess('Discount code applied successfully!');
     } catch (error) {
-      console.error('Error applying discount code:', error);
-      console.log('Failed to apply discount code. Please try again.');
+      console.error('Caught error:', error);
+      const customError = error as CustomError;
+      const errorMessage = customError.body?.message || 'Error applying discount code';
+      console.error('Error message:', errorMessage);
+      handleError(customError, errorMessage);
+    } finally {
+      hideLoading();
     }
   }
 

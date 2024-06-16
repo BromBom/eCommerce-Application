@@ -1,5 +1,6 @@
 import { Cart, LineItem, CartAddDiscountCodeAction } from '@commercetools/platform-sdk';
 import { apiRoot } from './BuildClient';
+import { CustomError } from '../app/types/types';
 
 export const createAnonymousCart = async () => {
   try {
@@ -149,7 +150,9 @@ export const addDiscountCodeToCart = async (cart: Cart, discountCode: string): P
 
     const updatedCart = response.body;
     console.log('Discount code added successfully:', updatedCart);
-  } catch (error) {
-    console.error('Error adding discount code to cart:', error);
+  } catch (error: unknown) {
+    const customError = error as CustomError;
+    console.error('Error adding discount code to cart:', customError);
+    throw new Error(customError.body?.message || 'Failed to add discount code');
   }
 };
