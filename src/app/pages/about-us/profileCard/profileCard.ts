@@ -53,7 +53,7 @@ export default class ProfileCard extends Layout {
 
     const nameLabelParams = {
       ...labelTagParams,
-      text: 'name:',
+      text: 'name',
     };
     const nameLabel = new BaseComponent(nameLabelParams);
 
@@ -86,7 +86,7 @@ export default class ProfileCard extends Layout {
 
     const roleLabel = {
       ...roleLabelParams,
-      text: 'role:',
+      text: 'role',
     };
     const role = new BaseComponent(roleLabel);
 
@@ -118,7 +118,7 @@ export default class ProfileCard extends Layout {
 
     const contributionLabel = {
       ...contributionLabelParams,
-      text: 'contribution:',
+      text: 'contribution',
     };
     const contribution = new BaseComponent(contributionLabel);
 
@@ -149,7 +149,7 @@ export default class ProfileCard extends Layout {
 
     const bioLabel = {
       ...bioLabelParams,
-      text: 'bio:',
+      text: 'bio',
     };
     const bio = new BaseComponent(bioLabel);
 
