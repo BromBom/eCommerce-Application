@@ -117,7 +117,7 @@ export default class AddressList {
         hideLoading();
         handleSucsess('The address add was successful!');
       } catch (error) {
-        console.error(`Failed to add address: ${error}`);
+        console.log(`Failed to add address: ${error}`);
         handleError(new Error('Failed to add address'), `Failed to add address! ${error}`);
       }
     });

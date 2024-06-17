@@ -36,7 +36,7 @@ async function getAnonymousToken() {
 
     return tokenData.access_token;
   } catch (error) {
-    console.error('Error fetching anonymous token:', error);
+    console.log('Error fetching anonymous token:', error);
     throw error;
   }
 }
@@ -50,7 +50,7 @@ async function getDataWithAnonymousSession() {
 
     console.log('Response:', response.body);
   } catch (error) {
-    console.error('Error:', error);
+    console.log('Error:', error);
   }
 }
 
@@ -84,7 +84,7 @@ export async function getClientAnonymous() {
     const result = await client.execute(request);
     console.log(result);
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 
   return client;
@@ -117,7 +117,7 @@ export async function getClientWithCredentials() {
     const result = await client.execute(request);
     console.log(result);
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 
   return client;

@@ -43,7 +43,7 @@ export default class Products extends Layout {
         localStorage.setItem('CurrentCart', JSON.stringify(currentBasket));
       }
     } catch (error) {
-      console.error(`Failed to create cart: ${error}`);
+      console.log(`Failed to create cart: ${error}`);
       handleError(new Error('Failed to create cart'), `Failed to create cart! ${error}`);
     }
   }
@@ -58,7 +58,7 @@ export default class Products extends Layout {
       const products: ProductProjection[] = response.body.results;
       await this.updateProducts(products);
     } catch (error) {
-      console.error(error);
+      console.log(error);
       this.setHTMLContent('<div class="error">Failed to load products</div>');
     }
   }
@@ -136,6 +136,7 @@ export default class Products extends Layout {
       </ul>
     `);
     this.addEventListeners();
+    Products.lazyLoadProductCards();
   }
 
   addEventListeners() {
@@ -154,7 +155,7 @@ export default class Products extends Layout {
           hideLoading();
           handleSucsess('Adding product to cart was successful!!');
         } catch (error) {
-          console.error(`Failed to click button "buy now": ${error}`);
+          console.log(`Failed to click button "buy now": ${error}`);
           handleError(new Error('Failed to click button "buy now"'), `Failed to click button "buy now"! ${error}`);
         }
         target.textContent = 'Already in cart';
@@ -172,6 +173,41 @@ export default class Products extends Layout {
           this.router.navigate(`${Pages.DETAILS}`);
         }
       }
+    });
+  }
+
+  static lazyLoadProductCards() {
+    const productCards = document.querySelectorAll('.product-card');
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5,
+    };
+
+    const intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const productCard = entry.target as HTMLElement;
+          const imageUrl = productCard.dataset.src;
+
+          if (imageUrl) {
+            const productLinkImg = productCard.querySelector('.product-image.lazy') as HTMLImageElement;
+            if (productLinkImg) {
+              productLinkImg.src = imageUrl;
+              productLinkImg.classList.remove('lazy');
+              productLinkImg.onload = () => {
+                productLinkImg.removeAttribute('data-src');
+              };
+            }
+          }
+
+          intersectionObserver.unobserve(entry.target);
+        }
+      });
+    }, options);
+
+    productCards.forEach((productCard) => {
+      intersectionObserver.observe(productCard);
     });
   }
 }

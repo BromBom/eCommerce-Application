@@ -1,6 +1,7 @@
 import { Customer } from '@commercetools/platform-sdk';
 import Footer from './components/footer/footer';
 import Header from './components/header/header';
+import Banner from './components/banner/mainBanner';
 import Layout from './layout/layout';
 import Main from './pages/main/main';
 import NotFound from './pages/not-found/not-found';
@@ -22,6 +23,8 @@ import { getCartByID } from '../api/cart';
 export default class App {
   header?: null | Header;
 
+  banner: Banner;
+
   main: null | Main;
 
   router: Router;
@@ -40,6 +43,7 @@ export default class App {
     const routes = this.createRoutes();
     this.router = new Router(routes);
     this.products = new Products(this.router);
+    this.banner = new Banner(this.router);
   }
 
   static createNavbarContainer() {
@@ -85,8 +89,9 @@ export default class App {
           showLoading();
           try {
             const navbar = new Navbar(this.router, this.products);
+            const banner = new Banner(this.router);
             const productsPage = new Products(this.router);
-            this.setContent(Pages.Product, productsPage, navbar);
+            this.setContent(Pages.Product, productsPage, navbar, banner);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load / page.');
@@ -95,6 +100,7 @@ export default class App {
             hideLoading();
           }
         },
+        isMainPage: true,
       },
       {
         path: `${Pages.PRODUCT}`,
@@ -102,8 +108,9 @@ export default class App {
           showLoading();
           try {
             const navbar = new Navbar(this.router, this.products);
+            const banner = new Banner(this.router);
             const productsPage = new Products(this.router);
-            this.setContent(Pages.PRODUCT, productsPage, navbar);
+            this.setContent(Pages.PRODUCT, productsPage, navbar, banner);
           } catch (error) {
             if (error instanceof Error) {
               handleError(error, 'Failed to load /products page.');
@@ -254,13 +261,17 @@ export default class App {
     this.main?.renderProducts(categoryId);
   }
 
-  setContent(page: string, view: Layout, navbar?: Navbar) {
+  setContent(page: string, view: Layout, navbar?: Navbar, banner?: Banner) {
     console.log('Setting content for page:', page, 'with view:', view);
     const isLoggedIn = this.state.loadState().size > 0;
 
     this.header?.setSelectedItem(page);
     const mainContainer = this.main!.getHtmlElement();
     mainContainer.innerHTML = '';
+
+    if (banner) {
+      mainContainer.appendChild(banner.getHtmlElement());
+    }
 
     if (navbar) {
       mainContainer.appendChild(navbar.getHtmlElement());

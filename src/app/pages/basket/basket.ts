@@ -3,6 +3,7 @@ import SimpleComponent from '../../components/simpleComponent';
 import BasketProductBox from './basketProductBox/basketProductBox';
 import Router from '../../router/router';
 import { Pages } from '../../router/pages';
+import { CustomError } from '../../types/types';
 import Button from '../../components/controls/button';
 import { handleError, showLoading, handleSucsess, hideLoading } from '../../utils/showmessage';
 import {
@@ -12,6 +13,7 @@ import {
   removeProductFromCart,
   removeCart,
   changeQuantityProductsInCart,
+  addDiscountCodeToCart,
 } from '../../../api/cart';
 
 import './basket.scss';
@@ -92,6 +94,7 @@ export default class PersonalData {
       const promoInput = this.promoInput.getElement();
       promoInput.setAttribute('placeholder', 'Enter promocode');
       const promoButton = this.promoButton.getElement();
+      promoButton.addEventListener('click', this.applyDiscountCode.bind(this));
       promoBox.append(promoInput, promoButton);
 
       const linkClear = this.linkClear.getElement();
@@ -131,7 +134,7 @@ export default class PersonalData {
             hideLoading();
             handleSucsess('Removing product from the cart was successful!');
           } catch (error) {
-            console.error(`Failed to delete product: ${error}`);
+            console.log(`Failed to delete product: ${error}`);
             handleError(
               new Error('Failed to delete product from the cart'),
               `Failed to delete product from the cart! ${error}`
@@ -155,7 +158,7 @@ export default class PersonalData {
             ) {
               basketProductBox.inputCounter.getElement().value = `${currentLineItem!.quantity}`;
               hideLoading();
-              handleError(new Error('Wrong quantity!y'), `Wrong quantity! From 1 to 30 pcs`);
+              handleError(new Error('Wrong quantity!'), `Wrong quantity! From 1 to 30 pcs`);
             } else {
               const newCart = await changeQuantityProductsInCart(cart, product.id, inputValue);
 
@@ -171,7 +174,7 @@ export default class PersonalData {
               handleSucsess('Changing quantity was successful!');
             }
           } catch (error) {
-            console.error(`Failed to change quantity: ${error}`);
+            console.log(`Failed to change quantity: ${error}`);
             handleError(new Error('Failed to change quantity'), `Failed to change quantity! ${error}`);
           }
         });
@@ -196,7 +199,7 @@ export default class PersonalData {
             hideLoading();
             handleSucsess('Changing quantity was successful!');
           } catch (error) {
-            console.error(`Failed to change quantity: ${error}`);
+            console.log(`Failed to change quantity: ${error}`);
             handleError(new Error('Failed to change quantity'), `Failed to change quantity! ${error}`);
           }
         });
@@ -221,7 +224,7 @@ export default class PersonalData {
             hideLoading();
             handleSucsess('Changing quantity was successful!');
           } catch (error) {
-            console.error(`Failed to change quantity: ${error}`);
+            console.log(`Failed to change quantity: ${error}`);
             handleError(new Error('Failed to change quantity'), `Failed to change quantity! ${error}`);
           }
         });
@@ -269,7 +272,7 @@ export default class PersonalData {
           hideLoading();
           handleSucsess('Removing product from the cart was successful!');
         } catch (error) {
-          console.error(`Failed to delete product: ${error}`);
+          console.log(`Failed to delete product: ${error}`);
           handleError(
             new Error('Failed to delete product from the cart'),
             `Failed to delete product from the cart! ${error}`
@@ -279,6 +282,42 @@ export default class PersonalData {
     }
 
     return basketPage;
+  }
+
+  private updateTotalPrice() {
+    this.titlePrice.getElement().textContent = `${(this.cart.totalPrice.centAmount / 100).toFixed(2)} $`;
+  }
+
+  private async applyDiscountCode() {
+    const discountCode = this.promoInput.getElement().value;
+    if (!discountCode) {
+      handleSucsess('Please enter a discount code.');
+      return;
+    }
+
+    try {
+      showLoading();
+      const updatedCart = await addDiscountCodeToCart(this.cart, discountCode);
+      this.cart! = updatedCart!;
+      // this.updateTotalPrice(updatedCart!);
+      handleSucsess('Discount code applied successfully!');
+
+      this.promoButton.getElement().textContent = 'Your promocode applied';
+      this.promoInput.getElement().value = '';
+
+      this.promoButton.getElement().disabled = true;
+      this.promoInput.getElement().disabled = true;
+
+      this.updateTotalPrice();
+    } catch (error) {
+      console.log('Caught error:', error);
+      const customError = error as CustomError;
+      const errorMessage = customError.body?.message || 'Error applying discount code';
+      console.log('Error message:', errorMessage);
+      handleError(customError, errorMessage);
+    } finally {
+      hideLoading();
+    }
   }
 
   getElement() {

@@ -1,5 +1,6 @@
-import { Cart } from '@commercetools/platform-sdk';
+import { Cart, CartAddDiscountCodeAction } from '@commercetools/platform-sdk';
 import { apiRoot } from './BuildClient';
+import { CustomError } from '../app/types/types';
 
 export const createAnonymousCart = async () => {
   try {
@@ -16,7 +17,7 @@ export const createAnonymousCart = async () => {
     console.log('New Anonymous Cart created:', response.body);
     return response.body;
   } catch (error) {
-    console.error('Error creating anonymous cart:', error);
+    console.log('Error creating anonymous cart:', error);
     throw error;
   }
 };
@@ -27,7 +28,7 @@ export const getCartByID = async (cartId: string) => {
     console.log('Existing Cart by ID:', response.body);
     return response.body;
   } catch (error) {
-    console.error('Error getting cart by ID:', error);
+    console.log('Error getting cart by ID:', error);
     throw error;
   }
 };
@@ -47,7 +48,7 @@ export const createCustomerCart = async (customerId: string) => {
     console.log('Customer Cart created:', response.body);
     return response.body;
   } catch (error) {
-    console.error('Error creating customer cart:', error);
+    console.log('Error creating customer cart:', error);
     throw error;
   }
 };
@@ -74,7 +75,7 @@ export const addProductToCart = async (cart: Cart, productId: string) => {
     console.log('Product added in cart:', response.body);
     return response.body;
   } catch (error) {
-    console.error('Error adding product in cart:', error);
+    console.log('Error adding product in cart:', error);
     throw error;
   }
 };
@@ -101,7 +102,7 @@ export const changeQuantityProductsInCart = async (cart: Cart, lineItemId: strin
     console.log('Quantity changed in cart:', response.body);
     return response.body;
   } catch (error) {
-    console.error('Error changing quantity in cart:', error);
+    console.log('Error changing quantity in cart:', error);
     throw error;
   }
 };
@@ -127,7 +128,7 @@ export const removeProductFromCart = async (cart: Cart, lineItemId: string) => {
     console.log('Product added in cart:', response.body);
     return response.body;
   } catch (error) {
-    console.error('Error adding product in cart:', error);
+    console.log('Error adding product in cart:', error);
     throw error;
   }
 };
@@ -147,7 +148,7 @@ export const removeCart = async (cart: Cart) => {
     console.log('Product added in cart:', response.body);
     return response.body;
   } catch (error) {
-    console.error('Error adding product in cart:', error);
+    console.log('Error adding product in cart:', error);
     throw error;
   }
 };
@@ -173,7 +174,7 @@ export const mergeCartByCustomerID = async (cart: Cart, customerId: string) => {
     console.log('Product added in cart:', response.body);
     return response.body;
   } catch (error) {
-    console.error('Error adding product in cart:', error);
+    console.log('Error adding product in cart:', error);
     throw error;
   }
 };
@@ -184,7 +185,35 @@ export const getCartByCustomerID = async (customerId: string) => {
     console.log('Existing Cart by ID:', response.body);
     return response.body;
   } catch (error) {
-    console.error('Error getting cart by ID:', error);
+    console.log('Error getting cart by ID:', error);
     throw error;
+  }
+};
+
+export const addDiscountCodeToCart = async (cart: Cart, discountCode: string): Promise<Cart> => {
+  try {
+    const addDiscountCodeAction: CartAddDiscountCodeAction = {
+      action: 'addDiscountCode',
+      code: discountCode,
+    };
+
+    const response = await apiRoot
+      .carts()
+      .withId({ ID: cart.id })
+      .post({
+        body: {
+          version: cart.version,
+          actions: [addDiscountCodeAction],
+        },
+      })
+      .execute();
+
+    const updatedCart = response.body;
+    console.log('Discount code added successfully:', updatedCart);
+    return updatedCart;
+  } catch (error: unknown) {
+    const customError = error as CustomError;
+    console.log('Error adding discount code to cart:', customError);
+    throw new Error(customError.body?.message || 'Failed to add discount code');
   }
 };

@@ -202,7 +202,7 @@ export default class PersonalData {
         hideLoading();
         handleSucsess('The profile change was successful!');
       } catch (error) {
-        console.error(`Failed to change address: ${error}`);
+        console.log(`Failed to change address: ${error}`);
         handleError(new Error('Failed to change profile'), `Failed to change profile! ${error}`);
       }
     });
@@ -299,7 +299,7 @@ export default class PersonalData {
         hideLoading();
         handleSucsess('The password change was successful!');
       } catch (error) {
-        console.error(`Failed to change password: ${error}`);
+        console.log(`Failed to change password: ${error}`);
         handleError(new Error('Failed to change password'), `Failed to change password! ${error}`);
       }
     });

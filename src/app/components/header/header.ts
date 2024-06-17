@@ -8,6 +8,7 @@ import State, { KEY_USER_ID } from '../../state/state';
 import { searchProduct, sortProductClothing, sortProductShoes, sortProductAccessories } from '../../../api/project';
 import Products from '../../pages/main/products/products';
 import Navbar from '../navbar/navbar';
+import Banner from '../banner/mainBanner';
 import { showLoading, hideLoading, handleError, handleSucsess } from '../../utils/showmessage';
 import { createAnonymousCart } from '../../../api/cart';
 
@@ -163,16 +164,18 @@ export default class Header extends Layout {
           if (mainElement) {
             mainElement.innerHTML = '';
             const navbar = new Navbar(this.router, this.products);
+            const banner = new Banner(this.router);
+            mainElement.appendChild(banner.getHtmlElement());
             mainElement.appendChild(navbar.getHtmlElement());
             mainElement.appendChild(this.products.getHtmlElement());
           } else {
-            console.error('Main element not found.');
+            console.log('Main element not found.');
           }
         } else {
           console.log('No sort results found.');
         }
       } catch (error) {
-        console.error('ERROR during sorting:', error);
+        console.log('ERROR during sorting:', error);
         handleError(error as Error, 'Error during sorting');
       } finally {
         hideLoading();
@@ -202,7 +205,7 @@ export default class Header extends Layout {
         if (buttonName && buttonNames[buttonName]) {
           handleClick(buttonNames[buttonName]);
         } else {
-          console.error('Button name not found or invalid:', buttonName);
+          console.log('Button name not found or invalid:', buttonName);
         }
       }
     });
@@ -246,13 +249,13 @@ export default class Header extends Layout {
               mainElement.appendChild(navbar.getHtmlElement());
               mainElement.appendChild(this.products.getHtmlElement());
             } else {
-              console.error('Main element not found.');
+              console.log('Main element not found.');
             }
           } else {
             console.log('No search results found.');
           }
         } catch (error) {
-          console.error('ERROR during search:', error);
+          console.log('ERROR during search:', error);
         } finally {
           hideLoading();
         }
@@ -260,7 +263,7 @@ export default class Header extends Layout {
 
       console.log('Search bar created with input and button.');
     } else {
-      console.error('Container element is null, cannot append search bar.');
+      console.log('Container element is null, cannot append search bar.');
     }
   }
 
@@ -302,7 +305,7 @@ export default class Header extends Layout {
                 hideLoading();
                 handleSucsess('Creating new cart after logout was successful!!');
               } catch (error) {
-                console.error(`Failed to create new cart after logout: ${error}`);
+                console.log(`Failed to create new cart after logout: ${error}`);
                 handleError(
                   new Error('Failed to create new cart after logout'),
                   `Failed to create new cart after logout! ${error}`
@@ -322,7 +325,7 @@ export default class Header extends Layout {
         this.headerLinkElements.set(Pages[key].toUpperCase(), linkElement);
       });
     } else {
-      console.error('Navigation element is null, cannot update links.');
+      console.log('Navigation element is null, cannot update links.');
     }
   }
 

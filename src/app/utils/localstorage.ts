@@ -1,5 +1,5 @@
 import { apiRoot } from '../../api/BuildClient';
-import { getCartByID } from '../../api/cart';
+import { getCartByID, addDiscountCodeToCart } from '../../api/cart';
 import { CartItem } from '../types/types';
 
 interface UserInfo {
@@ -13,7 +13,6 @@ interface UserInfo {
 
 export const parseRequestUrl = () => {
   const address = document.location.hash.slice(1).split('?')[0];
-
   const queryString =
     document.location.hash.slice(1).split('?').length === 2 ? document.location.hash.slice(1).split('?')[1] : '';
 
@@ -40,26 +39,29 @@ export const rerender = async (component: Component): Promise<void> => {
     mainContainer.innerHTML = await component.render();
     await component.after_render();
   } else {
-    console.error('Main container not found');
+    console.log('Main container not found');
   }
 };
 
-export const getCartItems = (): CartItem[] => {
+const getCartItems = (): CartItem[] => {
   const cartItemsString: string | null = localStorage.getItem('cartItems');
   const cartItems: CartItem[] = cartItemsString ? JSON.parse(cartItemsString) : [];
   return cartItems;
 };
 
-export const setCartItems = (cartItems: CartItem[]): void => {
+const setCartItems = (cartItems: CartItem[]): void => {
   localStorage.setItem('cartItems', JSON.stringify(cartItems));
 };
 
 const addToCart = async (item: CartItem, forceUpdate = false): Promise<void> => {
   const cartItems = getCartItems();
   const existItemIndex = cartItems.findIndex((x: CartItem) => x.product === item.product);
+
   if (existItemIndex !== -1) {
     if (forceUpdate) {
       cartItems[existItemIndex] = item;
+    } else {
+      cartItems[existItemIndex].quantityInStock += item.quantityInStock;
     }
   } else {
     cartItems.push(item);
@@ -107,7 +109,7 @@ const addToCart = async (item: CartItem, forceUpdate = false): Promise<void> => 
         .execute();
     }
   } catch (error) {
-    console.error('Error adding item to anonymous cart:', error);
+    console.log('Error adding item to anonymous cart:', error);
   }
 };
 
@@ -137,9 +139,15 @@ const removeFromCart = async (id: string): Promise<void> => {
         .execute();
     }
   } catch (error) {
-    console.error('Error removing item from anonymous cart:', error);
+    console.log('Error removing item from anonymous cart:', error);
   }
 };
+
+export async function applyDiscountCode() {
+  const discountCode = 'ADIDASFORUS';
+  const cart = await getCartByID('anonymousCartId');
+  await addDiscountCodeToCart(cart, discountCode);
+}
 
 export { addToCart, removeFromCart };
 

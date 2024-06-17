@@ -1,12 +1,12 @@
 import { apiRoot } from '../../../api/BuildClient';
 import { setUserInfo } from '../../utils/localstorage';
 import { hideLoading, showLoading, showMessage } from '../../utils/showmessage';
-import './loginPage.scss';
 import Header from '../../components/header/header';
 import State from '../../state/state';
 import Router from '../../router/router';
 import { Pages } from '../../router/pages';
 import { getCartByID, mergeCartByCustomerID, getCartByCustomerID } from '../../../api/cart';
+import './loginPage.scss';
 
 interface User {
   name: string;
@@ -14,7 +14,7 @@ interface User {
 }
 
 export function handleError(error: Error, message: string): void {
-  console.error(error);
+  console.log(error);
   showMessage(message);
 }
 
@@ -128,7 +128,7 @@ const loginPage = {
             if (error instanceof Error) {
               handleError(error, error.message);
             } else {
-              console.error(error);
+              console.log(error);
               handleError(new Error('Invalid form data'), 'Please enter both email and password.');
             }
           }

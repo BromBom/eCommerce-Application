@@ -64,6 +64,7 @@
   padding: 0;
   margin: 0;
   justify-content: center;
+  margin-top: 630px;
 }
 
 .products li .product {
@@ -86,8 +87,8 @@
 }
 
 .product-image {
-  width: 200px;
-  height: 200px;
+  width: 100%;
+  height: auto;
 }
 
 .products li .product .product-buttons {
@@ -184,8 +185,8 @@
   }
 
   .product-image {
-    width: 150px;
-    height: 150px;
+    width: 100%;
+    height: auto;
   }
 }
 
