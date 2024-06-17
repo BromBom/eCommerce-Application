@@ -12,8 +12,6 @@ import {
   removeProductFromCart,
   removeCart,
   changeQuantityProductsInCart,
-  // getCartByCustomerID,
-  // mergeCartByCustomerID,
 } from '../../../api/cart';
 
 import './basket.scss';
