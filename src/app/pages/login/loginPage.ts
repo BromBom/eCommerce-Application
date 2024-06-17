@@ -6,7 +6,7 @@ import Header from '../../components/header/header';
 import State from '../../state/state';
 import Router from '../../router/router';
 import { Pages } from '../../router/pages';
-import { getCartByID, mergeCartByCustomerID } from '../../../api/cart';
+import { getCartByID, mergeCartByCustomerID, getCartByCustomerID } from '../../../api/cart';
 
 interface User {
   name: string;
@@ -108,11 +108,17 @@ const loginPage = {
             localStorage.setItem('newCustomer', JSON.stringify(data.customer));
             localStorage.setItem('userID', JSON.stringify(data.customer));
 
-            const anonCartID = localStorage.getItem('CurrentCartId');
-            const anonCart = await getCartByID(anonCartID!);
-            const mergedCart = await mergeCartByCustomerID(anonCart, data.customer.id);
-            localStorage.setItem('CurrentCartId', mergedCart.id);
-            localStorage.setItem('CurrentCart', JSON.stringify(mergedCart));
+            const cartCustomerID = await getCartByCustomerID(data.customer.id);
+            if (cartCustomerID) {
+              localStorage.setItem('CurrentCartId', cartCustomerID.id);
+              localStorage.setItem('CurrentCart', JSON.stringify(cartCustomerID));
+            } else {
+              const anonCartID = localStorage.getItem('CurrentCartId');
+              const anonCart = await getCartByID(anonCartID!);
+              const mergedCart = await mergeCartByCustomerID(anonCart, data.customer.id);
+              localStorage.setItem('CurrentCartId', mergedCart.id);
+              localStorage.setItem('CurrentCart', JSON.stringify(mergedCart));
+            }
 
             header.configureView();
 

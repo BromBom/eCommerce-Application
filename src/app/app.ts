@@ -84,7 +84,6 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            console.log(10);
             const navbar = new Navbar(this.router, this.products);
             const productsPage = new Products(this.router);
             this.setContent(Pages.Product, productsPage, navbar);
@@ -102,7 +101,6 @@ export default class App {
         callback: async () => {
           showLoading();
           try {
-            console.log(10);
             const navbar = new Navbar(this.router, this.products);
             const productsPage = new Products(this.router);
             this.setContent(Pages.PRODUCT, productsPage, navbar);
