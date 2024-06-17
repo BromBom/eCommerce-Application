@@ -29,3 +29,31 @@
 .detail__cart-buttons__btn-remove {
   background-color: #ff0000;
 }
+
+.cardDetailPage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .details-image {
+    width: 100%;
+  }
+
+  // .product-image {
+  //   width: 150px;
+  //   height: 150px;
+  // }
+}
+
+@media (max-width: 480px) {
+  // .products li .product {
+  //   width: 100%;
+  // }
+
+  // .product-image {
+  //   width: 100%;
+  //   height: auto;
+  // }
+}

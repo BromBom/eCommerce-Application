@@ -2,7 +2,6 @@ import './profileCard.scss';
 import BaseComponent from '../../../components/baseComponent/baseComponent';
 import Layout from '../../../layout/layout';
 import { IProfile } from '../../../../data/team';
-// import '../../../../assets/igor.jpg';
 
 export default class ProfileCard extends Layout {
   profileCard: IProfile;
