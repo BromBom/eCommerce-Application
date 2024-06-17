@@ -103,6 +103,7 @@ export default class ProductDetail extends Layout {
     const imageElement = document.createElement('img');
     imageElement.src = this.card.image;
     imageElement.alt = this.card.name;
+    imageElement.classList.add('details-image');
 
     this.innerContent = imageElement;
 

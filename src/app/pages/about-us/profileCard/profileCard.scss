@@ -53,9 +53,58 @@
 
   .label-tag {
     font-weight: 700;
+    display: block;
+    width: 60px;
+    word-wrap: break-word;
   }
 
   .bio {
     font-style: italic;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-card {
+    flex-direction: column;
+    width: 90%;
+    align-items: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .profile-card {
+    flex-direction: column;
+    width: 90%;
+    align-items: center;
+
+    .text-wrapper {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-card {
+    flex-direction: column;
+    width: 90%;
+    align-items: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .profile-card {
+    flex-direction: column;
+    width: 90%;
+    align-items: center;
+
+    .text-wrapper {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
   }
 }

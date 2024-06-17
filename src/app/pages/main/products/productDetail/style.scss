@@ -29,3 +29,15 @@
 .detail__cart-buttons__btn-remove {
   background-color: #ff0000;
 }
+
+.cardDetailPage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .details-image {
+    width: 100%;
+  }
+}
