@@ -22,7 +22,7 @@ export const searchProduct = async (query: string): Promise<ProductProjectionPag
     .execute()
     .then((response) => response.body)
     .catch((error) => {
-      console.error('ERROR during search:', error);
+      console.log('ERROR during search:', error);
       throw error;
     });
 };

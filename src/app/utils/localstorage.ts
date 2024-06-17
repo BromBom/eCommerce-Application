@@ -39,7 +39,7 @@ export const rerender = async (component: Component): Promise<void> => {
     mainContainer.innerHTML = await component.render();
     await component.after_render();
   } else {
-    console.error('Main container not found');
+    console.log('Main container not found');
   }
 };
 
@@ -109,7 +109,7 @@ const addToCart = async (item: CartItem, forceUpdate = false): Promise<void> => 
         .execute();
     }
   } catch (error) {
-    console.error('Error adding item to anonymous cart:', error);
+    console.log('Error adding item to anonymous cart:', error);
   }
 };
 
@@ -139,7 +139,7 @@ const removeFromCart = async (id: string): Promise<void> => {
         .execute();
     }
   } catch (error) {
-    console.error('Error removing item from anonymous cart:', error);
+    console.log('Error removing item from anonymous cart:', error);
   }
 };
 

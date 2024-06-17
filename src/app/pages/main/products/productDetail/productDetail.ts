@@ -69,7 +69,7 @@ export default class ProductDetail extends Layout {
         this.configureView();
       }
     } catch (error) {
-      console.error('Failed to initialize ProductDetail:', error);
+      console.log('Failed to initialize ProductDetail:', error);
     }
   }
 
@@ -82,7 +82,7 @@ export default class ProductDetail extends Layout {
       }
       [productById] = response.body.results;
     } catch (error) {
-      console.error('Error fetching product:', error);
+      console.log('Error fetching product:', error);
       throw new Error('Failed to get product information');
     }
     return productById;
@@ -90,7 +90,7 @@ export default class ProductDetail extends Layout {
 
   configureView() {
     if (!this.card) {
-      console.error('No card data available');
+      console.log('No card data available');
       return;
     }
 
@@ -178,7 +178,7 @@ export default class ProductDetail extends Layout {
         hideLoading();
         handleSucsess('Adding product to cart was successful!!');
       } catch (error) {
-        console.error(`Failed to click button "buy now": ${error}`);
+        console.log(`Failed to click button "buy now": ${error}`);
         handleError(new Error('Failed to click button "buy now"'), `Failed to click button "buy now"! ${error}`);
       }
     });
@@ -197,7 +197,7 @@ export default class ProductDetail extends Layout {
         hideLoading();
         handleSucsess('Removing product from the cart was successful!');
       } catch (error) {
-        console.error(`Failed to delete product: ${error}`);
+        console.log(`Failed to delete product: ${error}`);
         handleError(
           new Error('Failed to delete product from the cart'),
           `Failed to delete product from the cart! ${error}`
@@ -210,7 +210,7 @@ export default class ProductDetail extends Layout {
 
   getElement() {
     if (!this.element) {
-      console.error('Element is not initialized yet');
+      console.log('Element is not initialized yet');
     }
     return this.element;
   }

@@ -166,7 +166,7 @@ export default class RegForm {
         this.router.navigate(Pages.PRODUCT);
         hideLoading();
       } catch (error) {
-        console.error(`Failed to create customer: ${error}`);
+        console.log(`Failed to create customer: ${error}`);
         handleError(new Error('Failed to create customer'), `Failed to create customer! ${error}`);
       }
     });

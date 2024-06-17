@@ -43,7 +43,7 @@ export default class Products extends Layout {
         localStorage.setItem('CurrentCart', JSON.stringify(currentBasket));
       }
     } catch (error) {
-      console.error(`Failed to create cart: ${error}`);
+      console.log(`Failed to create cart: ${error}`);
       handleError(new Error('Failed to create cart'), `Failed to create cart! ${error}`);
     }
   }
@@ -58,7 +58,7 @@ export default class Products extends Layout {
       const products: ProductProjection[] = response.body.results;
       await this.updateProducts(products);
     } catch (error) {
-      console.error(error);
+      console.log(error);
       this.setHTMLContent('<div class="error">Failed to load products</div>');
     }
   }
@@ -155,7 +155,7 @@ export default class Products extends Layout {
           hideLoading();
           handleSucsess('Adding product to cart was successful!!');
         } catch (error) {
-          console.error(`Failed to click button "buy now": ${error}`);
+          console.log(`Failed to click button "buy now": ${error}`);
           handleError(new Error('Failed to click button "buy now"'), `Failed to click button "buy now"! ${error}`);
         }
         target.textContent = 'Already in cart';

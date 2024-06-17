@@ -134,7 +134,7 @@ export default class PersonalData {
             hideLoading();
             handleSucsess('Removing product from the cart was successful!');
           } catch (error) {
-            console.error(`Failed to delete product: ${error}`);
+            console.log(`Failed to delete product: ${error}`);
             handleError(
               new Error('Failed to delete product from the cart'),
               `Failed to delete product from the cart! ${error}`
@@ -174,7 +174,7 @@ export default class PersonalData {
               handleSucsess('Changing quantity was successful!');
             }
           } catch (error) {
-            console.error(`Failed to change quantity: ${error}`);
+            console.log(`Failed to change quantity: ${error}`);
             handleError(new Error('Failed to change quantity'), `Failed to change quantity! ${error}`);
           }
         });
@@ -199,7 +199,7 @@ export default class PersonalData {
             hideLoading();
             handleSucsess('Changing quantity was successful!');
           } catch (error) {
-            console.error(`Failed to change quantity: ${error}`);
+            console.log(`Failed to change quantity: ${error}`);
             handleError(new Error('Failed to change quantity'), `Failed to change quantity! ${error}`);
           }
         });
@@ -224,7 +224,7 @@ export default class PersonalData {
             hideLoading();
             handleSucsess('Changing quantity was successful!');
           } catch (error) {
-            console.error(`Failed to change quantity: ${error}`);
+            console.log(`Failed to change quantity: ${error}`);
             handleError(new Error('Failed to change quantity'), `Failed to change quantity! ${error}`);
           }
         });
@@ -272,7 +272,7 @@ export default class PersonalData {
           hideLoading();
           handleSucsess('Removing product from the cart was successful!');
         } catch (error) {
-          console.error(`Failed to delete product: ${error}`);
+          console.log(`Failed to delete product: ${error}`);
           handleError(
             new Error('Failed to delete product from the cart'),
             `Failed to delete product from the cart! ${error}`
@@ -310,10 +310,10 @@ export default class PersonalData {
 
       this.updateTotalPrice();
     } catch (error) {
-      console.error('Caught error:', error);
+      console.log('Caught error:', error);
       const customError = error as CustomError;
       const errorMessage = customError.body?.message || 'Error applying discount code';
-      console.error('Error message:', errorMessage);
+      console.log('Error message:', errorMessage);
       handleError(customError, errorMessage);
     } finally {
       hideLoading();

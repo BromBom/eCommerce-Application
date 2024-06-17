@@ -27,7 +27,7 @@ class LoginPageLayout extends Layout {
         loginPage.after_render(this.router, this.state, this.header);
       }, 0);
     } else {
-      console.error('Failed to initialize login page: view element is null');
+      console.log('Failed to initialize login page: view element is null');
     }
   }
 }
