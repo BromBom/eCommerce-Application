@@ -16,3 +16,15 @@
 .copyright {
   text-align: right;
 }
+
+@media (max-width: 400px) {
+  .footer-container {
+    flex-direction: column;
+    width: 90%;
+    align-items: center;
+  }
+
+  .copyright {
+    text-align: left;
+  }
+}
