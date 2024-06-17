@@ -153,7 +153,7 @@ export const removeCart = async (cart: Cart) => {
   }
 };
 
-export const addDiscountCodeToCart = async (cart: Cart, discountCode: string): Promise<void> => {
+export const addDiscountCodeToCart = async (cart: Cart, discountCode: string): Promise<Cart> => {
   try {
     const addDiscountCodeAction: CartAddDiscountCodeAction = {
       action: 'addDiscountCode',
@@ -173,6 +173,7 @@ export const addDiscountCodeToCart = async (cart: Cart, discountCode: string): P
 
     const updatedCart = response.body;
     console.log('Discount code added successfully:', updatedCart);
+    return updatedCart;
   } catch (error: unknown) {
     const customError = error as CustomError;
     console.error('Error adding discount code to cart:', customError);

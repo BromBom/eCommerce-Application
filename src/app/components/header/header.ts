@@ -8,6 +8,7 @@ import State, { KEY_USER_ID } from '../../state/state';
 import { searchProduct, sortProductClothing, sortProductShoes, sortProductAccessories } from '../../../api/project';
 import Products from '../../pages/main/products/products';
 import Navbar from '../navbar/navbar';
+import Banner from '../banner/mainBanner';
 import { showLoading, hideLoading, handleError } from '../../utils/showmessage';
 
 const NamePages: { [key: string]: string } = {
@@ -162,6 +163,8 @@ export default class Header extends Layout {
           if (mainElement) {
             mainElement.innerHTML = '';
             const navbar = new Navbar(this.router, this.products);
+            const banner = new Banner(this.router);
+            mainElement.appendChild(banner.getHtmlElement());
             mainElement.appendChild(navbar.getHtmlElement());
             mainElement.appendChild(this.products.getHtmlElement());
           } else {

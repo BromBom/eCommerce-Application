@@ -284,6 +284,10 @@ export default class PersonalData {
     return basketPage;
   }
 
+  private updateTotalPrice() {
+    this.titlePrice.getElement().textContent = `${(this.cart.totalPrice.centAmount / 100).toFixed(2)} $`;
+  }
+
   private async applyDiscountCode() {
     const discountCode = this.promoInput.getElement().value;
     if (!discountCode) {
@@ -293,7 +297,9 @@ export default class PersonalData {
 
     try {
       showLoading();
-      await addDiscountCodeToCart(this.cart, discountCode);
+      const updatedCart = await addDiscountCodeToCart(this.cart, discountCode);
+      this.cart! = updatedCart!;
+      // this.updateTotalPrice(updatedCart!);
       handleSucsess('Discount code applied successfully!');
 
       this.promoButton.getElement().textContent = 'Your promocode applied';
@@ -301,6 +307,8 @@ export default class PersonalData {
 
       this.promoButton.getElement().disabled = true;
       this.promoInput.getElement().disabled = true;
+
+      this.updateTotalPrice();
     } catch (error) {
       console.error('Caught error:', error);
       const customError = error as CustomError;
