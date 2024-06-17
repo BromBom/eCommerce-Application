@@ -1,5 +1,3 @@
-// import { getCartItems, removeFromCart, addToCart } from '../../../utils/localstorage';
-// import { CartItem } from '../../../types/types';
 import Router from '../../../router/router';
 import Layout from '../../../layout/layout';
 

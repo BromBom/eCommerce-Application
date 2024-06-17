@@ -180,3 +180,54 @@ export const addDiscountCodeToCart = async (cart: Cart, discountCode: string): P
     throw new Error(customError.body?.message || 'Failed to add discount code');
   }
 };
+
+// const addLineItemsToCustomerCart = async (customerCart: Cart, lineItems: LineItem[]) => {
+//   const addLineItemPromises = lineItems.map(async (lineItem) => {
+//     const sku = lineItem.variant?.sku || '';
+//     await apiRoot
+//       .carts()
+//       .withId({ ID: customerCart.id })
+//       .post({
+//         body: {
+//           version: customerCart.version,
+//           actions: [
+//             {
+//               action: 'addLineItem',
+//               sku,
+//               quantity: lineItem.quantity,
+//             },
+//           ],
+//         },
+//       })
+//       .execute();
+//   });
+
+//   await Promise.all(addLineItemPromises);
+// };
+
+// export const mergeCarts = async (anonymousCartId: string, customerId: string) => {
+//   try {
+//     const anonymousCartResponse = await apiRoot.carts().withId({ ID: anonymousCartId }).get().execute();
+//     const anonymousCart = anonymousCartResponse.body;
+
+//     const customerCartResponse = await createCustomerCart(customerId);
+//     const customerCart = customerCartResponse;
+
+//     await addLineItemsToCustomerCart(customerCart, anonymousCart.lineItems);
+
+//     await apiRoot
+//       .carts()
+//       .withId({ ID: anonymousCart.id })
+//       .delete({
+//         queryArgs: { version: anonymousCart.version },
+//       })
+//       .execute();
+
+//     console.log('Merged Cart:', customerCart);
+//     localStorage.removeItem('anonymousCartId');
+//     return customerCart;
+//   } catch (error) {
+//     console.error('Error merging carts:', error);
+//     throw error;
+//   }
+// };

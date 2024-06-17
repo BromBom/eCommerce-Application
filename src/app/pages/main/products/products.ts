@@ -1,7 +1,7 @@
-import { ProductProjection } from '@commercetools/platform-sdk';
+import { ProductProjection, Cart, Customer } from '@commercetools/platform-sdk';
 import Layout from '../../../layout/layout';
 import { queryProduct } from '../../../../api/project';
-import { addProductToCart, getCartByID } from '../../../../api/cart';
+import { addProductToCart, getCartByID, getCartByCustomerID, createAnonymousCart } from '../../../../api/cart';
 import Rating from '../../../components/rating';
 import { Pages } from '../../../router/pages';
 import Router from '../../../router/router';
@@ -23,6 +23,31 @@ export default class Products extends Layout {
     this.renderProducts();
   }
 
+  static async creatNewCart() {
+    try {
+      const customer = JSON.parse(localStorage.getItem('newCustomer')!) as Customer;
+      let currentBasket: Cart;
+      if (customer) {
+        const customerID = customer.id;
+        currentBasket = await getCartByCustomerID(customerID);
+        localStorage.setItem('CurrentCartId', currentBasket.id);
+        localStorage.setItem('CurrentCart', JSON.stringify(currentBasket));
+      } else {
+        const cartID = localStorage.getItem('CurrentCartId');
+        if (cartID) {
+          currentBasket = await getCartByID(cartID);
+        } else {
+          currentBasket = await createAnonymousCart();
+        }
+        localStorage.setItem('CurrentCartId', currentBasket.id);
+        localStorage.setItem('CurrentCart', JSON.stringify(currentBasket));
+      }
+    } catch (error) {
+      console.error(`Failed to create cart: ${error}`);
+      handleError(new Error('Failed to create cart'), `Failed to create cart! ${error}`);
+    }
+  }
+
   configureView() {
     this.setTextContent(TEXT);
   }
@@ -31,7 +56,7 @@ export default class Products extends Layout {
     try {
       const response = await queryProduct(categoryId);
       const products: ProductProjection[] = response.body.results;
-      this.updateProducts(products);
+      await this.updateProducts(products);
     } catch (error) {
       console.error(error);
       this.setHTMLContent('<div class="error">Failed to load products</div>');
@@ -39,6 +64,7 @@ export default class Products extends Layout {
   }
 
   async updateProducts(products: ProductProjection[]) {
+    await Products.creatNewCart();
     const cartID = localStorage.getItem('CurrentCartId');
     const cart = await getCartByID(cartID!);
     localStorage.setItem('CurrentCart', JSON.stringify(cart));

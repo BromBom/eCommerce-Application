@@ -9,7 +9,8 @@ import { searchProduct, sortProductClothing, sortProductShoes, sortProductAccess
 import Products from '../../pages/main/products/products';
 import Navbar from '../navbar/navbar';
 import Banner from '../banner/mainBanner';
-import { showLoading, hideLoading, handleError } from '../../utils/showmessage';
+import { showLoading, hideLoading, handleError, handleSucsess } from '../../utils/showmessage';
+import { createAnonymousCart } from '../../../api/cart';
 
 const NamePages: { [key: string]: string } = {
   LOGIN: 'Login',
@@ -200,7 +201,6 @@ export default class Header extends Layout {
     document.body.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
       if (target && target.classList.contains('additional_button')) {
-        console.log('Button clicked:', target);
         const buttonName = target.textContent?.trim();
         if (buttonName && buttonNames[buttonName]) {
           handleClick(buttonNames[buttonName]);
@@ -292,9 +292,26 @@ export default class Header extends Layout {
       Object.keys(pages).forEach((key) => {
         const pageParams = {
           name: pages[key],
-          callback: () => {
+          callback: async () => {
             if (pages[key] === 'Logout') {
               this.state.clearState();
+
+              try {
+                showLoading();
+                const currentBasket = await createAnonymousCart();
+                localStorage.setItem('CurrentCartId', currentBasket.id);
+                localStorage.setItem('CurrentCart', JSON.stringify(currentBasket));
+
+                hideLoading();
+                handleSucsess('Creating new cart after logout was successful!!');
+              } catch (error) {
+                console.error(`Failed to create new cart after logout: ${error}`);
+                handleError(
+                  new Error('Failed to create new cart after logout'),
+                  `Failed to create new cart after logout! ${error}`
+                );
+              }
+
               this.router.navigate(Pages.LOGIN);
               this.configureView();
             } else {
