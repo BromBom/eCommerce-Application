@@ -1,0 +1,31 @@
+.product {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 2.9%;
+
+  height: 100%;
+  width: 100%;
+
+  margin: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+
+  overflow-y: scroll;
+}
+
+.product-image-placeholder {
+  width: 100%;
+  height: auto;
+  background: #f0f0f0;
+}
+
+.product-image {
+  display: none;
+}
+
+.product-image.lazy {
+  display: block;
+}

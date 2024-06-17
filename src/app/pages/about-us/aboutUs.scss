@@ -1,0 +1,58 @@
+.rs-logo {
+  height: 50px;
+  width: 50px;
+  background-image: url('../../../assets/rsschool-logo.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  border: none;
+  border-width: 0;
+  border-style: none;
+  border-color: transparent;
+}
+
+.team-pic {
+  height: 150px;
+  width: 150px;
+  background-image: url('../../../assets/img/team.jfif');
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  border: none;
+  border-width: 0;
+  border-style: none;
+  border-color: transparent;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  padding: 0 0 10px 0;
+}
+
+.about-us {
+  width: 100%;
+  background-color: lightblue;
+  padding: 20px 10px;
+}
+
+.main-container {
+  margin-bottom: 100px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+.title-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 7px;
+  width: 90%;
+}
