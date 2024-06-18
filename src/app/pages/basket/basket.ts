@@ -33,6 +33,8 @@ export default class PersonalData {
 
   titlePrice: SimpleComponent<HTMLParagraphElement>;
 
+  titleFullPrice: SimpleComponent<HTMLParagraphElement>;
+
   constructor(
     public router: Router,
     public cart: Cart
@@ -51,6 +53,7 @@ export default class PersonalData {
       ['basket__price'],
       `${(this.cart.totalPrice.centAmount / 100).toFixed(2)} $`
     );
+    this.titleFullPrice = new SimpleComponent<HTMLParagraphElement>('p', ['basket__full-price'], '');
     this.element = this.init();
   }
 
@@ -105,12 +108,16 @@ export default class PersonalData {
 
       // start products list-----------------------------------------------------------------------------------------------
 
+      let fullPrice = 0;
       const productsContainer = document.createElement('div');
       productsContainer.classList.add('basket__products-container');
+
       this.cart.lineItems.forEach((product) => {
         const basketProductBox = new BasketProductBox(product);
         productsContainer.append(basketProductBox.getElement());
-
+        const quantityLineItem = +basketProductBox.inputCounter.getElement().value;
+        fullPrice += +product.price.value.centAmount * quantityLineItem;
+        console.log(fullPrice);
         basketProductBox.deleteIcon.addEventListener('click', async () => {
           try {
             showLoading();
@@ -122,6 +129,9 @@ export default class PersonalData {
             basketProductBox.element.remove();
             countProducts.textContent = `${newCart.lineItems.length}`;
             this.titlePrice.getElement().textContent = `${(newCart.totalPrice.centAmount / 100).toFixed(2)} $`;
+
+            fullPrice -= +product.price.value.centAmount * quantityLineItem;
+            this.titleFullPrice.getElement().textContent = `${(fullPrice / 100).toFixed(2)} $`;
             if (newCart.totalPrice.centAmount === 0) {
               basketContainer.innerHTML = '';
               basketContainer.append(titleBasketEmpty, linkToMain);
@@ -157,6 +167,7 @@ export default class PersonalData {
               inputValue === currentLineItem!.quantity
             ) {
               basketProductBox.inputCounter.getElement().value = `${currentLineItem!.quantity}`;
+
               hideLoading();
               handleError(new Error('Wrong quantity!'), `Wrong quantity! From 1 to 30 pcs`);
             } else {
@@ -169,6 +180,9 @@ export default class PersonalData {
               ).toFixed(2);
               basketProductBox.priceLineItem.getElement().textContent = `${currentPrice} $`;
               this.titlePrice.getElement().textContent = `${(newCart.totalPrice.centAmount / 100).toFixed(2)} $`;
+              fullPrice -= +product.price.value.centAmount * currentLineItem!.quantity;
+              fullPrice += +product.price.value.centAmount * inputValue;
+              this.titleFullPrice.getElement().textContent = `${(fullPrice / 100).toFixed(2)} $`;
 
               hideLoading();
               handleSucsess('Changing quantity was successful!');
@@ -182,6 +196,7 @@ export default class PersonalData {
         basketProductBox.buttonMines.getElement().addEventListener('click', async () => {
           const quantity = +basketProductBox.inputCounter.getElement().value - 1;
           if (quantity < 1) return;
+          fullPrice -= +product.price.value.centAmount;
           try {
             showLoading();
             const cartID = localStorage.getItem('CurrentCartId');
@@ -195,6 +210,7 @@ export default class PersonalData {
             ).toFixed(2);
             basketProductBox.priceLineItem.getElement().textContent = `${currentPrice} $`;
             this.titlePrice.getElement().textContent = `${(newCart.totalPrice.centAmount / 100).toFixed(2)} $`;
+            this.titleFullPrice.getElement().textContent = `${(fullPrice / 100).toFixed(2)} $`;
 
             hideLoading();
             handleSucsess('Changing quantity was successful!');
@@ -207,6 +223,7 @@ export default class PersonalData {
         basketProductBox.buttonPlus.getElement().addEventListener('click', async () => {
           const quantity = +basketProductBox.inputCounter.getElement().value + 1;
           if (quantity > 30) return;
+          fullPrice += +product.price.value.centAmount;
           try {
             showLoading();
             const cartID = localStorage.getItem('CurrentCartId');
@@ -220,6 +237,7 @@ export default class PersonalData {
             ).toFixed(2);
             basketProductBox.priceLineItem.getElement().textContent = `${currentPrice} $`;
             this.titlePrice.getElement().textContent = `${(newCart.totalPrice.centAmount / 100).toFixed(2)} $`;
+            this.titleFullPrice.getElement().textContent = `${(fullPrice / 100).toFixed(2)} $`;
 
             hideLoading();
             handleSucsess('Changing quantity was successful!');
@@ -237,8 +255,15 @@ export default class PersonalData {
 
       const titleTotal = new SimpleComponent<HTMLParagraphElement>('p', ['basket__total'], 'Total:').getElement();
       const titlePrice = this.titlePrice.getElement();
+      const titleFullPrice = this.titleFullPrice.getElement();
+      titleFullPrice.textContent = `${(fullPrice / 100).toFixed(2)} $`;
+      console.log(fullPrice);
 
-      totalContainer.append(titleTotal, titlePrice);
+      const priceContainer = document.createElement('div');
+      priceContainer.classList.add('basket__price-container');
+      priceContainer.append(titleFullPrice, titlePrice);
+
+      totalContainer.append(titleTotal, priceContainer);
 
       basketContainer.append(basketHeader, productsContainer, totalContainer);
 
@@ -299,7 +324,6 @@ export default class PersonalData {
       showLoading();
       const updatedCart = await addDiscountCodeToCart(this.cart, discountCode);
       this.cart! = updatedCart!;
-      // this.updateTotalPrice(updatedCart!);
       handleSucsess('Discount code applied successfully!');
 
       this.promoButton.getElement().textContent = 'Your promocode applied';
