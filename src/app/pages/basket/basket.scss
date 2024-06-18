@@ -119,6 +119,26 @@
   user-select: none;
 }
 
+.basket__price-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  .basket__full-price {
+    font-size: 22px;
+    font-weight: 600;
+    font-style: italic;
+    text-decoration: line-through;
+  }
+  
+  .basket__price {
+    font-size: 24px;
+    font-weight: 800;
+    color: #009700;
+  }
+}
+
 .basket__discount-container {
   display: flex;
   justify-content: center;

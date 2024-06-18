@@ -68,6 +68,16 @@ export default class Products extends Layout {
     const cartID = localStorage.getItem('CurrentCartId');
     const cart = await getCartByID(cartID!);
     localStorage.setItem('CurrentCart', JSON.stringify(cart));
+
+    const cartIconInHeader = document.getElementsByClassName('cart');
+    cartIconInHeader[0].innerHTML = '';
+
+    if (cart.lineItems.length) {
+      cartIconInHeader[0].innerHTML = `<div id="cart-counter"></div>`;
+      const cartCounter = document.getElementById('cart-counter');
+      cartCounter!.innerHTML = `${cart.lineItems.length}`;
+    }
+
     const productsInCart = cart.lineItems;
     const productElements = products
       .map((product: ProductProjection) => {
@@ -151,7 +161,18 @@ export default class Products extends Layout {
           const cartID = localStorage.getItem('CurrentCartId');
           const cart = await getCartByID(cartID!);
           localStorage.setItem('CurrentCart', JSON.stringify(cart));
-          await addProductToCart(cart, productId!);
+          const newCart = await addProductToCart(cart, productId!);
+
+          const cartCounter = document.getElementById('cart-counter');
+          if (cartCounter) {
+            cartCounter.innerHTML = `${newCart.lineItems.length}`;
+          } else {
+            const cartIconInHeader = document.getElementsByClassName('cart');
+            cartIconInHeader[0].innerHTML = `<div id="cart-counter"></div>`;
+            const newCartCounter = document.getElementById('cart-counter');
+            newCartCounter!.innerHTML = `${newCart.lineItems.length}`;
+          }
+
           hideLoading();
           handleSucsess('Adding product to cart was successful!!');
         } catch (error) {

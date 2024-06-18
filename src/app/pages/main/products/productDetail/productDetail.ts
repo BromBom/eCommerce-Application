@@ -175,6 +175,16 @@ export default class ProductDetail extends Layout {
         const newCart = await addProductToCart(cart, this.id!);
         localStorage.setItem('CurrentCart', JSON.stringify(newCart));
 
+        const cartCounter = document.getElementById('cart-counter');
+        if (cartCounter) {
+          cartCounter.innerHTML = `${newCart.lineItems.length}`;
+        } else {
+          const cartIconInHeader = document.getElementsByClassName('cart');
+          cartIconInHeader[0].innerHTML = `<div id="cart-counter"></div>`;
+          const newCartCounter = document.getElementById('cart-counter');
+          newCartCounter!.innerHTML = `${newCart.lineItems.length}`;
+        }
+
         hideLoading();
         handleSucsess('Adding product to cart was successful!!');
       } catch (error) {
@@ -193,6 +203,14 @@ export default class ProductDetail extends Layout {
         const productInCart = cart.lineItems.find((lineItem) => lineItem.productId === this.id);
         const newCart = await removeProductFromCart(cart, productInCart!.id);
         localStorage.setItem('CurrentCart', JSON.stringify(newCart));
+
+        const cartCounter = document.getElementById('cart-counter');
+        if (newCart.lineItems.length) {
+          cartCounter!.innerHTML = `${newCart.lineItems.length}`;
+        } else {
+          const cartIconInHeader = document.getElementsByClassName('cart');
+          cartIconInHeader[0].innerHTML = '';
+        }
 
         hideLoading();
         handleSucsess('Removing product from the cart was successful!');
