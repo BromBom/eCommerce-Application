@@ -132,13 +132,20 @@ export default class PersonalData {
 
             fullPrice -= +product.price.value.centAmount * quantityLineItem;
             this.titleFullPrice.getElement().textContent = `${(fullPrice / 100).toFixed(2)} $`;
+
             if (newCart.totalPrice.centAmount === 0) {
               basketContainer.innerHTML = '';
               basketContainer.append(titleBasketEmpty, linkToMain);
 
+              const cartIconInHeader = document.getElementsByClassName('cart');
+              cartIconInHeader[0].innerHTML = '';
+
               linkToMain.addEventListener('click', () => {
                 this.router.navigate(Pages.PRODUCT);
               });
+            } else {
+              const cartCounter = document.getElementById('cart-counter');
+              cartCounter!.innerHTML = `${newCart.lineItems.length}`;
             }
 
             hideLoading();
@@ -286,6 +293,9 @@ export default class PersonalData {
             currentBasket = await createAnonymousCart();
             localStorage.setItem('CurrentCartId', currentBasket.id);
           }
+
+          const cartIconInHeader = document.getElementsByClassName('cart');
+          cartIconInHeader[0].innerHTML = '';
 
           basketContainer.innerHTML = '';
           basketContainer.append(titleBasketEmpty, linkToMain);
