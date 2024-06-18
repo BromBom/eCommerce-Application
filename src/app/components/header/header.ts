@@ -246,6 +246,8 @@ export default class Header extends Layout {
             if (mainElement) {
               mainElement.innerHTML = '';
               const navbar = new Navbar(this.router, this.products);
+              const banner = new Banner(this.router);
+              mainElement.appendChild(banner.getHtmlElement());
               mainElement.appendChild(navbar.getHtmlElement());
               mainElement.appendChild(this.products.getHtmlElement());
             } else {
