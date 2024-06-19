@@ -304,6 +304,9 @@ export default class Header extends Layout {
                 localStorage.setItem('CurrentCartId', currentBasket.id);
                 localStorage.setItem('CurrentCart', JSON.stringify(currentBasket));
 
+                const cartIconInHeader = document.getElementsByClassName('cart');
+                cartIconInHeader[0].innerHTML = '';
+
                 hideLoading();
                 handleSucsess('Creating new cart after logout was successful!!');
               } catch (error) {
