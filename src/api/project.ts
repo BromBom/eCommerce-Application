@@ -99,3 +99,21 @@ export const filterProductListColor = async (
     })
     .execute();
 };
+
+export const filterProductListSize = async (
+  size: string
+): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
+  const sizeFilters = `variants.attributes.sizeClothing.key:"${encodeURIComponent(size)}"`;
+
+  const filters = [`productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"`, sizeFilters];
+
+  return apiRoot
+    .productProjections()
+    .search()
+    .get({
+      queryArgs: {
+        filter: filters,
+      },
+    })
+    .execute();
+};

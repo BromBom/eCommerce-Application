@@ -1,6 +1,6 @@
 import { ClientResponse, ProductProjectionPagedSearchResponse, ProductProjection } from '@commercetools/platform-sdk';
 import Layout from '../../layout/layout';
-import { queryProduct, sortProductbyASC, filterProductListColor } from '../../../api/project';
+import { queryProduct, sortProductbyASC, filterProductListColor, filterProductListSize } from '../../../api/project';
 import { hideLoading, showLoading, handleError } from '../../utils/showmessage';
 import Products from '../../pages/main/products/products';
 import Router from '../../router/router';
@@ -8,7 +8,7 @@ import Router from '../../router/router';
 import './navbar.scss';
 
 interface FilterCriteria {
-  sizes: string[];
+  sizeFilters: string;
   priceRange: [number, number];
   types: string[];
   genders: string[];
@@ -34,7 +34,7 @@ export default class Navbar extends Layout {
     this.router = router;
     this.products = products;
     this.filters = {
-      sizes: [],
+      sizeFilters: '',
       priceRange: [0, 1000],
       types: [],
       genders: [],
@@ -220,10 +220,10 @@ export default class Navbar extends Layout {
   }
 
   applyFilters() {
-    const sizes: string[] = [];
     const types: string[] = [];
     const genders: string[] = [];
     const colors: string[] = [];
+    const { sizeFilters } = this.filters;
     const { currentColor } = this.filters;
     const { currentIdTypes } = this.filters;
     let discount = false;
@@ -231,9 +231,9 @@ export default class Navbar extends Layout {
     const sizeSmall = document.getElementById('size-small') as HTMLInputElement;
     const sizeMedium = document.getElementById('size-medium') as HTMLInputElement;
     const sizeLarge = document.getElementById('size-large') as HTMLInputElement;
-    if (sizeSmall.checked) sizes.push('Small');
-    if (sizeMedium.checked) sizes.push('Medium');
-    if (sizeLarge.checked) sizes.push('Large');
+    if (sizeSmall.checked) this.filters.sizeFilters = 'S';
+    else if (sizeMedium.checked) this.filters.sizeFilters = 'M';
+    else if (sizeLarge.checked) this.filters.sizeFilters = 'L';
 
     const typeClothing = document.getElementById('type-clothing') as HTMLInputElement;
     const typeShoes = document.getElementById('type-shoes') as HTMLInputElement;
@@ -260,7 +260,7 @@ export default class Navbar extends Layout {
     discount = discountCheckbox.checked;
 
     this.filters = {
-      sizes,
+      sizeFilters,
       priceRange: [0, (document.getElementById('price-range') as HTMLInputElement).valueAsNumber],
       types,
       genders,
@@ -276,41 +276,22 @@ export default class Navbar extends Layout {
   async fetchFilteredProducts() {
     try {
       showLoading();
+
       const colorResponse: ClientResponse<ProductProjectionPagedSearchResponse> = await filterProductListColor(
         this.filters.currentColor
       );
-      const products: ProductProjection[] = colorResponse.body.results;
+      const colorProducts: ProductProjection[] = colorResponse.body.results;
 
-      const filteredProducts = products.filter((product) => {
-        const attributes = product.masterVariant.attributes as { name: string; value: string }[];
-        const sizeAttribute = attributes.find((attr) => attr.name === 'size');
-        const genderAttribute = attributes.find((attr) => attr.name === 'gender');
-        const colorAttribute = attributes.find((attr) => attr.name === 'color');
-        const discountedAttribute = attributes.find((attr) => attr.name === 'discounted');
+      const sizeResponse: ClientResponse<ProductProjectionPagedSearchResponse> = await filterProductListSize(
+        this.filters.sizeFilters
+      );
+      const sizeProducts: ProductProjection[] = sizeResponse.body.results;
 
-        const matchesSizes = this.filters.sizes.length
-          ? sizeAttribute && this.filters.sizes.includes(sizeAttribute.value)
-          : true;
-        const matchesGenders = this.filters.genders.length
-          ? genderAttribute && this.filters.genders.includes(genderAttribute.value)
-          : true;
-        const matchesColors = this.filters.colors.length
-          ? colorAttribute && this.filters.colors.includes(colorAttribute.value)
-          : true;
-        const matchesDiscount = this.filters.discount
-          ? discountedAttribute && discountedAttribute.value === 'true'
-          : true;
-        const matchesPrice =
-          product.masterVariant?.prices?.some(
-            (price) =>
-              price.value.centAmount >= this.filters.priceRange[0] * 100 &&
-              price.value.centAmount <= this.filters.priceRange[1] * 100
-          ) ?? false;
+      const filteredProducts = Navbar.combineFilteredResults(colorProducts, sizeProducts);
 
-        return matchesSizes && matchesGenders && matchesColors && matchesDiscount && matchesPrice;
-      });
+      const finalFilteredProducts = this.applyOtherFilters(filteredProducts);
 
-      this.products.updateProducts(filteredProducts);
+      this.products.updateProducts(finalFilteredProducts);
     } catch (error) {
       if (error instanceof Error) {
         handleError(error, 'Failed to load products.');
@@ -318,5 +299,44 @@ export default class Navbar extends Layout {
     } finally {
       hideLoading();
     }
+  }
+
+  static combineFilteredResults(
+    colorProducts: ProductProjection[],
+    sizeProducts: ProductProjection[]
+  ): ProductProjection[] {
+    const combinedSet = new Set([...colorProducts, ...sizeProducts]);
+    return Array.from(combinedSet);
+  }
+
+  private applyOtherFilters(products: ProductProjection[]): ProductProjection[] {
+    return products.filter((product) => {
+      const attributes = product.masterVariant.attributes as { name: string; value: string }[];
+      const sizeAttribute = attributes.find((attr) => attr.name === 'size');
+      const genderAttribute = attributes.find((attr) => attr.name === 'gender');
+      const colorAttribute = attributes.find((attr) => attr.name === 'color');
+      const discountedAttribute = attributes.find((attr) => attr.name === 'discounted');
+
+      const matchesSizes = this.filters.sizeFilters.length
+        ? sizeAttribute && this.filters.sizeFilters.includes(sizeAttribute.value)
+        : true;
+      const matchesGenders = this.filters.genders.length
+        ? genderAttribute && this.filters.genders.includes(genderAttribute.value)
+        : true;
+      const matchesColors = this.filters.colors.length
+        ? colorAttribute && this.filters.colors.includes(colorAttribute.value)
+        : true;
+      const matchesDiscount = this.filters.discount
+        ? discountedAttribute && discountedAttribute.value === 'true'
+        : true;
+      const matchesPrice =
+        product.masterVariant?.prices?.some(
+          (price) =>
+            price.value.centAmount >= this.filters.priceRange[0] * 100 &&
+            price.value.centAmount <= this.filters.priceRange[1] * 100
+        ) ?? false;
+
+      return matchesSizes && matchesGenders && matchesColors && matchesDiscount && matchesPrice;
+    });
   }
 }
