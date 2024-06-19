@@ -1,6 +1,12 @@
 import { ClientResponse, ProductProjectionPagedSearchResponse, ProductProjection } from '@commercetools/platform-sdk';
 import Layout from '../../layout/layout';
-import { queryProduct, sortProductbyASC, filterProductListColor, filterProductListSize } from '../../../api/project';
+import {
+  queryProduct,
+  sortProductbyASC,
+  filterProductListColor,
+  filterProductListSize,
+  filterProductSpec,
+} from '../../../api/project';
 import { hideLoading, showLoading, handleError } from '../../utils/showmessage';
 import Products from '../../pages/main/products/products';
 import Router from '../../router/router';
@@ -10,7 +16,7 @@ import './navbar.scss';
 interface FilterCriteria {
   sizeFilters: string;
   priceRange: [number, number];
-  types: string[];
+  spec: string;
   genders: string[];
   colors: string[];
   currentColor: string;
@@ -36,7 +42,7 @@ export default class Navbar extends Layout {
     this.filters = {
       sizeFilters: '',
       priceRange: [0, 1000],
-      types: [],
+      spec: '',
       genders: [],
       colors: [],
       currentColor: '',
@@ -114,16 +120,32 @@ export default class Navbar extends Layout {
         <div class="filter-category">
           <h3>Type of clothing</h3>
           <div class="checkbox">
-            <input type="checkbox" id="type-clothing" name="type-clothing">
-            <label for="type-clothing">Jersey</label>
+            <input type="checkbox" id="jersey" name="jersey">
+            <label for="jersey">Jersey</label>
           </div>
           <div class="checkbox">
-            <input type="checkbox" id="type-shoes" name="type-shoes">
-            <label for="type-shoes">Shirt</label>
+            <input type="checkbox" id="jacket" name="jacket">
+            <label for="jacket">Jacket</label>
           </div>
           <div class="checkbox">
-            <input type="checkbox" id="type-accessories" name="type-accessories">
-            <label for="type-accessories">Shorts</label>
+            <input type="checkbox" id="shorts" name="shorts">
+            <label for="shorts">Shorts</label>
+          </div>
+          <div class="checkbox">
+            <input type="checkbox" id="hoodie" name="hoodie">
+            <label for="hoodie">Hoodie</label>
+          </div>
+          <div class="checkbox">
+            <input type="checkbox" id="pants" name="pants">
+            <label for="pants">Pants</label>
+          </div>
+          <div class="checkbox">
+            <input type="checkbox" id="socks" name="socks">
+            <label for="socks">Socks</label>
+          </div>
+          <div class="checkbox">
+            <input type="checkbox" id="shoes" name="shoes">
+            <label for="shoes">Shoes</label>
           </div>
         </div>
         <div class="filter-category">
@@ -220,7 +242,7 @@ export default class Navbar extends Layout {
   }
 
   applyFilters() {
-    const types: string[] = [];
+    const { spec } = this.filters;
     const genders: string[] = [];
     const colors: string[] = [];
     const { sizeFilters } = this.filters;
@@ -231,16 +253,43 @@ export default class Navbar extends Layout {
     const sizeSmall = document.getElementById('size-small') as HTMLInputElement;
     const sizeMedium = document.getElementById('size-medium') as HTMLInputElement;
     const sizeLarge = document.getElementById('size-large') as HTMLInputElement;
-    if (sizeSmall.checked) this.filters.sizeFilters = 'S';
-    else if (sizeMedium.checked) this.filters.sizeFilters = 'M';
-    else if (sizeLarge.checked) this.filters.sizeFilters = 'L';
+    if (sizeSmall.checked) {
+      this.filters.sizeFilters = 'S';
+    } else if (sizeMedium.checked) {
+      this.filters.sizeFilters = 'M';
+    } else if (sizeLarge.checked) {
+      this.filters.sizeFilters = 'L';
+    }
 
-    const typeClothing = document.getElementById('type-clothing') as HTMLInputElement;
-    const typeShoes = document.getElementById('type-shoes') as HTMLInputElement;
-    const typeAccessories = document.getElementById('type-accessories') as HTMLInputElement;
-    if (typeClothing.checked) types.push('Jersey');
-    if (typeShoes.checked) types.push('Shirt');
-    if (typeAccessories.checked) types.push('Shorts');
+    const typeJersey = document.getElementById('jersey') as HTMLInputElement;
+    const typeJacket = document.getElementById('jacket') as HTMLInputElement;
+    const typeShorts = document.getElementById('shorts') as HTMLInputElement;
+    const typeHoodie = document.getElementById('hoodie') as HTMLInputElement;
+    const typePants = document.getElementById('pants') as HTMLInputElement;
+    const typeSocks = document.getElementById('socks') as HTMLInputElement;
+    const typeShoes = document.getElementById('shoes') as HTMLInputElement;
+
+    if (typeJersey.checked) {
+      this.filters.spec = 'Jersey';
+    }
+    if (typeJacket.checked) {
+      this.filters.spec = 'Jacket';
+    }
+    if (typeShorts.checked) {
+      this.filters.spec = 'Shorts';
+    }
+    if (typeHoodie.checked) {
+      this.filters.spec = 'Hoodie';
+    }
+    if (typePants.checked) {
+      this.filters.spec = 'Pants';
+    }
+    if (typeSocks.checked) {
+      this.filters.spec = 'Socks';
+    }
+    if (typeShoes.checked) {
+      this.filters.spec = 'Shoes';
+    }
 
     const genderMale = document.getElementById('gender-male') as HTMLInputElement;
     const genderFemale = document.getElementById('gender-female') as HTMLInputElement;
@@ -262,14 +311,13 @@ export default class Navbar extends Layout {
     this.filters = {
       sizeFilters,
       priceRange: [0, (document.getElementById('price-range') as HTMLInputElement).valueAsNumber],
-      types,
+      spec,
       genders,
       colors,
       currentColor,
       currentIdTypes,
       discount,
     };
-
     this.fetchFilteredProducts();
   }
 
@@ -277,17 +325,22 @@ export default class Navbar extends Layout {
     try {
       showLoading();
 
-      const colorResponse: ClientResponse<ProductProjectionPagedSearchResponse> = await filterProductListColor(
-        this.filters.currentColor
-      );
-      const colorProducts: ProductProjection[] = colorResponse.body.results;
-
       const sizeResponse: ClientResponse<ProductProjectionPagedSearchResponse> = await filterProductListSize(
         this.filters.sizeFilters
       );
       const sizeProducts: ProductProjection[] = sizeResponse.body.results;
 
-      const filteredProducts = Navbar.combineFilteredResults(colorProducts, sizeProducts);
+      const specResponse: ClientResponse<ProductProjectionPagedSearchResponse> = await filterProductSpec(
+        this.filters.spec
+      );
+      const specProducts: ProductProjection[] = specResponse.body.results;
+
+      const colorResponse: ClientResponse<ProductProjectionPagedSearchResponse> = await filterProductListColor(
+        this.filters.currentColor
+      );
+      const colorProducts: ProductProjection[] = colorResponse.body.results;
+
+      const filteredProducts = Navbar.combineFilteredResults(colorProducts, sizeProducts, specProducts);
 
       const finalFilteredProducts = this.applyOtherFilters(filteredProducts);
 
@@ -303,9 +356,10 @@ export default class Navbar extends Layout {
 
   static combineFilteredResults(
     colorProducts: ProductProjection[],
-    sizeProducts: ProductProjection[]
+    sizeProducts: ProductProjection[],
+    specProducts: ProductProjection[]
   ): ProductProjection[] {
-    const combinedSet = new Set([...colorProducts, ...sizeProducts]);
+    const combinedSet = new Set([...colorProducts, ...sizeProducts, ...specProducts]);
     return Array.from(combinedSet);
   }
 

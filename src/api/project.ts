@@ -81,13 +81,13 @@ export const sortProductbyASC = async (): Promise<ClientResponse<ProductProjecti
     })
     .execute();
 };
-
-export const filterProductListColor = async (
-  color: string
+export const filterProductListSize = async (
+  size: string
 ): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
-  const colorFilters = `variants.attributes.colortype:"${color}"`;
-
-  const filters = [`productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"`, colorFilters];
+  const filters = [`productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"`];
+  if (size) {
+    filters.push(`variants.attributes.sizeClothing.key:"${encodeURIComponent(size)}"`);
+  }
 
   return apiRoot
     .productProjections()
@@ -100,12 +100,32 @@ export const filterProductListColor = async (
     .execute();
 };
 
-export const filterProductListSize = async (
-  size: string
+export const filterProductSpec = async (
+  spec: string
 ): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
-  const sizeFilters = `variants.attributes.sizeClothing.key:"${encodeURIComponent(size)}"`;
+  const filters = [`productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"`];
+  if (spec) {
+    filters.push(`variants.attributes.prod-spec:"${encodeURIComponent(spec)}"`);
+  }
 
-  const filters = [`productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"`, sizeFilters];
+  return apiRoot
+    .productProjections()
+    .search()
+    .get({
+      queryArgs: {
+        filter: filters,
+      },
+    })
+    .execute();
+};
+
+export const filterProductListColor = async (
+  color: string
+): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
+  const filters = [`productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"`];
+  if (color) {
+    filters.push(`variants.attributes.colortype:"${encodeURIComponent(color)}"`);
+  }
 
   return apiRoot
     .productProjections()
