@@ -56,3 +56,21 @@
   gap: 7px;
   width: 90%;
 }
+
+.collaboration-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  margin-top: 30px;
+}
+
+.collab-title {
+  font-weight: bold;
+  align-self: self-start;
+}
