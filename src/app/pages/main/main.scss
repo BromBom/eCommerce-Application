@@ -1,8 +1,13 @@
+@import '../../../style.scss';
+
 .main {
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 10px;
+  min-height: 100vh;
+  flex-grow: 1;
+  max-width: $max-width;
+  width: 100%;
 }
 
 /* main container */
@@ -68,12 +73,16 @@
 }
 
 .products li .product {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 250px;
   padding: 15px;
   flex: 0 1 30rem;
   background-color: rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 24px 0 rgb(86 91 115 / 15%);
   border-radius: 25px;
+  height: 390px;
 }
 
 .products li .product:hover {

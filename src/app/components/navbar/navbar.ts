@@ -10,6 +10,7 @@ import {
 import { hideLoading, showLoading, handleError } from '../../utils/showmessage';
 import Products from '../../pages/main/products/products';
 import Router from '../../router/router';
+import Banner from '../banner/mainBanner';
 
 import './navbar.scss';
 
@@ -192,10 +193,20 @@ export default class Navbar extends Layout {
           const filtersContainer = document.querySelector('.sidebar') as HTMLElement | null;
 
           if (filtersContainer) {
-            filtersContainer.addEventListener('change', (event) => {
+            filtersContainer.addEventListener('change', async (event) => {
               const target = event.target as HTMLInputElement;
               if (target.type === 'checkbox' && target.id === 'asc') {
-                this.handleSortByPriceAsc(target.checked);
+                await this.handleSortByPriceAsc(target.checked);
+
+                const mainElement = document.querySelector('.main');
+                if (mainElement) {
+                  mainElement.innerHTML = '';
+                  const navbar = new Navbar(this.router, this.products);
+                  const banner = new Banner(this.router);
+                  mainElement.appendChild(banner.getHtmlElement());
+                  mainElement.appendChild(navbar.getHtmlElement());
+                  mainElement.appendChild(this.products.getHtmlElement());
+                }
               }
             });
 
