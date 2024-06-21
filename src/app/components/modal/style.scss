@@ -26,7 +26,6 @@
   padding: 60px 20px 20px 20px;
   border: 1px solid #888;
   width: 60vw;
-  height: 450px;
 }
 
 .image-container {
@@ -56,4 +55,11 @@
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+@media (max-width: 680px) {
+
+  .modal-content {
+    width: 90%;
+  }
 }
