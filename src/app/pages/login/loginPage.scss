@@ -225,10 +225,27 @@
 }
 
 .mt-3 {
-  pointer-events: auto;
-  margin: 0;
-  padding: 0;
-  font-family: 'Montserrat', sans-serif;
-  box-sizing: border-box;
-  margin-top: 1rem !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #dddddd;
+  border: 1px solid #7a7a7a;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    color: #ffffff;
+    background-color: #009700;
+  }
+
+  &:active {
+    background-color: #ff9900;
+  }
+}
+
+.modal-dialog-centered {
+  border-radius: 15px;
+  box-shadow: 0 4px 24px 0 hsla(230, 14%, 39%, 0.15);
+  border: none;
 }

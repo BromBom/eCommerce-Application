@@ -16,7 +16,7 @@
   justify-content: flex-start;
   width: 95%;
   border-radius: 15px;
-  box-shadow: 0 4px 24px 0 #565b7326;
+  box-shadow: 0 4px 24px 0 hsla(230, 14%, 39%, 0.15);
 }
 
 .basket__title-empty-cart {
@@ -81,11 +81,19 @@
 
 .basket__promo-button {
   padding: 5px 10px;
-  background-color: #009700;
+  background-color: #0011ff;
   color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #009700;
+  }
+
+  &:active {
+    background-color: #ff9900;
+  }
 }
 
 .basket__link-clear {

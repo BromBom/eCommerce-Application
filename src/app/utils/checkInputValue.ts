@@ -8,7 +8,7 @@ function checkInputValue(
   inputElement.setAttribute('pattern', regex);
   const massageError = massageErrorElement;
   if (inputElement.value.length <= min) {
-    massageError.textContent = `Must be more than ${min}`;
+    massageError.textContent = `Must be > ${min} char`;
   } else if (!inputElement.checkValidity()) {
     massageError.textContent = errorText;
   } else {
