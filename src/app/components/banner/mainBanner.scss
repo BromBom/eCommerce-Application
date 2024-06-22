@@ -47,7 +47,8 @@
 
 @media (max-width: 768px) {
   .mainBanner {
-    max-width: 768px;
+    display: none;
+    // max-width: 768px;
   }
 }
 

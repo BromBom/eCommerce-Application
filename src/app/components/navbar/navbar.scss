@@ -39,6 +39,7 @@
 }
 
 .color-box {
+  position: relative;
   width: 30px;
   height: 30px;
   border-radius: 15px;
@@ -46,13 +47,14 @@
   display: inline-block;
   cursor: pointer;
 }
-
-.color-box.selected {
-  width: 32px;
-  height: 32px;
-  border-radius: 15px;
-  margin: 5px 0;
-  display: inline-block;
+.color-box.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  color: white;
 }
 
 .filter-button {
@@ -127,5 +129,18 @@
   .color-box {
     width: 20px;
     height: 20px;
+  }
+}
+
+@media (max-width: 700px) {
+  .sidebar {
+    margin-top: 0;
+    width: 100%;
+  }
+
+  .sidebar-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5px;
   }
 }
