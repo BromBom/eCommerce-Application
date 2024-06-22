@@ -81,6 +81,31 @@ export default class AboutUs extends Layout {
     profileCards.forEach((card) => {
       mainContainer.addInnerElement(card.getHtmlElement());
     });
+
+    const collaborationSection = new BaseComponent<HTMLElement>({
+      tag: 'div' as keyof HTMLElementTagNameMap,
+      classNames: ['collaboration-section'],
+      text: '',
+      callback: () => null,
+    });
+
+    const collabTitle = new BaseComponent<HTMLElement>({
+      tag: 'p' as keyof HTMLElementTagNameMap,
+      classNames: ['collab-title'],
+      text: 'COLLABORATION',
+      callback: () => null,
+    });
+
+    const collabInfo = new BaseComponent<HTMLElement>({
+      tag: 'p' as keyof HTMLElementTagNameMap,
+      classNames: ['collab-info'],
+      text: 'Our team succeeded because we worked well together. We talked every other day on Discord to share ideas, make plans, and divide work evenly. Regularly talking things over helped us solve problems quickly and decide what steps to take next. This teamwork kept everyone motivated and led to a great project outcome.',
+      callback: () => null,
+    });
+
+    collaborationSection.addInnerElement(collabTitle);
+    collaborationSection.addInnerElement(collabInfo);
+    mainContainer.addInnerElement(collaborationSection);
   }
 
   static addProfilesToView(): ProfileCard[] {

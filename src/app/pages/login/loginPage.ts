@@ -157,28 +157,26 @@ const loginPage = {
     return `
       <div>
         <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="loginLabel">Login</h5>
-            </div>
-            <div class="modal-body">
-              <form id="signin-form">
-                <div class="mb-3 form-floating">
-                  <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Email" required>
-                  <div id="emailHelp" class="form-text">example@email.com</div>
-                </div>
-                <div class="mb-3 form-floating">
-                  <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
-                  <div id="passwordHelp" class="form-text">Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number</div>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="FakePSW" id="checkPassword">
-                  <label class="form-check-label" for="checkPassword">Show Password</label>
-                </div>
-                <div id="error-container" class="alert alert-danger" style="display: none;"></div>
-                <button type="submit" class="btn btn-primary mt-3">Login</button>
-              </form>
-            </div>
+          <div class="modal-header">
+            <h5 class="modal-title" id="loginLabel">Login</h5>
+          </div>
+          <div class="modal-body">
+            <form id="signin-form">
+              <div class="mb-3 form-floating">
+                <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Email" required>
+                <div id="emailHelp" class="form-text">example@email.com</div>
+              </div>
+              <div class="mb-3 form-floating">
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                <div id="passwordHelp" class="form-text">Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number</div>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="FakePSW" id="checkPassword">
+                <label class="form-check-label" for="checkPassword">Show Password</label>
+              </div>
+              <div id="error-container" class="alert alert-danger" style="display: none;"></div>
+              <button type="submit" class="btn btn-primary mt-3">Login</button>
+            </form>
           </div>
         </div>
       </div>
