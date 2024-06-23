@@ -39,20 +39,33 @@
 }
 
 .color-box {
+  position: relative;
   width: 30px;
   height: 30px;
   border-radius: 15px;
   margin: 5px 0;
   display: inline-block;
   cursor: pointer;
+  border: 1px solid;
+}
+.color-box.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  color: white;
 }
 
-.color-box.selected {
-  width: 32px;
-  height: 32px;
-  border-radius: 15px;
-  margin: 5px 0;
+.color-box.selected:nth-of-type(2)::after {
+  color: lightgrey;
+}
+
+.promocode {
   display: inline-block;
+  color: transparent;
+  user-select: none;
 }
 
 .filter-button {
@@ -127,5 +140,34 @@
   .color-box {
     width: 20px;
     height: 20px;
+  }
+}
+
+@media (max-width: 700px) {
+  .sidebar {
+    margin-top: 0;
+    width: 100%;
+  }
+
+  .sidebar-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .promocode {
+    color: black;
+    user-select: auto;
+  }
+}
+
+@media (max-width: 400px) {
+  .sidebar-container {
+    grid-template-columns: 1fr 1fr;
+    font-size: 10px;
+  }
+
+  .filter-button {
+    height: 70%;
   }
 }

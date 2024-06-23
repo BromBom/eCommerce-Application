@@ -199,6 +199,15 @@
   }
 }
 
+@media (max-width: 700px) {
+  .products {
+    margin-top: 0;
+  }
+  .main{
+    flex-direction: column;
+  }
+}
+
 @media (max-width: 480px) {
   .products li .product {
     width: 100%;
