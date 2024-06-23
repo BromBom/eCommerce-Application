@@ -157,6 +157,7 @@ export default class Navbar extends Layout {
           </div>
         </div>
         <button id="submit-filters" class="filter-button">Apply filters</button>
+        <p class="promocode">PROMOCODE: ADIDASFORUS</p>
       </div>
     </aside>
     `;
