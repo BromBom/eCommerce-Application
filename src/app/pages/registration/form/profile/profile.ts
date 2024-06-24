@@ -29,7 +29,7 @@ export default class RegProfile {
   massageErrorDate: SimpleComponent<HTMLParagraphElement>;
 
   constructor() {
-    this.legend = new SimpleComponent<HTMLLegendElement>('legend', [], 'Profile');
+    this.legend = new SimpleComponent<HTMLLegendElement>('legend', ['registration__legend'], 'Profile');
     this.inputEmail = Input(['registration__input-email']);
     this.massageErrorEmail = new SimpleComponent<HTMLParagraphElement>('p', ['registration__massage-error'], '');
     this.inputPassword = Input(['registration__input-password']);
@@ -56,7 +56,7 @@ export default class RegProfile {
         'example@email.com'
       )
     );
-    const labelEmail = creatInputWithLabel(this.inputEmail.getElement(), 'Email:', 'example@email.com', 'email');
+    const labelEmail = creatInputWithLabel(this.inputEmail.getElement(), 'Email:', 'Email', 'email');
     const msgErrEmail = this.massageErrorEmail.getElement();
 
     this.inputPassword.addListener('input', () =>
@@ -65,10 +65,10 @@ export default class RegProfile {
         this.massageErrorPassword.getElement(),
         1,
         '(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}',
-        'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number'
+        'Min 8 chars(1 upper, 1 lower, 1 num)'
       )
     );
-    const labelPassword = creatInputWithLabel(this.inputPassword.getElement(), 'Password:', 'Example-123', 'password');
+    const labelPassword = creatInputWithLabel(this.inputPassword.getElement(), 'Password:', 'Password', 'password');
     const msgErrPassword = this.massageErrorPassword.getElement();
 
     this.inputName.addListener('input', () =>
@@ -77,7 +77,7 @@ export default class RegProfile {
         this.massageErrorName.getElement(),
         1,
         '[a-zA-Z]{2,}',
-        'Must contain at least one character and no special characters or numbers'
+        'One char at least (NO spec-char or numbers)'
       )
     );
     const labelName = creatInputWithLabel(this.inputName.getElement(), 'First Name:', 'Name', 'text');
@@ -89,7 +89,7 @@ export default class RegProfile {
         this.massageErrorLastName.getElement(),
         1,
         '[a-zA-Z]{2,}',
-        'Must contain at least one character and no special characters or numbers'
+        'One char at least (NO spec-char or numbers)'
       )
     );
     const labelLastName = creatInputWithLabel(this.inputLastName.getElement(), 'Last Name:', 'Lastname', 'text');
@@ -102,11 +102,11 @@ export default class RegProfile {
     this.inputDate.addListener('change', () => {
       this.massageErrorDate.getElement().textContent = '';
       if (+this.inputDate.getElement().value.split('-')[0] < 1900) {
-        const errorMessage = 'You are too old for it! Year must be 1900 or later.';
+        const errorMessage = 'Must be > 1900';
         this.massageErrorDate.getElement().textContent = errorMessage;
       }
       if (+this.inputDate.getElement().value.split('-')[0] > 2006) {
-        const errorMessage = 'You must be at least 18 years old.';
+        const errorMessage = 'You must be < 2006';
         this.massageErrorDate.getElement().textContent = errorMessage;
       }
     });

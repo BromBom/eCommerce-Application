@@ -8,6 +8,7 @@ interface RequestParams {
 export interface RouterParams {
   path: string;
   callback: (resource: RequestParams['resource']) => void;
+  isMainPage?: boolean;
 }
 
 export default class Router {

@@ -7,22 +7,6 @@ import { ctpClient } from './BuildClient';
 
 const apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({ projectKey: 'jsfe2023q4shop' });
 
-// export const getProject = () => {
-//   return apiRoot.get().execute();
-// };
-
-// getProject().then(console.log).catch(console.error);
-
-// apiRoot
-//   .shoppingLists()
-//   .withId({ ID: 'a-shoppinglist-id' })
-//   .get()
-//   .execute()
-//   .then(({ body }) => {
-//     console.log(JSON.stringify(body));
-//   })
-//   .catch(console.error);
-
 export const searchProduct = async (query: string): Promise<ProductProjectionPagedSearchResponse> => {
   return apiRoot
     .productProjections()
@@ -32,12 +16,13 @@ export const searchProduct = async (query: string): Promise<ProductProjectionPag
         filter: `productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"`,
         'text.en-US': query,
         fuzzy: true,
+        limit: 60,
       },
     })
     .execute()
     .then((response) => response.body)
     .catch((error) => {
-      console.error('ERROR during search:', error);
+      console.log('ERROR during search:', error);
       throw error;
     });
 };
@@ -51,6 +36,7 @@ export const searchProductbyID = async (
     .get({
       queryArgs: {
         filter: `id:"${productId}"`,
+        limit: 60,
       },
     })
     .execute();
@@ -64,6 +50,7 @@ export const queryProduct = (categoryId?: string): Promise<ClientResponse<Produc
     .get({
       queryArgs: {
         filter,
+        limit: 60,
       },
     })
     .execute();
@@ -89,6 +76,7 @@ export const sortProductbyASC = async (): Promise<ClientResponse<ProductProjecti
       queryArgs: {
         filter: `productType.id:"c86ff9d5-286f-4c4f-bbb2-4dec15255c7c"`,
         sort: 'price asc',
+        limit: 60,
       },
     })
     .execute();

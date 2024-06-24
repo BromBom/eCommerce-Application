@@ -202,7 +202,7 @@ export default class PersonalData {
         hideLoading();
         handleSucsess('The profile change was successful!');
       } catch (error) {
-        console.error(`Failed to change address: ${error}`);
+        console.log(`Failed to change address: ${error}`);
         handleError(new Error('Failed to change profile'), `Failed to change profile! ${error}`);
       }
     });
@@ -218,13 +218,18 @@ export default class PersonalData {
     const inputCurrentPassword = Input(['registration__input-password']).getElement();
     const inputNewPassword = Input(['registration__input-password']).getElement();
 
-    const labelCurrentPassword = creatInputWithLabel(inputCurrentPassword, 'Current password:', '', 'password');
+    const labelCurrentPassword = creatInputWithLabel(
+      inputCurrentPassword,
+      'Current password:',
+      'Current password',
+      'password'
+    );
     const massageErrorCurrentPassword = new SimpleComponent<HTMLParagraphElement>(
       'p',
       ['registration__massage-error'],
       ''
     ).getElement();
-    const labelNewtPassword = creatInputWithLabel(inputNewPassword, 'New password:', '', 'password');
+    const labelNewtPassword = creatInputWithLabel(inputNewPassword, 'New password:', 'New password', 'password');
     const massageErrorNewPassword = new SimpleComponent<HTMLParagraphElement>(
       'p',
       ['registration__massage-error'],
@@ -237,7 +242,7 @@ export default class PersonalData {
         massageErrorCurrentPassword,
         1,
         '(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}',
-        'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number'
+        'Min 8 chars(1 upper, 1 lower, 1 num)'
       )
     );
 
@@ -247,7 +252,7 @@ export default class PersonalData {
         massageErrorNewPassword,
         1,
         '(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}',
-        'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number'
+        'Min 8 chars(1 upper, 1 lower, 1 num)'
       )
     );
 
@@ -299,7 +304,7 @@ export default class PersonalData {
         hideLoading();
         handleSucsess('The password change was successful!');
       } catch (error) {
-        console.error(`Failed to change password: ${error}`);
+        console.log(`Failed to change password: ${error}`);
         handleError(new Error('Failed to change password'), `Failed to change password! ${error}`);
       }
     });

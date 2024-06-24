@@ -53,13 +53,13 @@ export default class RegAddress {
         this.massageErrorStreet.getElement(),
         1,
         '.{2,}',
-        'Must contain at least one character'
+        'One char at least'
       )
     );
     const labelStreetNumber = creatInputWithLabel(
       this.inputStreetNumber.getElement(),
       'Apartment/Suite:',
-      '25/2a',
+      'Apartment/Suite',
       'text'
     );
     const msgErrStreetNumber = this.massageErrorStreetNumber.getElement();
@@ -70,10 +70,10 @@ export default class RegAddress {
         this.massageErrorStreet.getElement(),
         1,
         '[a-zA-Z0-9\\s\\-\\,]{2,}',
-        'Must contain at least one character'
+        'One char at least'
       )
     );
-    const labelStreet = creatInputWithLabel(this.inputStreet.getElement(), 'Street:', 'Washington', 'text');
+    const labelStreet = creatInputWithLabel(this.inputStreet.getElement(), 'Street:', 'Street', 'text');
     const msgErrStreet = this.massageErrorStreet.getElement();
 
     this.inputCity.addListener('input', () =>
@@ -82,10 +82,10 @@ export default class RegAddress {
         this.massageErrorCity.getElement(),
         1,
         '[a-zA-Z0-9\\s\\-]{2,}',
-        'Must contain at least one character'
+        'One char at least'
       )
     );
-    const labelCity = creatInputWithLabel(this.inputCity.getElement(), 'City:', 'New York', 'text');
+    const labelCity = creatInputWithLabel(this.inputCity.getElement(), 'City:', 'City', 'text');
     const msgErrCity = this.massageErrorCity.getElement();
 
     this.inputPostalCode.addListener('input', () =>
@@ -94,13 +94,13 @@ export default class RegAddress {
         this.massageErrorPostalCode.getElement(),
         4,
         '[0-9]{5}-[0-9]{5}',
-        'Must follow the format "83703-83728"'
+        'Format "83703-83728"'
       )
     );
     const labelPostalCode = creatInputWithLabel(
       this.inputPostalCode.getElement(),
       'Postal code:',
-      '83703-83728',
+      'Postal code',
       'text'
     );
     const msgErrPostalCode = this.massageErrorPostalCode.getElement();
@@ -114,7 +114,7 @@ export default class RegAddress {
         'Must be "US" only'
       )
     );
-    const labelCountry = creatInputWithLabel(this.inputCountry.getElement(), 'Country:', 'US only', 'text');
+    const labelCountry = creatInputWithLabel(this.inputCountry.getElement(), 'Country:', 'Country (US only)', 'text');
     const msgErrCountry = this.massageErrorCountry.getElement();
 
     regAddress.classList.add('registration__address');

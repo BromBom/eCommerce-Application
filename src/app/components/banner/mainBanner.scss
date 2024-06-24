@@ -1,0 +1,66 @@
+.banner {
+  position: absolute;
+  z-index: 100;
+}
+
+.mainBanner {
+  position: relative;
+  max-width: 1200px;
+  height: auto;
+  margin: 0 auto;
+  background-image: url('../../../assets/img/adidasforus.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  padding: 240px;
+}
+
+.mainBanner_text {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+}
+
+.mainBanner-title {
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+
+.mainBanner-description {
+  font-size: 24px;
+}
+
+@media (max-width: 1200px) {
+  .mainBanner {
+    padding: 180px;
+  }
+}
+
+@media (max-width: 997px) {
+  .mainBanner {
+    max-width: 997px;
+  }
+}
+
+@media (max-width: 700px) {
+  .mainBanner {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .mainBanner {
+    max-width: 600px;
+    padding: 120px;
+  }
+}
+
+@media (max-width: 380px) {
+  .mainBanner {
+    max-width: 348px;
+    height: 552px;
+  }
+}

@@ -104,7 +104,7 @@ export default class AddressBox {
         hideLoading();
         handleSucsess('Seting Default Billing Address was successful!');
       } catch (error) {
-        console.error(`Failed to set Default Billing Address: ${error}`);
+        console.log(`Failed to set Default Billing Address: ${error}`);
         handleError(
           new Error('Failed to set Default Billing Address'),
           `Failed to set Default Billing Address! ${error}`
@@ -133,7 +133,7 @@ export default class AddressBox {
         hideLoading();
         handleSucsess('Seting Default Shipping Address was successful!');
       } catch (error) {
-        console.error(`Failed to set Default Shipping Address: ${error}`);
+        console.log(`Failed to set Default Shipping Address: ${error}`);
         handleError(
           new Error('Failed to set Default Shipping Address'),
           `Failed to set Default Shipping Address! ${error}`
@@ -162,7 +162,7 @@ export default class AddressBox {
         hideLoading();
         handleSucsess('Remove address was successful!');
       } catch (error) {
-        console.error(`Failed to delete Address: ${error}`);
+        console.log(`Failed to delete Address: ${error}`);
         handleError(new Error('Failed to delete Address'), `Failed to delete Address! ${error}`);
       }
     });
@@ -243,7 +243,7 @@ export default class AddressBox {
         hideLoading();
         handleSucsess('The address change was successful!');
       } catch (error) {
-        console.error(`Failed to change address: ${error}`);
+        console.log(`Failed to change address: ${error}`);
         handleError(new Error('Failed to change address'), `Failed to change address! ${error}`);
       }
     });

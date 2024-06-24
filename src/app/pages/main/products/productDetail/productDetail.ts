@@ -1,8 +1,13 @@
-import { ProductProjection } from '@commercetools/platform-sdk';
+import { ProductProjection, Cart } from '@commercetools/platform-sdk';
 import Layout from '../../../../layout/layout';
 import { ICard } from '../../../../data/cards';
 import { searchProductbyID } from '../../../../../api/project';
 import Modal from '../../../../components/modal/modal';
+import Button from '../../../../components/controls/button';
+import { handleError, showLoading, handleSucsess, hideLoading } from '../../../../utils/showmessage';
+import { getCartByID, addProductToCart, removeProductFromCart } from '../../../../../api/cart';
+
+import './style.scss';
 
 export default class ProductDetail extends Layout {
   product: ProductProjection | null;
@@ -64,7 +69,7 @@ export default class ProductDetail extends Layout {
         this.configureView();
       }
     } catch (error) {
-      console.error('Failed to initialize ProductDetail:', error);
+      console.log('Failed to initialize ProductDetail:', error);
     }
   }
 
@@ -77,7 +82,7 @@ export default class ProductDetail extends Layout {
       }
       [productById] = response.body.results;
     } catch (error) {
-      console.error('Error fetching product:', error);
+      console.log('Error fetching product:', error);
       throw new Error('Failed to get product information');
     }
     return productById;
@@ -85,7 +90,7 @@ export default class ProductDetail extends Layout {
 
   configureView() {
     if (!this.card) {
-      console.error('No card data available');
+      console.log('No card data available');
       return;
     }
 
@@ -98,6 +103,7 @@ export default class ProductDetail extends Layout {
     const imageElement = document.createElement('img');
     imageElement.src = this.card.image;
     imageElement.alt = this.card.name;
+    imageElement.classList.add('details-image');
 
     this.innerContent = imageElement;
 
@@ -129,7 +135,9 @@ export default class ProductDetail extends Layout {
     const stockElement = document.createElement('p');
     stockElement.textContent = `In stock: ${this.card.stock}`;
 
-    containerCardDetail.append(nameElement, imageElement, descriptionElement, priceElement);
+    const buttonsCart = this.creatContainerButtonsCart();
+
+    containerCardDetail.append(nameElement, imageElement, buttonsCart, descriptionElement, priceElement);
     if (this.card.discountedPrice !== null) {
       containerCardDetail.appendChild(discountedPriceElement);
     }
@@ -137,9 +145,90 @@ export default class ProductDetail extends Layout {
     this.element = containerCardDetail;
   }
 
+  creatContainerButtonsCart() {
+    const containerButtonsCart = document.createElement('div');
+    containerButtonsCart.classList.add('detail__cart-buttons__container');
+
+    const buttonInCart = Button(['detail__cart-buttons__btn-in'], 'Add to Cart').getElement();
+    const buttonRemoveFromCart = Button(['detail__cart-buttons__btn-remove'], 'Remove from cart').getElement();
+
+    containerButtonsCart.append(buttonInCart, buttonRemoveFromCart);
+
+    const currentCart = JSON.parse(localStorage.getItem('CurrentCart')!) as Cart;
+
+    const itemInCart = currentCart.lineItems.find((lineItem) => lineItem.productId === this.id);
+    if (itemInCart) {
+      buttonInCart.disabled = true;
+      buttonRemoveFromCart.disabled = !buttonInCart.disabled;
+    } else {
+      buttonRemoveFromCart.disabled = true;
+      buttonInCart.disabled = !buttonRemoveFromCart.disabled;
+    }
+
+    buttonInCart.addEventListener('click', async () => {
+      buttonInCart.disabled = true;
+      buttonRemoveFromCart.disabled = false;
+      try {
+        showLoading();
+        const cartID = localStorage.getItem('CurrentCartId');
+        const cart = await getCartByID(cartID!);
+        const newCart = await addProductToCart(cart, this.id!);
+        localStorage.setItem('CurrentCart', JSON.stringify(newCart));
+
+        const cartCounter = document.getElementById('cart-counter');
+        if (cartCounter) {
+          cartCounter.innerHTML = `${newCart.lineItems.length}`;
+        } else {
+          const cartIconInHeader = document.getElementsByClassName('cart');
+          cartIconInHeader[0].innerHTML = `<div id="cart-counter"></div>`;
+          const newCartCounter = document.getElementById('cart-counter');
+          newCartCounter!.innerHTML = `${newCart.lineItems.length}`;
+        }
+
+        hideLoading();
+        handleSucsess('Adding product to cart was successful!!');
+      } catch (error) {
+        console.log(`Failed to click button "buy now": ${error}`);
+        handleError(new Error('Failed to click button "buy now"'), `Failed to click button "buy now"! ${error}`);
+      }
+    });
+
+    buttonRemoveFromCart.addEventListener('click', async () => {
+      buttonRemoveFromCart.disabled = true;
+      buttonInCart.disabled = false;
+      try {
+        showLoading();
+        const cartID = localStorage.getItem('CurrentCartId');
+        const cart = await getCartByID(cartID!);
+        const productInCart = cart.lineItems.find((lineItem) => lineItem.productId === this.id);
+        const newCart = await removeProductFromCart(cart, productInCart!.id);
+        localStorage.setItem('CurrentCart', JSON.stringify(newCart));
+
+        const cartCounter = document.getElementById('cart-counter');
+        if (newCart.lineItems.length) {
+          cartCounter!.innerHTML = `${newCart.lineItems.length}`;
+        } else {
+          const cartIconInHeader = document.getElementsByClassName('cart');
+          cartIconInHeader[0].innerHTML = '';
+        }
+
+        hideLoading();
+        handleSucsess('Removing product from the cart was successful!');
+      } catch (error) {
+        console.log(`Failed to delete product: ${error}`);
+        handleError(
+          new Error('Failed to delete product from the cart'),
+          `Failed to delete product from the cart! ${error}`
+        );
+      }
+    });
+
+    return containerButtonsCart;
+  }
+
   getElement() {
     if (!this.element) {
-      console.error('Element is not initialized yet');
+      console.log('Element is not initialized yet');
     }
     return this.element;
   }

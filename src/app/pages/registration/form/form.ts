@@ -12,6 +12,7 @@ import {
   SetDefaultShippingAddress,
   getCustomerByID,
 } from '../../../../api/customer';
+import { getCartByID, mergeCartByCustomerID } from '../../../../api/cart';
 
 import { handleError, showLoading, hideLoading } from '../../../utils/showmessage';
 
@@ -156,10 +157,16 @@ export default class RegForm {
         localStorage.setItem('newCustomer', JSON.stringify(newCustomer));
         localStorage.setItem('userID', JSON.stringify(newCustomer));
 
+        const anonCartID = localStorage.getItem('CurrentCartId');
+        const anonCart = await getCartByID(anonCartID!);
+        const mergedCart = await mergeCartByCustomerID(anonCart, newCustomer.id);
+        localStorage.setItem('CurrentCartId', mergedCart.id);
+        localStorage.setItem('CurrentCart', JSON.stringify(mergedCart));
+
         this.router.navigate(Pages.PRODUCT);
         hideLoading();
       } catch (error) {
-        console.error(`Failed to create customer: ${error}`);
+        console.log(`Failed to create customer: ${error}`);
         handleError(new Error('Failed to create customer'), `Failed to create customer! ${error}`);
       }
     });

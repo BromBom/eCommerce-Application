@@ -7,6 +7,7 @@ interface PagesProps {
   CART: string;
   PROFILE: string;
   [key: string]: string;
+  ABOUT_US: string;
 }
 
 const Pages: PagesProps = {
@@ -18,6 +19,7 @@ const Pages: PagesProps = {
   PROFILE: 'profile',
   LOGOUT: 'logout',
   CART: 'cart',
+  ABOUT_US: 'about-us',
 };
 
 const ID_SELECTOR = '{id}';

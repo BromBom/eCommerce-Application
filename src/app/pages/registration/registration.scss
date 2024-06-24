@@ -1,7 +1,12 @@
 .registration__page {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   width: 100%;
+}
+
+.registration__title {
+  padding: 20px;
+  font-size: 2rem;
 }

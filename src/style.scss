@@ -34,11 +34,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: start;
 
-  max-width: $max-width;
-  max-height: $max-height;
-  height: 100vh;
+  // max-width: $max-width;
+  height: 100%;
   margin: 0 auto;
 }
 

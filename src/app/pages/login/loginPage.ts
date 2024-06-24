@@ -1,11 +1,12 @@
 import { apiRoot } from '../../../api/BuildClient';
 import { setUserInfo } from '../../utils/localstorage';
 import { hideLoading, showLoading, showMessage } from '../../utils/showmessage';
-import './loginPage.scss';
 import Header from '../../components/header/header';
 import State from '../../state/state';
 import Router from '../../router/router';
 import { Pages } from '../../router/pages';
+import { getCartByID, mergeCartByCustomerID, getCartByCustomerID } from '../../../api/cart';
+import './loginPage.scss';
 
 interface User {
   name: string;
@@ -13,7 +14,7 @@ interface User {
 }
 
 export function handleError(error: Error, message: string): void {
-  console.error(error);
+  console.log(error);
   showMessage(message);
 }
 
@@ -73,7 +74,6 @@ const loginPage = {
           try {
             console.log('Sending request to commercetools API...');
             const response = await apiRoot
-              .withProjectKey({ projectKey: process.env.CTP_PROJECT_KEY || '' })
               .login()
               .post({
                 body: {
@@ -108,6 +108,18 @@ const loginPage = {
             localStorage.setItem('newCustomer', JSON.stringify(data.customer));
             localStorage.setItem('userID', JSON.stringify(data.customer));
 
+            const cartCustomerID = await getCartByCustomerID(data.customer.id);
+            if (cartCustomerID) {
+              localStorage.setItem('CurrentCartId', cartCustomerID.id);
+              localStorage.setItem('CurrentCart', JSON.stringify(cartCustomerID));
+            } else {
+              const anonCartID = localStorage.getItem('CurrentCartId');
+              const anonCart = await getCartByID(anonCartID!);
+              const mergedCart = await mergeCartByCustomerID(anonCart, data.customer.id);
+              localStorage.setItem('CurrentCartId', mergedCart.id);
+              localStorage.setItem('CurrentCart', JSON.stringify(mergedCart));
+            }
+
             header.configureView();
 
             router.navigate(Pages.PRODUCT);
@@ -116,7 +128,7 @@ const loginPage = {
             if (error instanceof Error) {
               handleError(error, error.message);
             } else {
-              console.error(error);
+              console.log(error);
               handleError(new Error('Invalid form data'), 'Please enter both email and password.');
             }
           }
@@ -145,28 +157,26 @@ const loginPage = {
     return `
       <div>
         <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="loginLabel">Login</h5>
-            </div>
-            <div class="modal-body">
-              <form id="signin-form">
-                <div class="mb-3 form-floating">
-                  <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Email" required>
-                  <div id="emailHelp" class="form-text">example@email.com</div>
-                </div>
-                <div class="mb-3 form-floating">
-                  <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
-                  <div id="passwordHelp" class="form-text">Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number</div>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="FakePSW" id="checkPassword">
-                  <label class="form-check-label" for="checkPassword">Show Password</label>
-                </div>
-                <div id="error-container" class="alert alert-danger" style="display: none;"></div>
-                <button type="submit" class="btn btn-primary mt-3">Login</button>
-              </form>
-            </div>
+          <div class="modal-header">
+            <h5 class="modal-title" id="loginLabel">Login</h5>
+          </div>
+          <div class="modal-body">
+            <form id="signin-form">
+              <div class="mb-3 form-floating">
+                <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Email" required>
+                <div id="emailHelp" class="form-text">example@email.com</div>
+              </div>
+              <div class="mb-3 form-floating">
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                <div id="passwordHelp" class="form-text">Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number</div>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="FakePSW" id="checkPassword">
+                <label class="form-check-label" for="checkPassword">Show Password</label>
+              </div>
+              <div id="error-container" class="alert alert-danger" style="display: none;"></div>
+              <button type="submit" class="btn btn-primary mt-3">Login</button>
+            </form>
           </div>
         </div>
       </div>

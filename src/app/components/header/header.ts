@@ -8,7 +8,9 @@ import State, { KEY_USER_ID } from '../../state/state';
 import { searchProduct, sortProductClothing, sortProductShoes, sortProductAccessories } from '../../../api/project';
 import Products from '../../pages/main/products/products';
 import Navbar from '../navbar/navbar';
-import { showLoading, hideLoading, handleError } from '../../utils/showmessage';
+import Banner from '../banner/mainBanner';
+import { showLoading, hideLoading, handleError, handleSucsess } from '../../utils/showmessage';
+import { createAnonymousCart } from '../../../api/cart';
 
 const NamePages: { [key: string]: string } = {
   LOGIN: 'Login',
@@ -91,16 +93,27 @@ export default class Header extends Layout {
       callback: () => {
         console.log('Logo clicked');
         this.router.navigate(Pages.PRODUCT);
-        this.clearSelectedItems();
       },
     };
-
     const logoCreator = new BaseComponent<HTMLElement>(logoParams);
     logoCreator.getElement()?.addEventListener('click', () => {
       this.router.navigate(Pages.PRODUCT);
-      this.clearSelectedItems();
     });
     topContainer.addInnerElement(logoCreator);
+
+    const aboutUsParams = {
+      tag: 'a' as keyof HTMLElementTagNameMap,
+      classNames: ['about-us_link'],
+      text: 'About us',
+      callback: () => {
+        this.router.navigate(Pages.ABOUT_US);
+      },
+    };
+    const aboutUsInstance = new BaseComponent<HTMLElement>(aboutUsParams);
+    aboutUsInstance.getElement()?.addEventListener('click', () => {
+      this.router.navigate(Pages.ABOUT_US);
+    });
+    topContainer.addInnerElement(aboutUsInstance);
 
     const navParams = {
       tag: 'nav' as keyof HTMLElementTagNameMap,
@@ -151,16 +164,18 @@ export default class Header extends Layout {
           if (mainElement) {
             mainElement.innerHTML = '';
             const navbar = new Navbar(this.router, this.products);
+            const banner = new Banner(this.router);
+            mainElement.appendChild(banner.getHtmlElement());
             mainElement.appendChild(navbar.getHtmlElement());
             mainElement.appendChild(this.products.getHtmlElement());
           } else {
-            console.error('Main element not found.');
+            console.log('Main element not found.');
           }
         } else {
           console.log('No sort results found.');
         }
       } catch (error) {
-        console.error('ERROR during sorting:', error);
+        console.log('ERROR during sorting:', error);
         handleError(error as Error, 'Error during sorting');
       } finally {
         hideLoading();
@@ -186,12 +201,11 @@ export default class Header extends Layout {
     document.body.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
       if (target && target.classList.contains('additional_button')) {
-        console.log('Button clicked:', target);
         const buttonName = target.textContent?.trim();
         if (buttonName && buttonNames[buttonName]) {
           handleClick(buttonNames[buttonName]);
         } else {
-          console.error('Button name not found or invalid:', buttonName);
+          console.log('Button name not found or invalid:', buttonName);
         }
       }
     });
@@ -232,16 +246,18 @@ export default class Header extends Layout {
             if (mainElement) {
               mainElement.innerHTML = '';
               const navbar = new Navbar(this.router, this.products);
+              const banner = new Banner(this.router);
+              mainElement.appendChild(banner.getHtmlElement());
               mainElement.appendChild(navbar.getHtmlElement());
               mainElement.appendChild(this.products.getHtmlElement());
             } else {
-              console.error('Main element not found.');
+              console.log('Main element not found.');
             }
           } else {
             console.log('No search results found.');
           }
         } catch (error) {
-          console.error('ERROR during search:', error);
+          console.log('ERROR during search:', error);
         } finally {
           hideLoading();
         }
@@ -249,7 +265,7 @@ export default class Header extends Layout {
 
       console.log('Search bar created with input and button.');
     } else {
-      console.error('Container element is null, cannot append search bar.');
+      console.log('Container element is null, cannot append search bar.');
     }
   }
 
@@ -278,9 +294,29 @@ export default class Header extends Layout {
       Object.keys(pages).forEach((key) => {
         const pageParams = {
           name: pages[key],
-          callback: () => {
+          callback: async () => {
             if (pages[key] === 'Logout') {
               this.state.clearState();
+
+              try {
+                showLoading();
+                const currentBasket = await createAnonymousCart();
+                localStorage.setItem('CurrentCartId', currentBasket.id);
+                localStorage.setItem('CurrentCart', JSON.stringify(currentBasket));
+
+                const cartIconInHeader = document.getElementsByClassName('cart');
+                cartIconInHeader[0].innerHTML = '';
+
+                hideLoading();
+                handleSucsess('Creating new cart after logout was successful!!');
+              } catch (error) {
+                console.log(`Failed to create new cart after logout: ${error}`);
+                handleError(
+                  new Error('Failed to create new cart after logout'),
+                  `Failed to create new cart after logout! ${error}`
+                );
+              }
+
               this.router.navigate(Pages.LOGIN);
               this.configureView();
             } else {
@@ -294,7 +330,7 @@ export default class Header extends Layout {
         this.headerLinkElements.set(Pages[key].toUpperCase(), linkElement);
       });
     } else {
-      console.error('Navigation element is null, cannot update links.');
+      console.log('Navigation element is null, cannot update links.');
     }
   }
 

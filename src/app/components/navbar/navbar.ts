@@ -4,6 +4,7 @@ import { queryProduct, sortProductbyASC, filterProductListColor } from '../../..
 import { hideLoading, showLoading, handleError } from '../../utils/showmessage';
 import Products from '../../pages/main/products/products';
 import Router from '../../router/router';
+import Banner from '../banner/mainBanner';
 
 import './navbar.scss';
 
@@ -156,6 +157,7 @@ export default class Navbar extends Layout {
           </div>
         </div>
         <button id="submit-filters" class="filter-button">Apply filters</button>
+        <p class="promocode">PROMOCODE: ADIDASFORUS</p>
       </div>
     </aside>
     `;
@@ -170,10 +172,20 @@ export default class Navbar extends Layout {
           const filtersContainer = document.querySelector('.sidebar') as HTMLElement | null;
 
           if (filtersContainer) {
-            filtersContainer.addEventListener('change', (event) => {
+            filtersContainer.addEventListener('change', async (event) => {
               const target = event.target as HTMLInputElement;
               if (target.type === 'checkbox' && target.id === 'asc') {
-                this.handleSortByPriceAsc(target.checked);
+                await this.handleSortByPriceAsc(target.checked);
+
+                const mainElement = document.querySelector('.main');
+                if (mainElement) {
+                  mainElement.innerHTML = '';
+                  const navbar = new Navbar(this.router, this.products);
+                  const banner = new Banner(this.router);
+                  mainElement.appendChild(banner.getHtmlElement());
+                  mainElement.appendChild(navbar.getHtmlElement());
+                  mainElement.appendChild(this.products.getHtmlElement());
+                }
               }
             });
 
@@ -276,7 +288,6 @@ export default class Navbar extends Layout {
   async fetchFilteredProducts() {
     try {
       showLoading();
-      console.log('121212121212121', this.filters.currentColor);
       const colorResponse: ClientResponse<ProductProjectionPagedSearchResponse> = await filterProductListColor(
         this.filters.currentColor
       );

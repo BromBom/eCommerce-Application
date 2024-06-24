@@ -10,13 +10,13 @@ import './main.scss';
 export default class Main extends Layout {
   products: Products;
 
-  constructor(router: Router) {
+  constructor(router: Router, products: Products) {
     const params = {
       tag: 'section' as keyof HTMLElementTagNameMap,
       classNames: ['main'],
     };
     super(params);
-    this.products = new Products(router);
+    this.products = products;
   }
 
   setContent(content: Layout) {
